@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+  {% block body %}
+  {% load static %}
+    <div class="d-flex flex-row">
+        <div class="col-lg-3 shadow back1234 p-4">
+            <div class="h col-12">
+                <img class="ij1" src="https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-users-icon-png-image_4144740.jpg" alt="" />
+                <h1 class="nm">{{user.username}}</h1>
+            </div>
+            <hr />
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://cdn1.iconfinder.com/data/icons/webina-seo-development-and-marketing/128/seo_web-62-512.png" alt="" />
+                    <h4 class="ml-3">E-Dashboard</h4>
+                </div>
+            </button>
+            <br />
+            <br />
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://www.shareicon.net/data/2015/10/03/111427_write_512x512.png" alt="" />
+                    <h4 class="ml-3">Live</h4>
+                </div>
+            </button>
+            <br />
+            <br />
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" />
+                    <h4 class="ml-3">Logout</h4>
+                </div>
+            </button>
+        </div>
+        <div class="back12 col-lg-9">
+            <div class="col-lg-12 p-5">
+                <h1 class="nm">Welcome {{user.username}},</h1>
+            </div>
+            {% for allot in alloted %}
+            <div class="col-lg-12  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Alloted User: {{employee.allot.username}}</h1>
+                </div>
+            </div>
+            {%endfor%}
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Your Gender: {{employee.gender}}</h1>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Resume Link: {{employee.resume}}</h1>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Certificate Link: {{employee.certificate}}</h1>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Mobile Number: {{employee.mobno}}</h1>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    {% endblock body %}

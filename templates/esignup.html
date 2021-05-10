@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+  {% block body %}
+  {% load static %}
+    <form action="" method="post">
+        {%csrf_token%}
+        <h2>Enter Username</h2>
+        <input type="text" name="username">
+        <h2>Enter Password</h2>
+        <input type="password" name="password1">
+        <h2>Confirm Password</h2>
+        <input type="password" name="password2">
+        <h2>Enter Email</h2>
+        <input type="email" name="email">
+        <h2>Select Your Gender</h2>
+        <select name="gender" id="">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Prefer not to say">Prefer Not to Say</option>
+        </select>
+        <h2>Enter certificate</h2>
+        <input type="url" name="certificate" id="certificate">
+        <h2>Enter Resume</h2>
+        <input type="url" name="resume" id="resume">
+        <h2>Enter Mobile Number</h2>
+        <input type="number" name="mobno">
+        <h2>Enter Age</h2>
+        <input type="number" name="age">
+        <h3>Select Your Preferred Area</h3>
+        <select name="employeetype" id="">
+            <option value="Nutritionist">Nutritionist</option>
+            <option value="Dietician">Dietician</option>
+            <option value="employee">employee</option>
+        </select>
+        <h2>Enter Submit</h2>
+        <input type="submit" value="submit">
+    </form>
+    {% endblock body %}

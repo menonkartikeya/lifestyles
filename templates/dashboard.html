@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+  {% block body %}
+  {% load static %}
+    <div class="d-flex flex-row">
+        <div class="col-lg-3 shadow back1234 p-4">
+            <div class="h col-12">
+                <img class="ij1" src="https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-users-icon-png-image_4144740.jpg" alt="" />
+                <h1 class="nm">{{user.username}}</h1>
+            </div>
+            <hr />
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://cdn1.iconfinder.com/data/icons/webina-seo-development-and-marketing/128/seo_web-62-512.png" alt="" />
+                    <h4 class="ml-3">Dashboard</h4>
+                </div>
+            </button>
+            <br />
+            <br />
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://www.shareicon.net/data/2015/10/03/111427_write_512x512.png" alt="" />
+                    <h4 class="ml-3">Live</h4>
+                </div>
+            </button>
+            <br />
+            <br />
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://cdn1.iconfinder.com/data/icons/network-and-comminications-flat-circle-shadow-vo-1/120/content__blog__media__articles__news__management__edit-512.png" alt="" />
+                    <h4 class="ml-3">Bills</h4>
+                </div>
+            </button>
+            <br />
+            <br />
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://image.flaticon.com/icons/png/512/1076/1076323.png" alt="" />
+                    <h4 class="ml-3">Diet Plans</h4>
+                </div>
+            </button>
+            <br />
+            <br />
+
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://cdn2.iconfinder.com/data/icons/flat-style-svg-icons-part-2/512/account_card_user_profile-512.png" alt="" />
+                    <h4 class="ml-3">Grocery</h4>
+                </div>
+            </button>
+            <br />
+            <br />
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" />
+                    <h4 class="ml-3">Playlist</h4>
+                </div>
+            </button>
+            <br />
+            <br />
+            <button class="btn btn-white bu col-12 nm" type="submit">
+                <div class="d-flex flex-row ">
+                    <img class="lll" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" />
+                    <h4 class="ml-3">Logout</h4>
+                </div>
+            </button>
+        </div>
+        <div class="back12 col-lg-9">
+            <div class="col-lg-12 p-5">
+                <h1 class="nm">Welcome {{user.username}},</h1>
+            </div>
+            <div class="col-lg-12  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Your Target: {{userdet.target}}</h1>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Your Plan: {{userdet.subscription}}</h1>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Mobile Number: {{userdet.mobno}}</h1>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">How Tall you are: {{userdet.height}}</h1>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Your weight: {{userdet.weight}}</h1>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Your Diet Plan:</h1>
+                    <h3 class="nm">Breakfast - {{userdet.diets.breakfast.food.fooditem}}</h3>
+                    <h3 class="nm">Lunch - {{userdet.diets.lunch.food.fooditem}}</h3>
+                    <h3 class="nm">Snacks - {{userdet.diets.snacks.food.fooditem}}</h3>
+                    <h3 class="nm">Dinner - {{userdet.diets.dinner.food.fooditem}}</h3>
+                    <h3 class="nm">Remarks - {{userdet.diets.remarks}}</h3>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-4  ">
+                <div class="op p-4 shadow bg-light">
+                    <h1 class="nm">Recent Invoice: {{userdet.bill.name}}</h1>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    {% endblock body %}
