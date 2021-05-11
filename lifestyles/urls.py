@@ -14,9 +14,32 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from lifes.views import *
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.static import serve
+from django.conf.urls import url
+from django.contrib.auth import views as auth_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',index,name="index"),
+    path('dashboard/',dashboard,name="dashboard"),
+    path('edashboard/',edashboard,name="edashboard"),
+    url('^', include('django.contrib.auth.urls')),
+    path('activate/<uidb64>/<token>/',activate, name='activate'),
+    path('login/',login,name="login"),
+    path('logoutme/',logoutuser,name="logout"),
+    path('elogin/',elogin,name="elogin"),
+    path('register/',signup,name="signup"),
+    path('eregister/',esignup,name="esignup"),
+    url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+    url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]
+urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+admin.site.site_header = "Life Styles"
+admin.site.site_title = "Admin Area | Life Styles"
+admin.site.index_title = "Admin Control | Life Styles"

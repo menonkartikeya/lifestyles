@@ -1,55 +1,54 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import Http404
 from .models import *
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-import pyrebase
-
+from django.contrib.auth.models import auth
+from django.contrib.auth import login,logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.files.storage import FileSystemStorage
+from django.core.exceptions import ObjectDoesNotExist
+import datetime
+from django.contrib import messages
 # Create your views here.
-
-config = {
-    'apiKey': "AIzaSyBJ33tV82IcUyz5qG3DcX53cmtNU_VZYm8",
-    'authDomain': "lifestyle-kowi.firebaseapp.com",
-    'projectId': "lifestyle-kowi",
-    'storageBucket': "lifestyle-kowi.appspot.com",
-    'messagingSenderId': "937975020079",
-    'appId': "1:937975020079:web:e34c860b0f6ab87a4464da",
-    'databaseURL': "https://lifestyle-kowi-default-rtdb.asia-southeast1.firebasedatabase.app",
-}
-firebase = pyrebase.initialize_app(config)
-authe = firebase.auth()
-database = firebase.database()
 
 def index(request):
     title = "Life Styles | Home"
-    free_plan = database.child('subscriptions').child('free').get().val()
-    basic_plan = database.child('subscriptions').child('basic').get().val()
-    premium_plan = database.child('subscriptions').child('premium').get().val()
+    user = request.user
+    usertype = None
+    if user.is_authenticated:
+        if user.is_staff == True:
+            emp = employeecontrol.objects.get(id=user)
+            usertype = emp.employeetype
     parms = {
         'title':title,
-        'free_plan':free_plan,
-        'basic_plan':basic_plan,
-        'premium_plan':premium_plan,
+        'usertype':usertype,
     }
     return render(request,'index.html',parms)
 
 def dashboard(request):
-    headtitle = "Life Styles | Dashboard"
+    title = "Life Styles | Dashboard"
     parms = {
         'title':title,
     }
     user = request.user
     if user.is_authenticated and user.is_staff == False:
-        try:
-            userdet = userdetail.objects.get(user)
-        except ObjectDoesNotExist:
-            return render(request,'404.html',parms)
+        sub = subplans.objects.get(allot=user)
         parms = {
             'title':title,
-            'userdet':userdet,
-            'user':user,
+            'sub':sub,
         }
         return render(request,'dashboard.html',parms)
+    else:
+        return render(request,'404.html',parms)
     
     return render(request,'dashboard.html',parms)
 
@@ -62,7 +61,7 @@ def logoutuser(request):
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.get(pk=uid)
+        user = MyUser.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
@@ -86,8 +85,7 @@ def login(request):
             messages.info(request,'Invalid Credentials')
             return redirect('login')
 
-    else:
-        return render(request,'login.html',{'title':title})
+    return render(request,'login.html',{'title':title})
 
 def elogin(request):
     title = "Employee Login | lifeStyles"
@@ -121,18 +119,24 @@ def signup(request):
         mobno = request.POST['mobno']
         age = request.POST['age']
         if password1 == password2:
-            if User.objects.filter(username=username).exists():
+            if MyUser.objects.filter(username=username).exists():
                 messages.info(request,'Username Taken')
                 return redirect('signup')
-            elif User.objects.filter(email=email).exists():
+            elif MyUser.objects.filter(email=email).exists():
                 messages.info(request,'Email Taken')
                 return redirect('signup')
             else:
-                user = User.objects.create_user(username=username,password=password1,email=email).save()
+                if subscription == "Free Plan":
+                    price = 0
+                elif subscription == "Basic Plan":
+                    price = 9
+                else:
+                    price = 99
+                user = MyUser.objects.create_user(username=username,password=password1,email=email,gender=gender,height=height,weight=weight,target=target,mobno=mobno,age=age).save()
                 user = auth.authenticate(username=username,password=password1)
                 auth.login(request,user)
-                us = request.user
-                userdet = userdetail.objects.create(id=us,gender=gender,height=height,weight=weight,target=target,subscription=subscription,mobno=mobno,age=age)
+                sub = subplans.objects.create(plan=subscription)
+                sub.allot.add(user)
                 current_site = get_current_site(request)
                 mail_subject = 'Activate your account.'
                 message = render_to_string('registration/acc_active_email.html', {
@@ -166,21 +170,17 @@ def esignup(request):
         resume = request.POST['resume']
         certificate = request.POST['certificate']
         if password1 == password2:
-            if User.objects.filter(username=username).exists():
+            if MyUser.objects.filter(username=username).exists():
                 messages.info(request,'Username Taken')
                 return redirect('esignup')
-            elif User.objects.filter(email=email).exists():
+            elif MyUser.objects.filter(email=email).exists():
                 messages.info(request,'Email Taken')
                 return redirect('esignup')
             else:
-                user = User.objects.create_user(username=username,password=password1,email=email).save()
+                user = MyUser.objects.create_user(username=username,password=password1,email=email).save()
                 user = auth.authenticate(username=username,password=password1)
                 auth.login(request,user)
-                us = request.user
-                us.is_staff == True
-                us.is_active == False
-                us.save()
-                employee = employeecontrol.objects.create(id=us,gender=gender,certificate=certificate,resume=resume,employeetype=employeetype,mobno=mobno)
+                employee = employeecontrol.objects.create(id=user,gender=gender,certificate=certificate,resume=resume,employeetype=employeetype,mobno=mobno)
                 messages.info(request,'We will Verify and mail You with the details!')
                 return redirect(index)
         else:

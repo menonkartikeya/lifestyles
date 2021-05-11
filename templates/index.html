@@ -1,6 +1,11 @@
-
-
-<h1>Firebase Subscription Plans Data</h1>
-<h2>Free Plan price - {{free_plan}}</h2>
-<h2>Basic Plan Price - {{basic_plan}}</h2>
-<h2>Premium Plan Price - {{premium_plan}}</h2>
+{% extends 'base.html' %}
+  {% block body %}
+  {% load static %}
+  <div class="my-3 p-2">
+      {% if usertype == none %}
+      <h1>Welcome,</h1>
+      {% else %}
+      <h1>Welcome, {{usertype}}</h1>
+      {%endif%}
+  </div>
+  {% endblock body %}

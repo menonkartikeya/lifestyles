@@ -133,7 +133,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTHENTICATION_BACKENDS = ( 
     'django.contrib.auth.backends.ModelBackend', 
 )
-
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = "/"
 
 SITE_ID=1
@@ -142,11 +142,11 @@ SITE_ID=1
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'kowifashion1234@gmail.com'
-EMAIL_HOST_PASSWORD = 'kowi1234'
-DEFAULT_FROM_EMAIL = '"kowi fashion" <kowifashion1234@gmail.com>'
-SERVER_EMAIL = 'kowifashion1234@gmail.com'
-ADMINS = (('kowi fashion', 'kowifashion1234@gmail.com'))
+EMAIL_HOST_USER = 'ekesel05@gmail.com'
+EMAIL_HOST_PASSWORD = 'kt6uqn0kss'
+DEFAULT_FROM_EMAIL = '"ekesel05" <ekesel05@gmail.com>'
+SERVER_EMAIL = 'ekesel05@gmail.com'
+ADMINS = (('ekesel05', 'ekesel05@gmail.com'))
 
 from django.contrib.messages import constants as messages
 
@@ -158,3 +158,5 @@ MESSAGE_TAGS = {
         messages.WARNING: 'alert-warning',
         messages.ERROR: 'alert-danger',
  }
+
+AUTH_USER_MODEL = 'lifes.MyUser'

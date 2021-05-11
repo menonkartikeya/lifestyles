@@ -1,8 +1,104 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
+targets = (
+    ('Gain Weight','Gain Weight'),
+    ('Stay Fit','Stay Fit'),
+    ('Loose Weight','Loose Weight'),
+)
+types = (
+    ('Free Plan','Free Plan'),
+    ('Basic Plan','Basic Plan'),
+    ('Premium Plan','Premium Plan'),
+)
+emptype = (
+    ('Nutritionist','Nutritionist'),
+    ('Dietician','Dietician'),
+    ('employee','employee'),
+)
+gen = (
+    ('Male','Male'),
+    ('Female','Female'),
+    ('Prefer not to say','Prefer not to say'),
+)
+
+class food(models.Model):
+    pic = models.ImageField()
+    name = models.CharField(max_length=100)
+    stuff = models.CharField(max_length=10000)
+    calories = models.IntegerField(default=0)
+    protein = models.IntegerField(default=0)
+    fat = models.IntegerField(default=0)
+    carbs = models.IntegerField(default=0)
+    fiber = models.IntegerField(default=0)
 
 
+class foodplan(models.Model):
+    video = models.URLField()
+    textrecipe = models.CharField(max_length=10000)
+    fooditem = models.OneToOneField(food,on_delete=models.CASCADE,primary_key=True)
+
+class dietplan(models.Model):
+    breakfast = models.ForeignKey(foodplan,on_delete=models.CASCADE,related_name="Breakfast")
+    lunch = models.ForeignKey(foodplan,on_delete=models.CASCADE,related_name="Lunch")
+    snacks = models.ForeignKey(foodplan,on_delete=models.CASCADE,related_name="Snacks")
+    dinner = models.ForeignKey(foodplan,on_delete=models.CASCADE,related_name="Dinner")
+    remarks = models.CharField(max_length=1000,blank=True,null=True)
 
 
+class bills(models.Model):
+    invoicepdf = models.FileField()
+    name = models.CharField(max_length=100)
+    price = models.IntegerField(default=0)
+
+
+class live(models.Model):
+    slottime = models.TimeField()
+    date = models.DateField()
+    link = models.URLField()
+
+class logs(models.Model):
+    question = models.CharField(max_length=100)
+    answer = models.CharField(max_length=100)
+
+class MyUser(AbstractUser):
+    gender = models.CharField(choices=gen,max_length=50,blank=True,null=True)
+    mobno = models.IntegerField(default=0)
+    height = models.CharField(max_length=70,blank=True,null=True)
+    weight = models.CharField(max_length=70,blank=True,null=True)
+    target = models.CharField(choices=targets,max_length=60,blank=True,null=True)
+    diets = models.ForeignKey(dietplan, on_delete=models.CASCADE,blank=True,null=True)
+    playlist = models.URLField(blank=True,null=True)
+    bill = models.ManyToManyField(bills,blank=True)
+    foodplans = models.ManyToManyField(foodplan,blank=True)
+    lives = models.ManyToManyField(live,blank=True)
+    log = models.ManyToManyField(logs,blank=True)
+    age = models.IntegerField(blank=True,null=True)
+
+class contact(models.Model):
+    email = models.EmailField()
+    mobno = models.IntegerField(default=0)
+    bookcall = models.BooleanField(null=True,blank=True)
+    bookapp = models.BooleanField(null=True,blank=True)
+    message = models.CharField(max_length=500)
+
+class employeecontrol(models.Model):
+    id = models.OneToOneField(MyUser, on_delete = models.CASCADE,primary_key=True)
+    alloted = models.ManyToManyField(MyUser, blank=True, related_name="Alloted_Users")
+    mobno = models.IntegerField()
+    employeetype = models.CharField(choices=emptype,max_length=100)
+    certificate = models.URLField()
+    resume = models.URLField()
+    gender = models.CharField(choices=gen,max_length=50)
+
+class grocerylist(models.Model):
+    id = models.OneToOneField(MyUser,on_delete=models.CASCADE,primary_key=True)
+    items = models.CharField(max_length=1000)
+    address = models.CharField(max_length=500)
+    billitem = models.OneToOneField(bills,on_delete=models.CASCADE)
+
+class subplans(models.Model):
+    allot = models.ManyToManyField(MyUser, blank=True, related_name="Alloted_Subs")
+    plan = models.CharField(choices=types,max_length=100)
+    price = models.IntegerField(default=0)
