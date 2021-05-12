@@ -5,15 +5,69 @@ from django.contrib.auth.admin import UserAdmin
 from .forms import MyUserCreationForm, MyUserChangeForm
 
 # Register your models here.
-admin.site.register(subplans)
-admin.site.register(contact)
-admin.site.register(live)
-admin.site.register(employeecontrol)
-admin.site.register(bills)
-admin.site.register(food)
-admin.site.register(foodplan)
-admin.site.register(grocerylist)
-admin.site.register(logs)
+class subplansAdmin(admin.ModelAdmin):
+    list_per_page = 15
+    list_display = ('plan','price',)
+
+admin.site.register(subplans,subplansAdmin)
+
+class contactAdmin(admin.ModelAdmin):
+    list_per_page = 15
+    list_display = ('email','bookcall','bookapp',)
+    search_fields = ('email','mobno',)
+    list_filter =('bookapp','bookcall',)
+
+admin.site.register(contact,contactAdmin)
+
+class liveAdmin(admin.ModelAdmin):
+    list_per_page = 15
+    list_display = ('name','slottime','date',)
+    search_fields = ('slottime','date',)
+
+admin.site.register(live,liveAdmin)
+
+class empAdmin(admin.ModelAdmin):
+    list_per_page = 15
+    list_display = ('name','mobno','employeetype',)
+    search_fields = ('mobno',)
+    list_filter =('employeetype','gender',)
+
+admin.site.register(employeecontrol,empAdmin)
+
+class billadmin(admin.ModelAdmin):
+    list_per_page = 15
+    list_display = ('name','price',)
+    search_fields = ('name',)
+
+admin.site.register(bills,billadmin)
+
+class foodadmin(admin.ModelAdmin):
+    list_per_page = 15
+    list_display = ('name','calories',)
+    search_fields = ('name','calories',)
+
+admin.site.register(food, foodadmin)
+
+class foodplanadmin(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(foodplan,foodplanadmin)
+
+class groadmin(admin.ModelAdmin):
+    list_per_page = 15
+    list_display = ('name','address',)
+    search_fields = ('address',)
+
+admin.site.register(grocerylist,groadmin)
+
+class logadmin(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(logs,logadmin)
+
+class dietplanadmin(admin.ModelAdmin):
+    list_per_page = 15
+
 admin.site.register(dietplan)
 
 class MyUserAdmin(UserAdmin):
