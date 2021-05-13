@@ -59,10 +59,6 @@ class dietplan(models.Model):
     dinner = models.ForeignKey(foodplan,on_delete=models.CASCADE,related_name="Dinner")
     remarks = models.CharField(max_length=1000,blank=True,null=True)
 
-    def __str__(self):
-       obj = MyUser.objects.get(diets=self.id)
-       return "For "+obj.username
-
     class Meta:
         verbose_name_plural = "Manage Diet Plans Issued!"
 
@@ -104,8 +100,8 @@ class logs(models.Model):
 class MyUser(AbstractUser):
     gender = models.CharField(choices=gen,max_length=50,blank=True,null=True)
     mobno = models.IntegerField(default=0)
-    height = models.CharField(max_length=70,blank=True,null=True)
-    weight = models.CharField(max_length=70,blank=True,null=True)
+    height = models.FloatField(default=0.0,blank=True)
+    weight = models.FloatField(default=0.0,blank=True)
     target = models.CharField(choices=targets,max_length=60,blank=True,null=True)
     diets = models.ForeignKey(dietplan, on_delete=models.CASCADE,blank=True,null=True)
     playlist = models.URLField(blank=True,null=True)
@@ -173,3 +169,17 @@ class subplans(models.Model):
     
     class Meta:
         verbose_name_plural = "Subscription Plans!"
+
+
+class bmi(models.Model):
+    us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+    bmi = models.FloatField(default=0.0)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        obj = MyUser.objects.get(id=self.us.id)
+        obj1 = "Username - "+obj.username+" Date: "+str(self.date)
+        return obj1
+
+    class Meta:
+        verbose_name_plural = "BMI INDEX"

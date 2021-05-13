@@ -81,3 +81,8 @@ class MyUserAdmin(UserAdmin):
 
 
 admin.site.register(MyUser, MyUserAdmin)
+
+class BmiAdmin(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(bmi, BmiAdmin)

@@ -18,21 +18,94 @@ from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib import messages
+from math import pi
+from bokeh.plotting import figure
+from bokeh.embed import components
+from bokeh.models import HoverTool, LassoSelectTool, WheelZoomTool, PointDrawTool, ColumnDataSource
 # Create your views here.
 
+
 def index(request):
-    title = "Life Styles | Home"
+    headtitle = "Life Styles | Home"
     user = request.user
     usertype = None
+    bmii =0.0
+    state = ""
+    script = None
+    div = None
     if user.is_authenticated:
+        objs = bmi.objects.filter(us=user)
+        x = []
+        y = []
+        for obj in objs:
+            x.append(obj.bmi)
+            y.append(obj.date)
+        title = 'BMI Graph'
+
+        plot = figure(title= title , 
+            x_axis_label= 'X-Axis', 
+            y_axis_label= 'Y-Axis', 
+            plot_width =400,
+            plot_height =400)
+
+        plot.line(x, y, legend= 'f(x)', line_width = 2)
+        #Store components 
+        script, div = components(plot)
         if user.is_staff == True:
             emp = employeecontrol.objects.get(id=user)
             usertype = emp.employeetype
+        if request.method=="POST":
+            weight_metric = request.POST.get("weight-metric")
+            weight_imperial = request.POST.get("weight-imperial")
+
+            if weight_metric:
+                weight = float(request.POST.get("weight-metric"))
+                height = float(request.POST.get("height-metric"))
+            elif weight_imperial:
+                weight = float(request.POST.get("weight-imperial"))/2.205
+                height = (float(request.POST.get("feet"))*30.48 + float(request.POST.get("inches"))*2.54)/100
+            cont = []
+            cont = bmicalc(weight,height)
+            bmii = cont[1]
+            state = cont[0]
+            save = request.POST.get("save")
+            if save == "on":
+                user = request.user
+                bmi.objects.create(us=user,bmi=round(bmii),date=datetime.date.today())
+                user.weight = weight
+                user.height = height
+                user.save()
     parms = {
-        'title':title,
+        'title':headtitle,
         'usertype':usertype,
+        'bmi':bmii,
+        'state':state,
+        'script':script,
+        'div':div,
     }
+
     return render(request,'index.html',parms)
+
+def bmicalc(weight,height):
+    bmi = (weight/(height**2))
+    if bmi < 16:
+        state = "Severe Thinness"
+    elif bmi > 16 and bmi < 17:
+        state = "Moderate Thinness"
+    elif bmi > 17 and bmi < 18:
+        state = "Mild Thinness"
+    elif bmi > 18 and bmi < 25:
+        state = "Normal"
+    elif bmi > 25 and bmi < 30:
+        state = "Overweight"
+    elif bmi > 30 and bmi < 35:
+        state = "Obese Class I"
+    elif bmi > 35 and bmi < 40:
+        state = "Obese Class II"
+    elif bmi > 40:
+        state = "Obese Class III"
+    context = [state,bmi]
+    return context
 
 def dashboard(request):
     title = "Life Styles | Dashboard"
