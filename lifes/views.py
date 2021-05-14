@@ -1,3 +1,4 @@
+from typing_extensions import ParamSpecArgs
 from django.shortcuts import render,redirect
 from django.http import Http404
 from .models import *
@@ -19,6 +20,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib import messages
 from math import pi
+from django.db.models.query import EmptyQuerySet
 from bokeh.plotting import figure
 from bokeh.embed import components
 from bokeh.models import HoverTool, LassoSelectTool, WheelZoomTool, PointDrawTool, ColumnDataSource
@@ -115,10 +117,39 @@ def dashboard(request):
     user = request.user
     if user.is_authenticated and user.is_staff == False:
         sub = subplans.objects.get(allot=user)
-        parms = {
-            'title':title,
-            'sub':sub,
-        }
+        bmii = bmi.objects.filter(us=user).order_by('-id')[:1]
+        tmp = []
+        for i in bmii:
+            tmp.append(i.bmi)
+        grolist = []
+        try:
+            grocery = grocerylist.objects.get(id=user.id)
+        except ObjectDoesNotExist:
+            grocery = None
+        if grocery != None:
+            grolist = grocery.items.split(',')
+        meet = user.lives.all()
+        flag = False
+        if meet.count() == 0:
+            flag = True
+        if tmp == []:
+            parms = {
+                'title':title,
+                'sub':sub,
+                'bmi':None,
+                'grolist':grolist,
+                'meet':meet,
+                'flag':flag,
+            }
+        else:
+            parms = {
+                'title':title,
+                'sub':sub,
+                'bmi':tmp[0],
+                'grolist':grolist,
+                'meet':meet,
+                'flag':flag,
+            }
         return render(request,'dashboard.html',parms)
     else:
         return render(request,'404.html',parms)
@@ -135,7 +166,7 @@ def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = MyUser.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except(TypeError, ValueError, OverflowError, MyUser.DoesNotExist):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
@@ -277,3 +308,74 @@ def edashboard(request):
         messages.error(request,'Login First')
         return redirect('elogin')
     return render(request,'edashboard.html',{'title':title})
+
+def profile(request):
+    title = "Profile | Lifestyles"
+    parms = {
+        'title':title,
+    }
+    return render(request,'profile.html', parms)
+
+def invoices(request):
+    title = "Invoices | Lifestyles"
+    parms = {
+        'title':title,
+    }
+    return render(request,'invoice.html',parms)
+
+def lives(request):
+    title = "Live | Lifestyles"
+    parms = {
+        'title':title,
+    }
+    return render(request,'live.html',parms)
+
+def bmic(request):
+    title = "BMI | Lifestyles"
+    parms = {
+        'title':title,
+    }
+    return render(request,'bmic.html',parms)
+
+def subs(request):
+    title = "Subs Plan | Lifestyles"
+    parms = {
+        'title':title,
+    }
+    return render(request,'sub.html',parms)
+
+def growth(request):
+    title = "Growth | Lifestyles"
+    parms = {
+        'title':title,
+    }
+    return render(request,'growth.html',parms)
+
+def grocery(request):
+    title = "Grocery | Lifestyles"
+    parms = {
+        'title':title,
+    }
+    return render(request,'grocery.html',parms)
+
+def fooddetail(request,fooditem):
+    title = "Food Details | Lifestyles"
+    user = request.user
+    if user.is_authenticated:
+        if user.diets.breakfast == fooditem:
+            obj = foodplan.objects.get(fooditem=user.diets.breakfast)
+        elif user.diets.lunch == fooditem:
+            obj = foodplan.objects.get(fooditem=user.diets.lunch)
+        elif user.diets.snacks == fooditem:
+            obj = foodplan.objects.get(fooditem=user.diets.snacks)
+        else:
+            obj = foodplan.objects.get(fooditem=user.diets.dinner)
+        parms = {
+            'obj':obj,
+            'title':title,
+        }
+        return render(request,'fooddetail.html',parms)
+    parms = {
+        'title':title,
+    }
+    return render(request,'fooddetail.html',parms)
