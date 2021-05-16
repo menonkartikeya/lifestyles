@@ -32,7 +32,7 @@
                 <button class="btn btn-white bu col-12 nm shadow" type="submit">
                     <div class="d-flex flex-row ">
                         <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
-                        <a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
+                        <a href="{% url 'eprofile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
                     </div>
                 </button>
                 <br />
@@ -84,52 +84,16 @@
                     </div>
                 </div>
                 <div class="col-lg-12 p-5 shadow  you">
-                    <h1>Update Details</h1>
-                    <form method="POST">
-                        {%csrf_token%}
-                        <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-2 col-form-label">Mobile Number</label>
-                          <div class="col-sm-10">
-                            <input type="number" name="mobno" class="form-control" id="inputEmail3" value="{{user.mobno}}">
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label for="inputPassword3" class="col-sm-2 col-form-label">Target:</label>
-                          <div class="col-sm-10">
-                            <select name="target" id="inputPassword3">
-                                <option value="Gain Weight">Gain Weight</option>
-                                <option value="Stay Fit">Stay Fit</option>
-                                <option value="Loose Weight">Loose Weight</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputpl3" class="col-sm-2 col-form-label">Playlist Link</label>
-                            <div class="col-sm-10">
-                              <input type="url" name="playlist" class="form-control" id="inputpl3" value="{{user.playlist}}">
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputage" class="col-sm-2 col-form-label">Age</label>
-                            <div class="col-sm-10">
-                              <input type="number" name="age" class="form-control" id="inputage" value="{{user.age}}">
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Want to Change Dietician?</label>
-                            <div class="col-sm-10">
-                              <select name="check" id="inputcheck">
-                                  <option value="no">No</option>
-                                  <option value="yes">Yes</option>
-                              </select>
-                            </div>
-                          </div>
-                        <div class="form-group row">
-                          <div class="col-sm-10">
-                            <button type="submit" class="btn btn-primary">Update</button>
-                          </div>
-                        </div>
-                      </form>
+                    <h1>Your Details</h1>
+                    <br>
+                    <h4>Gender: {{emp.gender}}</h4>
+                    <br>
+                    <h4>Mobile Number: {{emp.mobno}}</h4>
+                    <br>
+                    <h4>Type: {{emp.employeetype}}</h4>
+                    <br>
+                    <a href="{{emp.certificate}}"><button class="btn btn-primary">Certificate</button></a>
+                    <a href="{{emp.resume}}"><button class="btn btn-primary p-2">Resume</button></a>
                 </div>
             </div>
 

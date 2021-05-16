@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+  {% block body %}
+  {% load static %}
+<h2>Target: {{target.username}}</h2>
+{% if freepeeps is null %}
+<h2>No Free Dietician/Nutritionist Available</h2>
+{%else%}
+<form action="" method="post">
+    {%csrf_token%}
+    <select name="diet" id="">
+        {% for peep in freepeeps%}
+        <option value="{{peep.id}}">{{peep.id}}</option>
+        {%endfor%}
+    </select>
+    <input type="submit" value="Allocate">
+</form>
+{%endif%}
+  {% endblock body %}

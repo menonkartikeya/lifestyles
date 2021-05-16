@@ -16,6 +16,8 @@ emptype = (
     ('Nutritionist','Nutritionist'),
     ('Dietician','Dietician'),
     ('employee','employee'),
+    ('trainee','trainee'),
+    ('finance','finance'),
 )
 gen = (
     ('Male','Male'),
@@ -110,6 +112,7 @@ class MyUser(AbstractUser):
     lives = models.ManyToManyField(live,blank=True)
     log = models.ManyToManyField(logs,blank=True)
     age = models.IntegerField(blank=True,null=True)
+    allot = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
@@ -123,6 +126,7 @@ class contact(models.Model):
     bookcall = models.BooleanField(null=True,blank=True)
     bookapp = models.BooleanField(null=True,blank=True)
     message = models.CharField(max_length=500)
+    check = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email
@@ -183,3 +187,16 @@ class bmi(models.Model):
 
     class Meta:
         verbose_name_plural = "BMI INDEX"
+
+class bmr(models.Model):
+    us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+    bmr = models.FloatField(default=0.0)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        obj = MyUser.objects.get(id=self.us.id)
+        obj1 = "Username - "+obj.username+" Date: "+str(self.date)
+        return obj1
+
+    class Meta:
+        verbose_name_plural = "BMR INDEX"

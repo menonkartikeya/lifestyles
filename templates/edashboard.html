@@ -1,68 +1,146 @@
 {% extends 'base.html' %}
   {% block body %}
   {% load static %}
-    <div class="d-flex flex-row">
-        <div class="col-lg-3 shadow back1234 p-4">
-            <div class="h col-12">
-                <img class="ij1" src="https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-users-icon-png-image_4144740.jpg" alt="" />
-                <h1 class="nm">{{user.username}}</h1>
-            </div>
-            <hr />
-            <button class="btn btn-white bu col-12 nm" type="submit">
-                <div class="d-flex flex-row ">
-                    <img class="lll" src="https://cdn1.iconfinder.com/data/icons/webina-seo-development-and-marketing/128/seo_web-62-512.png" alt="" />
-                    <h4 class="ml-3">E-Dashboard</h4>
-                </div>
-            </button>
-            <br />
-            <br />
-            <button class="btn btn-white bu col-12 nm" type="submit">
-                <div class="d-flex flex-row ">
-                    <img class="lll" src="https://www.shareicon.net/data/2015/10/03/111427_write_512x512.png" alt="" />
-                    <h4 class="ml-3">Live</h4>
-                </div>
-            </button>
-            <br />
-            <br />
-            <button class="btn btn-white bu col-12 nm" type="submit">
-                <div class="d-flex flex-row ">
-                    <img class="lll" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" />
-                    <h4 class="ml-3">Logout</h4>
-                </div>
-            </button>
+  <div class="d-flex flex-row">
+    <div class="col-lg-3  back1234 p-4 ">
+        <div class="h col-12">
+            <img class="ij1" src="https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-users-icon-png-image_4144740.jpg" alt="" />
+            <h1 class="nm">{{user.username}}</h1>
         </div>
-        <div class="back12 col-lg-9">
-            <div class="col-lg-12 p-5">
-                <h1 class="nm">Welcome {{user.username}},</h1>
+        <hr class="rule" />
+        <button class="btn btn-white bu col-12 nm" type="submit">
+            <div class="d-flex flex-row ">
+                <img class="lll" src="https://cdn1.iconfinder.com/data/icons/webina-seo-development-and-marketing/128/seo_web-62-512.png" alt="" />
+                <a href="{% url 'dashboard' %}"><h4 class="ml-3">Dashboard</h4></a>
             </div>
-            {% for allot in alloted %}
-            <div class="col-lg-12  ">
-                <div class="op p-4 shadow bg-light">
-                    <h1 class="nm">Alloted User: {{employee.allot.username}}</h1>
+        </button>
+        <br />
+        <br />
+        <button class="btn btn-white bu col-12 nm" type="submit">
+            <div class="d-flex flex-row ">
+                <img class="lll" src="https://www.shareicon.net/data/2015/10/03/111427_write_512x512.png" alt="" />
+                <a href="{% url 'eprofile' user.id %}"><h4 class="ml-3">Profile</h4></a>
+            </div>
+        </button>
+        <br />
+        <br />
+        <button class="btn btn-white bu col-12 nm" type="submit">
+            <div class="d-flex flex-row ">
+                <img class="lll" src="https://cdn1.iconfinder.com/data/icons/network-and-comminications-flat-circle-shadow-vo-1/120/content__blog__media__articles__news__management__edit-512.png" alt="" />
+                <a href="{% url 'invoices' %}"><h4 class="ml-3">Bills</h4></a>
+            </div>
+        </button>
+        <br />
+        <br />
+        <button class="btn btn-white bu col-12 nm" type="submit">
+            <div class="d-flex flex-row ">
+                <img class="lll" src="https://image.flaticon.com/icons/png/512/1076/1076323.png" alt="" />
+                <a href="{% url 'lives' %}"><h4 class="ml-3">Appointments</h4></a>
+            </div>
+        </button>
+        <br />
+        <br />
+
+        <button class="btn btn-wFood Planshite bu col-12 nm" type="submit">
+            <div class="d-flex flex-row ">
+                <img class="lll" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" />
+                <a href="{% url 'logoutme' %}"><h4 class="ml-3">Logout</h4></a>
+            </div>
+        </button>
+        <div class="mar1">
+            <hr class="rule" />
+            <p class="">Copyright &copy; KOWI LIFESTYLES</p>
+        </div>
+
+
+    </div>
+    <div class="back12 col-lg-9">
+        <div class="col-lg-12 p-5">
+            <div class="d-flex flex-row">
+                <h1 class="nm">Welcome {{user.username}}</h1>
+                <div class="mar">
+                    <a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
+                    <a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
                 </div>
             </div>
-            {%endfor%}
-            <div class="col-lg-12 mt-4  ">
-                <div class="op p-4 shadow bg-light">
-                    <h1 class="nm">Your Gender: {{employee.gender}}</h1>
-                </div>
+        </div>
+        <div class="d-flex flex-row">
+            <div class="col-5 op p-5 col123 shadow fony">
+                <h1>List Of Users Unallocated</h1>
+                <ul class="list-group">
+                    {%for un in unal %}
+                    <a href="{% url 'allocate' un.id %}"><li class="list-group-item list-group-item-primary">
+                        {{un.username}}
+                    </li></a>
+                    {%endfor%}
+                </ul>
+                <!-- Button trigger modal -->
             </div>
-            <div class="col-lg-12 mt-4  ">
-                <div class="op p-4 shadow bg-light">
-                    <h1 class="nm">Resume Link: {{employee.resume}}</h1>
-                </div>
+
+            <div class="col-3 op  p-5 shadow col1234 ml-4 fony">
+                <h3>Your Subscription:</h3>
+                <h5><b>{{sub.plan}}</b></h5>
+                <a href="{% url 'subs' %}"> <button class="btn btn-warning btn-small">View</button></a>
             </div>
-            <div class="col-lg-12 mt-4  ">
-                <div class="op p-4 shadow bg-light">
-                    <h1 class="nm">Certificate Link: {{employee.certificate}}</h1>
-                </div>
+            <div class="col-3 op col12345  p-5 shadow ml-4 ">
+                <h1><b>Target:</b></h1>
+                <h5>{{user.target}}</h5>
+                <a href="{% url 'growth' %}"> <button class="btn btn-success btn-small">Check Growth</button></a>
             </div>
-            <div class="col-lg-12 mt-4  ">
-                <div class="op p-4 shadow bg-light">
-                    <h1 class="nm">Mobile Number: {{employee.mobno}}</h1>
-                </div>
+        </div>
+        <br />
+
+        <div class="d-flex flex-row mb-3">
+            <div class="col-4 op col123 p-5 shadow fony">
+                <h1>Free Dietician and Nutritionist</h1>
+                {% if freepeeps is null %}
+                <p>Nobody is free, Hold On!</p>
+                {%else%}
+                <ul class="list-group my-2">
+                    {%for peep in freepeeps %}
+                    <li class="list-group-item list-group-item-primary">{{peep.id}}</li>
+                    {%endfor%}
+                </ul>
+                {%endif%}
             </div>
-            
+            <div class="d-flex flex-column col-4">
+                <div class="col-12 op col1234 p-5 shadow ml-4 fony ">
+                    <h3>Live Appointments</h3>
+                    {% if flag is True %}
+                    <p>No Appointments</p>
+                    <a href="{% url 'live' %}"> <button class="btn btn-primary btn-small">Create Now</button></a>
+                    {%else%}
+                    <ul class="list-group my-2">
+                        {%for link in meet%}
+                        <li class="list-group-item list-group-item-primary">
+                            Time: {{link.slottime}} <span>
+                            Date: {{link.date}}</span>
+                            <a href="{{link.link}}"><button class="btn btn-primary btn-small">Link</button></a>
+                        </li>
+                        {%endfor%}
+                    </ul>
+                    {%endif%}
+                </div>
+
+                <div class="col-12 op col12345  p-5 shadow ml-4 y mt-4">
+                    <h4><b>Note From Dietician:</b></h4>
+                    <p>{{user.diets.remarks}}</p>
+                </div>
+
+            </div>
+
+
+            <div class="col-3 op col1234  p-5 shadow ml-5 fony ">
+                <h2>User Contacted:</h2>
+                <ul class="list-group my-2">
+                   {%for contact in contacted%}
+                   <a href="{% url 'contid' contact.id  %}"><li class="list-group-item list-group-item-primary">{{contact.email}}</li></a>
+                   {% empty %}
+                   <p>No New Contacts</p>
+                   {%endfor%}
+                </ul>
+            </div>
         </div>
     </div>
+</div>
     {% endblock body %}

@@ -19,7 +19,7 @@
         <button class="btn btn-white bu col-12 nm" type="submit">
             <div class="d-flex flex-row ">
                 <img class="lll" src="https://www.shareicon.net/data/2015/10/03/111427_write_512x512.png" alt="" />
-                <a href="{% url 'profile' %}"><h4 class="ml-3">Profile</h4></a>
+                <a href="{% url 'profile' user.id %}"><h4 class="ml-3">Profile</h4></a>
             </div>
         </button>
         <br />
@@ -35,7 +35,7 @@
         <button class="btn btn-white bu col-12 nm" type="submit">
             <div class="d-flex flex-row ">
                 <img class="lll" src="https://image.flaticon.com/icons/png/512/1076/1076323.png" alt="" />
-                <a href="{% url 'invoices' %}"><h4 class="ml-3">Live</h4></a>
+                <a href="{% url 'lives' %}"><h4 class="ml-3">Live</h4></a>
             </div>
         </button>
         <br />
@@ -132,7 +132,7 @@
                 </div>
 
                 <div class="col-12 op col12345  p-5 shadow ml-4 y mt-4">
-                    <h4><b>Note From Dietician:</b></h4>
+                    <h4><b>Note From {{emp.id}}:</b></h4>
                     <p>{{user.diets.remarks}}</p>
                 </div>
 

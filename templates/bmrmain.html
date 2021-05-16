@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+  {% block body %}
+  {% load static %}
+  <div class="my-3 p-2">
+      {% if usertype == none %}
+      <h1>Welcome,</h1>
+      {% else %}
+      <h1>Welcome, {{usertype}}</h1>
+      {%endif%}
+  </div>
+
+<div class="container">
+  <div class="form-row">
+    <!-#########################Col1###############-->
+    <div class="col-md-6 col-sm-12 col-xs-12">
+      <div class="tab-bmi">
+        <h3>Bmr Calculator</h3>
+        <div class="tab">
+          <button  class="tablinks" onclick="openUnit(event, 'metric')">Metric</button>
+          <button  class="tablinks" onclick="openUnit(event, 'imperial')">Imperial</button>
+        </div>
+
+        <div class="tabcontent" id="metric">
+           <form method="post">
+             {% csrf_token %}
+             <div class="col-12">
+               <label for="">Weight: </label>
+               <input type="text" name="weight-metric" class="form-control" required placeholder="kg">
+             </div>
+             
+
+             <div class="col-12">
+               <label for="">Height: </label>
+               <input type="text" name="height-metric" class="form-control" required placeholder="m">
+             </div>
+             
+             <div class="col-12">
+                <label for="">Age(in years): </label>
+                <input type="int" name="age-metric" class="form-control" required placeholder="years">
+              </div>
+
+              <div class="col-12">
+                <label for="">Gender: </label>
+                <input type="char" name="gender-metric" class="form-control" required placeholder="male/female">
+              </div>
+
+             <div class="form-check my-5">
+               <input class="form-check-input" checked="checked" name="save" value="on" type="checkbox">
+               <label for="" class="form-check-label">Save It.
+                 <a href="#" title="Why to save it?" data-toggle="popover" data-trigger="focus"
+         data-content="In case you want to track your weight, you can save it.(login required)">?</a>
+       </label>
+             </div>
+
+
+
+
+             <button type="submit" class="btn btn-primary" action="{% url 'bmrcal' %}">Calculate</button>
+
+           </form>
+        </div>
+
+        <div class="tabcontent" id="imperial">
+          <form method="post">
+            {% csrf_token %}
+            <div class="col-12">
+              <label for="">Weight: </label>
+              <input type="text" name="weight-imperial" class="form-control" required placeholder="lbs">
+            </div>
+
+            <div class="col-12">
+              <label for="">Height: </label>
+              <div class="input-group">
+                <input type="text" name="feet" placeholder="feet" class="form-control">
+                <input type="text" name="inches" placeholder="inches" class="form-control">
+              </div>
+            </div>
+             
+            <div class="col-12">
+            <label for="">Age(in years): </label>
+              <input type="int" name="age-imperial" class="form-control" required placeholder="years">
+            </div>
+
+            <div class="col-12">
+            <label for="">Gender: </label>
+              <input type="text" name="gender-imperial" class="form-control" required placeholder="male/female">
+            </div>
+
+            {% if user.is_authenticated %}
+            <div class="form-check my-5">
+              <input class="form-check-input" checked="checked" name="save" value="on" type="checkbox">
+              <label for="" class="form-check-label">Save It.
+                <a href="#" title="Why to save it?" data-toggle="popover" data-trigger="focus"
+        data-content="In case you want to track your weight, you can save it.(login required)">?</a>
+      </label>
+            </div>
+            {% else %}
+            <div class="form-check my-5">
+              <input disabled class="form-check-input" checked="checked" name="save" value="on" type="checkbox">
+              <label for="" class="form-check-label">Save It.
+                <a href="#" title="Why to save it?" data-toggle="popover" data-trigger="focus"
+        data-content="In case you want to track your weight, you can save it.(login required)">?</a>
+      </label>
+            </div>
+            {% endif %}
+
+
+
+            <button type="submit" class="btn btn-primary" action="{% url 'bmrcal' %}">Calculate</button>
+
+          </form>
+        </div>
+
+
+      </div>
+
+
+    <!-#########################Col2###############-->
+
+
+    </div>
+
+
+
+      {% if bmr %}
+    <div class="col-md-6 col-sm-12 col-xs-12">
+      <h2>Result</h2>
+      <p>Your BMR = {{bmr}} Kcal/day </p>
+     
+        
+        
+        
+        
+      
+    </div>
+    {% endif %}
+  </div>
+
+  {{ div | safe }}
+</div>
+
+  {% endblock body %}
+  

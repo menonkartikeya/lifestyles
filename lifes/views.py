@@ -24,6 +24,7 @@ from django.db.models.query import EmptyQuerySet
 from bokeh.plotting import figure
 from bokeh.embed import components
 from bokeh.models import HoverTool, LassoSelectTool, WheelZoomTool, PointDrawTool, ColumnDataSource
+from django.db.models import Count
 # Create your views here.
 
 
@@ -31,61 +32,10 @@ def index(request):
     headtitle = "Life Styles | Home"
     user = request.user
     usertype = None
-    bmii =0.0
-    state = ""
-    script = None
-    div = None
-    if user.is_authenticated:
-        objs = bmi.objects.filter(us=user)
-        x = []
-        y = []
-        for obj in objs:
-            x.append(obj.bmi)
-            y.append(obj.date)
-        title = 'BMI Graph'
-
-        plot = figure(title= title , 
-            x_axis_label= 'X-Axis', 
-            y_axis_label= 'Y-Axis', 
-            plot_width =400,
-            plot_height =400)
-
-        plot.line(x, y, legend= 'f(x)', line_width = 2)
-        #Store components 
-        script, div = components(plot)
-        if user.is_staff == True:
-            emp = employeecontrol.objects.get(id=user)
-            usertype = emp.employeetype
-        if request.method=="POST":
-            weight_metric = request.POST.get("weight-metric")
-            weight_imperial = request.POST.get("weight-imperial")
-
-            if weight_metric:
-                weight = float(request.POST.get("weight-metric"))
-                height = float(request.POST.get("height-metric"))
-            elif weight_imperial:
-                weight = float(request.POST.get("weight-imperial"))/2.205
-                height = (float(request.POST.get("feet"))*30.48 + float(request.POST.get("inches"))*2.54)/100
-            cont = []
-            cont = bmicalc(weight,height)
-            bmii = cont[1]
-            state = cont[0]
-            save = request.POST.get("save")
-            if save == "on":
-                user = request.user
-                bmi.objects.create(us=user,bmi=round(bmii),date=datetime.date.today())
-                user.weight = weight
-                user.height = height
-                user.save()
     parms = {
         'title':headtitle,
         'usertype':usertype,
-        'bmi':bmii,
-        'state':state,
-        'script':script,
-        'div':div,
     }
-
     return render(request,'index.html',parms)
 
 def bmicalc(weight,height):
@@ -118,6 +68,7 @@ def dashboard(request):
     if user.is_authenticated and user.is_staff == False:
         sub = subplans.objects.get(allot=user)
         bmii = bmi.objects.filter(us=user).order_by('-id')[:1]
+        findemp = employeecontrol.objects.get(alloted=user)
         tmp = []
         for i in bmii:
             tmp.append(i.bmi)
@@ -140,6 +91,7 @@ def dashboard(request):
                 'grolist':grolist,
                 'meet':meet,
                 'flag':flag,
+                'emp':findemp,
             }
         else:
             parms = {
@@ -149,6 +101,7 @@ def dashboard(request):
                 'grolist':grolist,
                 'meet':meet,
                 'flag':flag,
+                'emp':findemp,
             }
         return render(request,'dashboard.html',parms)
     else:
@@ -300,7 +253,26 @@ def edashboard(request):
     if user.is_authenticated and user.is_staff == True and user.is_active == True:
         try:
             employee = employeecontrol.objects.get(id=user)
-            return render(request,'edashboard.html',{'title':title,'employee':employee})
+            users = MyUser.objects.all()[:5]
+            unal = []
+            for us in users:
+                if us.is_staff == False and us.allot == False:
+                    unal.append(us)
+            totpeeps = employeecontrol.objects.filter(Q(employeetype="Dietician") | Q(employeetype="Nutritionist"))[:5]
+            freepeeps = []
+            for peep in totpeeps:
+                counter = peep.alloted.count()
+                if counter <= 25:
+                    freepeeps.append(peep)
+            contacted = contact.objects.filter(check=False)
+            parms = {
+                'title':title,
+                'employee':employee,
+                'unal':unal,
+                'freepeeps':freepeeps,
+                'contacted':contacted[:5],
+                }
+            return render(request,'edashboard.html',parms)
         except ObjectDoesNotExist:
             messages.error(request,'Not Authorized!')
             return redirect(elogin)
@@ -309,12 +281,40 @@ def edashboard(request):
         return redirect('elogin')
     return render(request,'edashboard.html',{'title':title})
 
-def profile(request):
+def profile(request,id):
     title = "Profile | Lifestyles"
+    user = request.user
+    if user.is_authenticated:
+        if user.id == id or user.is_staff == True:
+            if user.is_active == True:
+                if request.method == 'POST':
+                    user.mobno = request.POST['mobno']
+                    user.target = request.POST['target']
+                    user.playlist = request.POST['playlist']
+                    user.age = request.POST['age']
+                    check = request.POST['check']
+                    if check == "yes":
+                        user.allot = False
+                        findemp = employeecontrol.objects.get(alloted=user)
+                        findemp.alloted.remove(user)
+                    user.save()
+                    messages.success(request,"Changes Saved")
+                    return redirect('dashboard')
     parms = {
         'title':title,
     }
     return render(request,'profile.html', parms)
+
+def eprofile(request,id):
+    title = "E-Profile | Lifestyles"
+    user = request.user
+    if user.is_authenticated and user.id == id and user.is_staff == True and user.is_active == True:
+        findemp = employeecontrol.objects.get(id=user)
+    parms = {
+        'title':title,
+        'emp':findemp,
+    }
+    return render(request,'eprofile.html', parms)
 
 def invoices(request):
     title = "Invoices | Lifestyles"
@@ -331,11 +331,62 @@ def lives(request):
     return render(request,'live.html',parms)
 
 def bmic(request):
-    title = "BMI | Lifestyles"
+    headtitle = "BMI | Lifestyles"
+    bmii =0.0
+    state = ""
+    script = None
+    div = None
+    user = request.user
+    if user.is_authenticated:
+        objs = bmi.objects.filter(us=user)
+        x = []
+        y = []
+        for obj in objs:
+            x.append(obj.bmi)
+            y.append(obj.date)
+        title = 'BMI Graph'
+
+        plot = figure(title= title , 
+            x_axis_label= 'X-Axis', 
+            y_axis_label= 'Y-Axis', 
+            plot_width =400,
+            plot_height =400)
+
+        plot.line(x, y, legend= 'f(x)', line_width = 2)
+        #Store components 
+        script, div = components(plot)
+        if user.is_staff == True:
+            emp = employeecontrol.objects.get(id=user)
+            usertype = emp.employeetype
+        if request.method=="POST":
+            weight_metric = request.POST.get("weight-metric")
+            weight_imperial = request.POST.get("weight-imperial")
+
+            if weight_metric:
+                weight = float(request.POST.get("weight-metric"))
+                height = float(request.POST.get("height-metric"))
+            elif weight_imperial:
+                weight = float(request.POST.get("weight-imperial"))/2.205
+                height = (float(request.POST.get("feet"))*30.48 + float(request.POST.get("inches"))*2.54)/100
+            cont = []
+            cont = bmicalc(weight,height)
+            bmii = cont[1]
+            state = cont[0]
+            save = request.POST.get("save")
+            if save == "on":
+                user = request.user
+                bmi.objects.create(us=user,bmi=round(bmii),date=datetime.date.today())
+                user.weight = weight
+                user.height = height
+                user.save()
     parms = {
-        'title':title,
+        'title':headtitle,
+        'bmi':bmii,
+        'state':state,
+        'script':script,
+        'div':div,
     }
-    return render(request,'bmic.html',parms)
+    return render(request,'bmi.html',parms)
 
 def subs(request):
     title = "Subs Plan | Lifestyles"
@@ -379,3 +430,174 @@ def fooddetail(request,fooditem):
         'title':title,
     }
     return render(request,'fooddetail.html',parms)
+
+
+def allocate(request,id):
+    title = "Allocate | Lifestyles"
+    user = request.user
+    if user.is_authenticated and user.is_staff == True and user.is_active == True:
+        target = MyUser.objects.get(id=id)
+        totpeeps = employeecontrol.objects.filter(Q(employeetype="Dietician") | Q(employeetype="Nutritionist"))
+        freepeeps = []
+        for peep in totpeeps:
+            counter = peep.alloted.count()
+            if counter <= 25:
+                freepeeps.append(peep)
+        if request.method == 'POST':
+            diet = request.POST['diet']
+            for peep in freepeeps:
+                tmp = str(peep.id)
+                if tmp == diet:
+                    getuser = employeecontrol.objects.get(id=peep.id)
+                    print(getuser)
+                    getuser.alloted.add(id)
+                    target.allot = True
+                    target.save()
+                    messages.success(request,"Success")
+                    return redirect(unalo)
+                    break
+    else:
+        messages.error(request,"Not Authorized!")
+    parms = {
+            'title':title,
+            'target':target,
+            'freepeeps':freepeeps,
+        } 
+    return render(request, 'allocate.html',parms)
+
+def contactus(request):
+    title = "Contact | Lifestyles"
+    parms = {
+        "title":title,
+    }
+    return render(request,'contact.html',parms)
+
+
+def contactchecker(request):
+    title = "Check Contact | Lifestyles"
+    user = request.user
+    if user.is_authenticated and user.is_staff == True and user.is_active == True:
+        contacts = contact.objects.filter(check=False)
+    else:
+        messages.error(request,"Not Authorized")
+    parms = {
+        "title":title,
+        'contacts':contacts,
+    }
+    return render(request,'contactchecker.html',parms)
+
+def contid(request,id):
+    title = "Check Contact | Lifestyles"
+    user = request.user
+    if user.is_authenticated and user.is_staff == True and user.is_active == True:
+        cont = contact.objects.get(id=id)
+        if request.method == "POST":
+            cont.check = True
+            cont.save()
+            messages.success(request,"Checked")
+            return redirect(contactchecker)
+    else:
+        messages.error(request,"Not Authorized")
+    parms = {
+        "title":title,
+        'cont':cont,
+    }
+    return render(request,'contid.html',parms)
+
+def unalo(request):
+    title = "Unallocated Users and Free Dieticians"
+    user = request.user
+    if user.is_authenticated and user.is_staff == True and user.is_active == True:
+        users = MyUser.objects.all()
+        unal = []
+        for us in users:
+            if us.is_staff == False and us.allot == False:
+                unal.append(us)
+        totpeeps = employeecontrol.objects.filter(Q(employeetype="Dietician") | Q(employeetype="Nutritionist"))
+        freepeeps = []
+        for peep in totpeeps:
+            counter = peep.alloted.count()
+            if counter <= 25:
+                freepeeps.append(peep)
+    parms = {
+        "title":title,
+        'unal':unal,
+        'freepeeps':freepeeps,
+    }
+    return render(request,'unalo.html',parms)
+
+def bmrmain(weight,height,age,gender):
+    heightincm=height*100
+    if gender == 'male':
+        bmr=66.47+(13.75*weight)+(5.003*heightincm)-(6.755*age)
+    elif gender == 'female':
+        bmr=655.1+(9.563*weight)+(1.85*heightincm)-(4.676*age)
+    return bmr
+
+
+def bmrcal(request):
+    headtitle = "Life Styles | Bmr"
+    user = request.user
+    usertype = None
+    bmrr =0.0
+    
+    script = None
+    div = None
+    if user.is_authenticated:
+        objs = bmr.objects.filter(us=user)
+        x = []
+        y = []
+        for obj in objs:
+            x.append(obj.bmr)
+            y.append(obj.date)
+        title = 'BMR Graph'
+
+        plot = figure(title= title , 
+            x_axis_label= 'X-Axis', 
+            y_axis_label= 'Y-Axis', 
+            plot_width =400,
+            plot_height =400)
+
+        plot.line(x, y, legend= 'f(x)', line_width = 2)
+        #Store components 
+        script, div = components(plot)
+        if user.is_staff == True:
+            emp = employeecontrol.objects.get(id=user)
+            usertype = emp.employeetype
+        if request.method=="POST":
+            weight_metric = request.POST.get("weight-metric")
+            weight_imperial = request.POST.get("weight-imperial")
+
+            if weight_metric:
+                weight = float(request.POST.get("weight-metric"))
+                height = float(request.POST.get("height-metric"))
+                age = int(request.POST.get("age-metric"))
+                gender = str(request.POST.get("gender-metric"))
+            elif weight_imperial:
+                weight = float(request.POST.get("weight-imperial"))/2.205
+                height = (float(request.POST.get("feet"))*30.48 + float(request.POST.get("inches"))*2.54)/100
+                age = int(request.POST.get("age-imperial"))
+                gender = str(request.POST.get("gender-imperial"))
+
+            
+            cont = bmrmain(weight,height,age,gender)
+            bmrr = cont
+            
+            save = request.POST.get("save")
+            if save == "on":
+                user = request.user
+                bmr.objects.create(us=user,bmr=round(bmrr),date=datetime.date.today())
+                user.weight = weight
+                user.height = height
+                user.age = age
+                user.gender = gender
+                user.save()
+    parms = {
+        'title':headtitle,
+        'usertype':usertype,
+        'bmr':bmrr,
+        'script':script,
+        'div':div,
+    }
+
+    return render(request,'bmrmain.html',parms)

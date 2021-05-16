@@ -76,7 +76,7 @@ class MyUserAdmin(UserAdmin):
     model = MyUser
     list_display = ['username', 'mobno', 'gender','height','weight','target',]
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ( 'mobno', 'gender','height','weight','target','diets','playlist','bill','foodplans','lives','log','age')}),
+            (None, {'fields': ( 'mobno', 'gender','height','weight','target','diets','playlist','bill','foodplans','lives','log','age','allot')}),
     ) #this will allow to change these fields in admin module
 
 
@@ -86,3 +86,8 @@ class BmiAdmin(admin.ModelAdmin):
     list_per_page = 15
 
 admin.site.register(bmi, BmiAdmin)
+
+class BmrAdmin(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(bmr, BmrAdmin)
