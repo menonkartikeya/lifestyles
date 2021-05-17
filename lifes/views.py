@@ -402,10 +402,24 @@ def growth(request):
     }
     return render(request,'growth.html',parms)
 
-def grocery(request):
+def grocery(request,id):
     title = "Grocery | Lifestyles"
+    user = request.user
+    if user.is_authenticated and user.id == id:
+        try:
+            grocery = grocerylist.objects.get(id=id)
+            grolist = grocery.items.split(',')
+            if grocery.billitem.invoicepdf:
+                check = True
+            else:
+                check = False
+        except ObjectDoesNotExist:
+            return render(request,'404.html')
     parms = {
         'title':title,
+        'grolist':grolist,
+        'grocery':grocery,
+        'check':check,
     }
     return render(request,'grocery.html',parms)
 

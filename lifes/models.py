@@ -66,7 +66,7 @@ class dietplan(models.Model):
 
 
 class bills(models.Model):
-    invoicepdf = models.FileField()
+    invoicepdf = models.FileField(null=True,blank=True)
     name = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
 
@@ -154,7 +154,7 @@ class grocerylist(models.Model):
     id = models.OneToOneField(MyUser,on_delete=models.CASCADE,primary_key=True)
     items = models.CharField(max_length=1000)
     address = models.CharField(max_length=500)
-    billitem = models.OneToOneField(bills,on_delete=models.CASCADE)
+    billitem = models.OneToOneField(bills,on_delete=models.CASCADE,null=True,blank=True)
 
     def name(self):
         obj = MyUser.objects.get(id=self.id.id)
