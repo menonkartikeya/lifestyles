@@ -35,7 +35,7 @@
         <button class="btn btn-white bu col-12 nm" type="submit">
             <div class="d-flex flex-row ">
                 <img class="lll" src="https://image.flaticon.com/icons/png/512/1076/1076323.png" alt="" />
-                <a href="{% url 'lives' %}"><h4 class="ml-3">Appointments</h4></a>
+                <a href="{% url 'book' %}"><h4 class="ml-3">Checkup On Users</h4></a>
             </div>
         </button>
         <br />
@@ -108,14 +108,14 @@
                     <h3>Live Appointments</h3>
                     {% if flag is True %}
                     <p>No Appointments</p>
-                    <a href="{% url 'live' %}"> <button class="btn btn-primary btn-small">Create Now</button></a>
+                    <a href="{% url 'lives' %}"> <button class="btn btn-primary btn-small">Create Now</button></a>
                     {%else%}
                     <ul class="list-group my-2">
-                        {%for link in meet%}
+                        {%for link in lives %}
                         <li class="list-group-item list-group-item-primary">
                             Time: {{link.slottime}} <span>
                             Date: {{link.date}}</span>
-                            <a href="{{link.link}}"><button class="btn btn-primary btn-small">Link</button></a>
+                            <a href="{% url 'lives' %}"><button class="btn btn-primary btn-small">Link</button></a>
                         </li>
                         {%endfor%}
                     </ul>

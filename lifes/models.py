@@ -80,14 +80,13 @@ class bills(models.Model):
 class live(models.Model):
     slottime = models.TimeField()
     date = models.DateField()
-    link = models.URLField()
 
     def name(self):
         obj = MyUser.objects.get(lives=self.id)
         return obj.username
 
     class Meta:
-        verbose_name_plural = "Check Live Meeting Links!"
+        verbose_name_plural = "Check Live Meetings!"
 
 class logs(models.Model):
     question = models.CharField(max_length=100)

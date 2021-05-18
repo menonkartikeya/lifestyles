@@ -25,6 +25,7 @@ from bokeh.plotting import figure
 from bokeh.embed import components
 from bokeh.models import HoverTool, LassoSelectTool, WheelZoomTool, PointDrawTool, ColumnDataSource
 from django.db.models import Count
+from django.http import JsonResponse
 # Create your views here.
 
 
@@ -254,6 +255,7 @@ def edashboard(request):
         try:
             employee = employeecontrol.objects.get(id=user)
             users = MyUser.objects.all()[:5]
+            lives = user.lives.all()
             unal = []
             for us in users:
                 if us.is_staff == False and us.allot == False:
@@ -271,6 +273,7 @@ def edashboard(request):
                 'unal':unal,
                 'freepeeps':freepeeps,
                 'contacted':contacted[:5],
+                'lives':lives,
                 }
             return render(request,'edashboard.html',parms)
         except ObjectDoesNotExist:
@@ -325,10 +328,68 @@ def invoices(request):
 
 def lives(request):
     title = "Live | Lifestyles"
+    user = request.user
+    if user.is_authenticated:
+        if user.is_staff == False:
+            findemp = employeecontrol.objects.get(alloted=user)
+            dietician = MyUser.objects.get(username=findemp.id)
+            allot = findemp.alloted.all()
+        else:
+            dietician = "xwx"
+        if dietician == "xwx":
+            tmp = "xwx"
+            findemp = employeecontrol.objects.get(id=user)
+            allot = findemp.alloted.all()
+        else:
+            tmp = dietician.username
     parms = {
         'title':title,
+        'tmp':tmp,
+        'allot':allot,
     }
     return render(request,'live.html',parms)
+
+def book(request):
+    title = "Book Appointment | Lifestyles"
+    user = request.user
+    if user.is_authenticated:
+        if user.is_staff == True and user.is_active == True:
+            flag = True
+            findemp = employeecontrol.objects.get(id=user)
+            allot = findemp.alloted.all()
+            if findemp.employeetype == "Nutritionist" or findemp.employeetype == "Dietician" or findemp.employeetype == "trainee":
+                if request.method == 'POST':
+                    userid = request.POST['userid']
+                    slottime = request.POST['slottime']
+                    date = request.POST['date']
+                    obj = live.objects.create(id=userid,slottime=slottime,date=date)
+                    conf = MyUser.objects.get(id=userid)
+                    conf.lives.add(obj.id)
+                    user.lives.add(obj.id)
+                    messages.success(request,"Success")
+                    return redirect(edashboard)
+        elif user.is_staff == False:
+            flag = False
+            findemp = employeecontrol.objects.get(alloted=user)
+            allot = findemp.alloted.all()
+            getus = MyUser.objects.get(username=findemp.id)
+            if request.method == "POST":
+                slottime = request.POST['slottime']
+                date = request.POST['date']
+                obj = live.objects.create(slottime=slottime,date=date)
+                user.lives.add(obj.id)
+                getus.lives.add(obj.id)
+                messages.success(request,"Success")
+                return redirect(dashboard)
+    else:
+        return redirect(login)
+    parms = {
+        "title":title,
+        'flag':flag,
+        'allot':allot,
+    }
+
+    return render(request,'book.html',parms)
 
 def bmic(request):
     headtitle = "BMI | Lifestyles"

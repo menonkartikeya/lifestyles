@@ -35,6 +35,7 @@ urlpatterns = [
     path('contactchecker/',contactchecker,name="contactchecker"),
     path('contid/<int:id>/',contid,name="contid"),
     path('lives/',lives,name="lives"),
+    path('book/',book,name="book"),
     path('bmic/',bmic,name="bmic"),
     path('bmrcal/',bmrcal,name="bmrcal"),
     path('subs/',subs,name="subs"),
