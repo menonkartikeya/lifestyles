@@ -16,7 +16,7 @@ emptype = (
     ('Nutritionist','Nutritionist'),
     ('Dietician','Dietician'),
     ('employee','employee'),
-    ('trainee','trainee'),
+    ('Fitness Trainer','Fitness Trainer'),
     ('finance','finance'),
 )
 gen = (
@@ -24,9 +24,19 @@ gen = (
     ('Female','Female'),
     ('Prefer not to say','Prefer not to say'),
 )
+sizes = (
+    ("piece","piece"),
+    ("slice","slice"),
+    ("Katori","Katori"),
+    ("g","g"),
+    ("oz","oz"),
+    ("cup","cup"),
+    ("serving","serving"),
+    ("mg","mg"),
+)
 
 class food(models.Model):
-    pic = models.ImageField()
+    pic = models.URLField()
     name = models.CharField(max_length=100)
     stuff = models.CharField(max_length=10000)
     calories = models.IntegerField(default=0)
@@ -34,6 +44,7 @@ class food(models.Model):
     fat = models.IntegerField(default=0)
     carbs = models.IntegerField(default=0)
     fiber = models.IntegerField(default=0)
+    unit = models.CharField(choices=sizes,max_length=100)
 
     def __str__(self):
         return self.name
@@ -43,7 +54,6 @@ class food(models.Model):
 
 
 class foodplan(models.Model):
-    video = models.URLField()
     textrecipe = models.CharField(max_length=10000)
     fooditem = models.OneToOneField(food,on_delete=models.CASCADE,primary_key=True)
 
@@ -55,10 +65,11 @@ class foodplan(models.Model):
         verbose_name_plural = "Manage Food Plans!"
 
 class dietplan(models.Model):
-    breakfast = models.ForeignKey(foodplan,on_delete=models.CASCADE,related_name="Breakfast")
-    lunch = models.ForeignKey(foodplan,on_delete=models.CASCADE,related_name="Lunch")
-    snacks = models.ForeignKey(foodplan,on_delete=models.CASCADE,related_name="Snacks")
-    dinner = models.ForeignKey(foodplan,on_delete=models.CASCADE,related_name="Dinner")
+    preworkout = models.ManyToManyField(foodplan,related_name="Pre_Workout")
+    postworkout = models.ManyToManyField(foodplan,related_name="Post_Workout")
+    lunch = models.ManyToManyField(foodplan,related_name="Lunch")
+    snacks = models.ManyToManyField(foodplan,related_name="Snacks")
+    dinner = models.ManyToManyField(foodplan,related_name="Dinner")
     remarks = models.CharField(max_length=1000,blank=True,null=True)
 
     class Meta:
@@ -88,15 +99,27 @@ class live(models.Model):
     class Meta:
         verbose_name_plural = "Check Live Meetings!"
 
-class logs(models.Model):
-    question = models.CharField(max_length=100)
-    answer = models.CharField(max_length=100)
+
+class subplans(models.Model):
+    plan = models.CharField(choices=types,max_length=100)
+    price = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.question
-
+        return self.plan
+    
     class Meta:
-        verbose_name_plural = "Log Questions!"
+        verbose_name_plural = "Subscription Plans!"
+
+class streak(models.Model):
+    points = models.IntegerField(default=0)
+    days = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.days
+    
+    class Meta:
+        verbose_name_plural = "Streaks!"
+
 
 class MyUser(AbstractUser):
     gender = models.CharField(choices=gen,max_length=50,blank=True,null=True)
@@ -105,19 +128,40 @@ class MyUser(AbstractUser):
     weight = models.FloatField(default=0.0,blank=True)
     target = models.CharField(choices=targets,max_length=60,blank=True,null=True)
     diets = models.ForeignKey(dietplan, on_delete=models.CASCADE,blank=True,null=True)
-    playlist = models.URLField(blank=True,null=True)
     bill = models.ManyToManyField(bills,blank=True)
     foodplans = models.ManyToManyField(foodplan,blank=True)
     lives = models.ManyToManyField(live,blank=True)
-    log = models.ManyToManyField(logs,blank=True)
     age = models.IntegerField(blank=True,null=True)
-    allot = models.BooleanField(default=False)
+    allotnutri = models.BooleanField(default=False)
+    allotdieti = models.BooleanField(default=False)
+    allottrain = models.BooleanField(default=False)
+    sub = models.OneToOneField(subplans,on_delete=models.CASCADE,blank=True,null=True)
+    streaks = models.ForeignKey(streak,on_delete=models.CASCADE,blank=True,null=True)
+    bio = models.CharField(max_length=5000)
+    location = models.CharField(max_length=100)
+    address = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.username
 
     class Meta:
         verbose_name_plural = "User Details!"
+
+class logs(models.Model):
+    us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+    preworkout = models.ManyToManyField(foodplan,blank=True,related_name="Pre_work")
+    postworkout = models.ManyToManyField(foodplan,blank=True,related_name="Post_work")
+    lunch = models.ManyToManyField(foodplan,blank=True,related_name="lunch")
+    snacks = models.ManyToManyField(foodplan,blank=True,related_name="snack")
+    dinner = models.ManyToManyField(foodplan,blank=True,related_name="dinner")
+    extra = models.ManyToManyField(foodplan,blank=True,related_name="Extra")
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.question
+
+    class Meta:
+        verbose_name_plural = "Log Meals!"
 
 class contact(models.Model):
     email = models.EmailField()
@@ -151,8 +195,7 @@ class employeecontrol(models.Model):
 
 class grocerylist(models.Model):
     id = models.OneToOneField(MyUser,on_delete=models.CASCADE,primary_key=True)
-    items = models.CharField(max_length=1000)
-    address = models.CharField(max_length=500)
+    items = models.ManyToManyField(food,blank=True)
     billitem = models.OneToOneField(bills,on_delete=models.CASCADE,null=True,blank=True)
 
     def name(self):
@@ -161,17 +204,6 @@ class grocerylist(models.Model):
 
     class Meta:
         verbose_name_plural = "Current Grocery Lists!"
-
-class subplans(models.Model):
-    allot = models.ManyToManyField(MyUser, blank=True, related_name="Alloted_Subs")
-    plan = models.CharField(choices=types,max_length=100)
-    price = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.plan
-    
-    class Meta:
-        verbose_name_plural = "Subscription Plans!"
 
 
 class bmi(models.Model):
@@ -191,6 +223,7 @@ class bmr(models.Model):
     us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
     bmr = models.FloatField(default=0.0)
     date = models.DateField(auto_now_add=True)
+    maintcalo = models.IntegerField(default=0)
 
     def __str__(self):
         obj = MyUser.objects.get(id=self.us.id)

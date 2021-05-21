@@ -55,8 +55,7 @@ admin.site.register(foodplan,foodplanadmin)
 
 class groadmin(admin.ModelAdmin):
     list_per_page = 15
-    list_display = ('name','address',)
-    search_fields = ('address',)
+    list_display = ('name',)
 
 admin.site.register(grocerylist,groadmin)
 
@@ -76,7 +75,7 @@ class MyUserAdmin(UserAdmin):
     model = MyUser
     list_display = ['username', 'mobno', 'gender','height','weight','target',]
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ( 'mobno', 'gender','height','weight','target','diets','playlist','bill','foodplans','lives','log','age','allot')}),
+            (None, {'fields': ('mobno', 'gender','height','weight','target','diets','bill','foodplans','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address')}),
     ) #this will allow to change these fields in admin module
 
 
