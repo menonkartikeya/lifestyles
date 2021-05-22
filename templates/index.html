@@ -2,10 +2,18 @@
   {% block body %}
   {% load static %}
   <div class="my-3 p-2">
-      {% if usertype == none %}
+    {% if usertype == none %}
       <h1>Welcome,</h1>
-      {% else %}
-      <h1>Welcome, {{usertype}}</h1>
+      <a href="{% url 'login' %}">Login Here</a>
+      <a href="{% url 'elogin' %}">E-login Here</a>
+      <a href="{% url 'signup' %}">Register Here</a>
+      <a href="{% url 'esignup' %}">E-Register Here</a>
+      {%else%}
+      <h1>Welcome, {{user.username}}</h1>
+      <h2>Type: {{usertype}}</h2>
+      <a href="{% url 'dashboard' %}">Enter Dashboard</a>
+      <a href="{% url 'edashboard' %}">Enter E-dashboard</a>
+      <a href="{% url 'logoutme' %}">Logout</a>
       {%endif%}
   </div>
 

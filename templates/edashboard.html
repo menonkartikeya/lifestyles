@@ -11,7 +11,7 @@
         <button class="btn btn-white bu col-12 nm" type="submit">
             <div class="d-flex flex-row ">
                 <img class="lll" src="https://cdn1.iconfinder.com/data/icons/webina-seo-development-and-marketing/128/seo_web-62-512.png" alt="" />
-                <a href="{% url 'dashboard' %}"><h4 class="ml-3">Dashboard</h4></a>
+                <a href="{% url 'edashboard' %}"><h4 class="ml-3">E-Dashboard</h4></a>
             </div>
         </button>
         <br />
@@ -19,15 +19,7 @@
         <button class="btn btn-white bu col-12 nm" type="submit">
             <div class="d-flex flex-row ">
                 <img class="lll" src="https://www.shareicon.net/data/2015/10/03/111427_write_512x512.png" alt="" />
-                <a href="{% url 'eprofile' user.id %}"><h4 class="ml-3">Profile</h4></a>
-            </div>
-        </button>
-        <br />
-        <br />
-        <button class="btn btn-white bu col-12 nm" type="submit">
-            <div class="d-flex flex-row ">
-                <img class="lll" src="https://cdn1.iconfinder.com/data/icons/network-and-comminications-flat-circle-shadow-vo-1/120/content__blog__media__articles__news__management__edit-512.png" alt="" />
-                <a href="{% url 'invoices' %}"><h4 class="ml-3">Bills</h4></a>
+                <a href="{% url 'eprofile' user.id %}"><h4 class="ml-3">E-Profile</h4></a>
             </div>
         </button>
         <br />
@@ -66,9 +58,9 @@
         </div>
         <div class="d-flex flex-row">
             <div class="col-5 op p-5 col123 shadow fony">
-                <h1>List Of Users Unallocated</h1>
+                <h1>Allot Nutritionist To User</h1>
                 <ul class="list-group">
-                    {%for un in unal %}
+                    {%for un in unaln %}
                     <a href="{% url 'allocate' un.id %}"><li class="list-group-item list-group-item-primary">
                         {{un.username}}
                     </li></a>
@@ -76,23 +68,34 @@
                 </ul>
                 <!-- Button trigger modal -->
             </div>
-
-            <div class="col-3 op  p-5 shadow col1234 ml-4 fony">
-                <h3>Your Subscription:</h3>
-                <h5><b>{{sub.plan}}</b></h5>
-                <a href="{% url 'subs' %}"> <button class="btn btn-warning btn-small">View</button></a>
-            </div>
-            <div class="col-3 op col12345  p-5 shadow ml-4 ">
-                <h1><b>Target:</b></h1>
-                <h5>{{user.target}}</h5>
-                <a href="{% url 'growth' %}"> <button class="btn btn-success btn-small">Check Growth</button></a>
+            <div class="col-5 op p-5 col123 shadow fony">
+                <h1>Allot Dietician To User</h1>
+                <ul class="list-group">
+                    {%for un in unald %}
+                    <a href="{% url 'allocate' un.id %}"><li class="list-group-item list-group-item-primary">
+                        {{un.username}}
+                    </li></a>
+                    {%endfor%}
+                </ul>
+                <!-- Button trigger modal -->
             </div>
         </div>
         <br />
 
         <div class="d-flex flex-row mb-3">
+            <div class="col-5 op p-5 col123 shadow fony">
+                <h1>Allot Fitness Trainer To User</h1>
+                <ul class="list-group">
+                    {%for un in unald %}
+                    <a href="{% url 'allocate' un.id %}"><li class="list-group-item list-group-item-primary">
+                        {{un.username}}
+                    </li></a>
+                    {%endfor%}
+                </ul>
+                <!-- Button trigger modal -->
+            </div>
             <div class="col-4 op col123 p-5 shadow fony">
-                <h1>Free Dietician and Nutritionist</h1>
+                <h1>Free Dietician,Nutritionist and Fitness Trainer</h1>
                 {% if freepeeps is null %}
                 <p>Nobody is free, Hold On!</p>
                 {%else%}
@@ -103,7 +106,9 @@
                 </ul>
                 {%endif%}
             </div>
-            <div class="d-flex flex-column col-4">
+            </div>
+            <div class="d-flex flex-row mb-3">
+        <div class="d-flex flex-column col-4">
                 <div class="col-12 op col1234 p-5 shadow ml-4 fony ">
                     <h3>Live Appointments</h3>
                     {% if flag is True %}
@@ -121,12 +126,6 @@
                     </ul>
                     {%endif%}
                 </div>
-
-                <div class="col-12 op col12345  p-5 shadow ml-4 y mt-4">
-                    <h4><b>Note From Dietician:</b></h4>
-                    <p>{{user.diets.remarks}}</p>
-                </div>
-
             </div>
 
 
@@ -140,7 +139,7 @@
                    {%endfor%}
                 </ul>
             </div>
-        </div>
+            </div>
     </div>
 </div>
     {% endblock body %}

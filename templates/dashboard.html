@@ -76,17 +76,18 @@
             <div class="col-5 op p-5 col123 shadow fony">
                 <h1>Your Previous BMI Index</h1>
                 {% if bmi == none %}
-                <a href="{% url 'index' %}"> <button>Get BMI Now</button></a>
+                <p>Nothing Logged Yet!</p>
+                <a href="{% url 'bmic' %}"> <button class="btn btn-primary btn-small">Get BMI Now</button></a>
                 {% else %}
                 <p>{{bmi}} kg/m²</p>
-                <a href="{% url 'bmic' %}"> <button class="btn btn-primary btn-small">Get Details</button></a>
+                <a href="{% url 'bmic' %}"> <button class="btn btn-primary btn-small">More</button></a>
                 {%endif%}
                 <!-- Button trigger modal -->
             </div>
 
             <div class="col-3 op  p-5 shadow col1234 ml-4 fony">
                 <h3>Your Subscription:</h3>
-                <h5><b>{{sub.plan}}</b></h5>
+                <h5><b>{{user.sub.plan}}</b></h5>
                 <a href="{% url 'subs' %}"> <button class="btn btn-warning btn-small">View</button></a>
             </div>
             <div class="col-3 op col12345  p-5 shadow ml-4 ">
@@ -106,10 +107,12 @@
                 {%else%}
                 <ul class="list-group my-2">
                     {%for gro in grolist %}
-                    <li class="list-group-item list-group-item-primary">{{gro}}</li>
+                    <li class="list-group-item list-group-item-primary">{{gro.items.name}}</li>
+                    {%empty%}
+                    <p>No List Yet!</p>
                     {%endfor%}
                 </ul>
-                <a href="{% url 'grocery' user.id %}"> <button class="btn btn-primary btn-small">Get Details</button></a>
+                <a href="{% url 'grocery' user.id %}"> <button class="btn btn-primary btn-small">More</button></a>
                 {%endif%}
             </div>
             <div class="d-flex flex-column col-4">
@@ -130,23 +133,40 @@
                     </ul>
                     {%endif%}
                 </div>
-
+                {%if user.sub.plan != "Free Plan" %}
                 <div class="col-12 op col12345  p-5 shadow ml-4 y mt-4">
-                    <h4><b>Note From {{emp.id}}:</b></h4>
+                    {% if user.sub.plan == "Basic Plan" %}
+                    <h4><b>Note From Nutritionist({{findnutri.id}}):</b></h4>
+                    {% if user.diets.remarks is empty %}
+                    <p>Nope! All's Good!</p>
+                    {%else%}
                     <p>{{user.diets.remarks}}</p>
+                    {%endif%}
+                    <h4><b>Note From Fitness Trainer({{findtrain.id}}):</b></h4>
+                    <p>Add Jinja here</p>
+                    {%else %}
+                    <h4><b>Note From Nutritionist & Dietician({{findnutri.id}} & {{finddieti.id}}):</b></h4>
+                    <p>{{user.diets.remarks}}</p>
+                    <h4><b>Note From Fitness Trainer({{findtrain.id}}):</b></h4>
+                    <p>Add Jinja here</p>
+                    {%endif%}
                 </div>
-
+                {%endif%}
             </div>
 
 
             <div class="col-3 op col1234  p-5 shadow ml-5 fony ">
                 <h1>Meal Plan:</h1>
+                {% if user.diets != none %}
                 <ul class="list-group my-2">
                     <a href="{% url 'fooddetail' user.diets.breakfast.fooditem  %}"><li class="list-group-item list-group-item-warning">Breakfast: {{user.diets.breakfast}}</li></a>
                     <a href="{% url 'fooddetail' user.diets.lunch.fooditem  %}"><li class="list-group-item list-group-item-warning">Lunch: {{user.diets.lunch}}</li></a>
                     <a href="{% url 'fooddetail' user.diets.snacks.fooditem  %}"><li class="list-group-item list-group-item-warning">Snacks: {{user.diets.snacks}}</li></a>
                     <a href="{% url 'fooddetail' user.diets.dinner.fooditem  %}"><li class="list-group-item list-group-item-warning">Dinner: {{user.diets.dinner}}</li></a>
                 </ul>
+                {%else%}
+                <p>No Meal Plan Set yet!</p>
+                {%endif%}
             </div>
         </div>
     </div>

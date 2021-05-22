@@ -10,6 +10,7 @@ targets = (
 types = (
     ('Free Plan','Free Plan'),
     ('Basic Plan','Basic Plan'),
+    ('Semi-Premium Plan','Semi-Premium Plan'),
     ('Premium Plan','Premium Plan'),
 )
 emptype = (
@@ -120,10 +121,22 @@ class streak(models.Model):
     class Meta:
         verbose_name_plural = "Streaks!"
 
+class logger(models.Model):
+    preworkout = models.ManyToManyField(foodplan,blank=True,related_name="Pre_work")
+    postworkout = models.ManyToManyField(foodplan,blank=True,related_name="Post_work")
+    lunch = models.ManyToManyField(foodplan,blank=True,related_name="lunch")
+    snacks = models.ManyToManyField(foodplan,blank=True,related_name="snack")
+    dinner = models.ManyToManyField(foodplan,blank=True,related_name="dinner")
+    extra = models.ManyToManyField(foodplan,blank=True,related_name="Extra")
+    date = models.DateField(auto_now_add=True)
+
+
+    class Meta:
+        verbose_name_plural = "Log Meals!"
 
 class MyUser(AbstractUser):
     gender = models.CharField(choices=gen,max_length=50,blank=True,null=True)
-    mobno = models.IntegerField(default=0)
+    mobno = models.BigIntegerField(default=0)
     height = models.FloatField(default=0.0,blank=True)
     weight = models.FloatField(default=0.0,blank=True)
     target = models.CharField(choices=targets,max_length=60,blank=True,null=True)
@@ -137,9 +150,10 @@ class MyUser(AbstractUser):
     allottrain = models.BooleanField(default=False)
     sub = models.OneToOneField(subplans,on_delete=models.CASCADE,blank=True,null=True)
     streaks = models.ForeignKey(streak,on_delete=models.CASCADE,blank=True,null=True)
-    bio = models.CharField(max_length=5000)
-    location = models.CharField(max_length=100)
-    address = models.CharField(max_length=1000)
+    bio = models.CharField(max_length=5000,blank=True,null=True)
+    location = models.CharField(max_length=100,blank=True,null=True)
+    address = models.CharField(max_length=1000,blank=True,null=True)
+    log = models.ManyToManyField(logger,blank=True)
 
     def __str__(self):
         return self.username
@@ -147,25 +161,10 @@ class MyUser(AbstractUser):
     class Meta:
         verbose_name_plural = "User Details!"
 
-class logs(models.Model):
-    us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
-    preworkout = models.ManyToManyField(foodplan,blank=True,related_name="Pre_work")
-    postworkout = models.ManyToManyField(foodplan,blank=True,related_name="Post_work")
-    lunch = models.ManyToManyField(foodplan,blank=True,related_name="lunch")
-    snacks = models.ManyToManyField(foodplan,blank=True,related_name="snack")
-    dinner = models.ManyToManyField(foodplan,blank=True,related_name="dinner")
-    extra = models.ManyToManyField(foodplan,blank=True,related_name="Extra")
-    date = models.DateField(auto_now_add=True)
-
-    def __str__(self):
-        return self.question
-
-    class Meta:
-        verbose_name_plural = "Log Meals!"
 
 class contact(models.Model):
     email = models.EmailField()
-    mobno = models.IntegerField(default=0)
+    mobno = models.BigIntegerField(default=0)
     bookcall = models.BooleanField(null=True,blank=True)
     bookapp = models.BooleanField(null=True,blank=True)
     message = models.CharField(max_length=500)
@@ -180,7 +179,7 @@ class contact(models.Model):
 class employeecontrol(models.Model):
     id = models.OneToOneField(MyUser, on_delete = models.CASCADE,primary_key=True)
     alloted = models.ManyToManyField(MyUser, blank=True, related_name="Alloted_Users")
-    mobno = models.IntegerField()
+    mobno = models.BigIntegerField()
     employeetype = models.CharField(choices=emptype,max_length=100)
     certificate = models.URLField()
     resume = models.URLField()

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import urllib
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -76,8 +77,11 @@ WSGI_APPLICATION = 'lifestyles.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': 'kowi',
+        'CLIENT': {
+            'host': "mongodb+srv://root:" + urllib.parse.quote_plus('kt6uQn0kss') + "@cluster0.bm2jr.mongodb.net/test?retryWrites=true&w=majority"
+        },   
     }
 }
 
