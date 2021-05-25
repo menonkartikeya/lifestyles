@@ -90,3 +90,8 @@ class BmrAdmin(admin.ModelAdmin):
     list_per_page = 15
 
 admin.site.register(bmr, BmrAdmin)
+
+class complaintAdmin(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(complaint,complaintAdmin)

@@ -19,29 +19,33 @@ from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 from django.contrib import messages
-from math import pi
 from django.db.models.query import EmptyQuerySet
-from bokeh.plotting import figure
-from bokeh.embed import components
-from bokeh.models import HoverTool, LassoSelectTool, WheelZoomTool, PointDrawTool, ColumnDataSource
 from django.db.models import Count
 from django.http import JsonResponse
+from django.utils import timezone
 # Create your views here.
 
-
+#Home Page - currently renders which type of user is there and shows links according to that.
 def index(request):
     headtitle = "Life Styles | Home"
     user = request.user
+    #checks for employee or customer by is_Staff
     if user.is_staff == False:
+        #checks for logged in
         if user.is_authenticated:
             usertype = "Customer"
         else:
+            #prints None if user is not logged in
             usertype = None
+    #check if user is employee and is active 
     elif user.is_active == True and user.is_staff == True:
         try:
+            #try getting the employee object from employee table
             emp = employeecontrol.objects.get(id=user)
+            #storing employee tye in usertype
             usertype = emp.employeetype
         except ObjectDoesNotExist:
+            #if employee object does not exist
             usertype = None
     parms = {
         'title':headtitle,
@@ -49,6 +53,7 @@ def index(request):
     }
     return render(request,'index.html',parms)
 
+#BMI Calculation Function -- 
 def bmicalc(weight,height):
     bmi = (weight/(height**2))
     if bmi < 16:
@@ -70,74 +75,108 @@ def bmicalc(weight,height):
     context = [state,bmi]
     return context
 
+
+#Customer Dashboard - shows customer previous BMI, find its alloted dietician, nutritionist and trainer according to plan
+#shows grocery list of that user, meeting links of that user
+#Required - streak feature
 def dashboard(request):
     title = "Life Styles | Dashboard"
     parms = {
         'title':title,
     }
     user = request.user
+    #checks for user logged in and user is not any kind of employee
     if user.is_authenticated and user.is_staff == False:
+        #get all bmi object of that particular user and then get the latest bmi of that user
         bmii = bmi.objects.filter(us=user).order_by('-id')[:1]
+        bmrr = bmr.objects.filter(us=user).order_by('-date').first()
         if user.allotdieti:
+            #get user dietician if he is alloted one.
             finddieti = employeecontrol.objects.get(Q(employeetype="Dietician") & Q(alloted=user))
         else:
+            #making that variable none in else part
             finddieti = None
         if user.allotnutri:
+            #get user nutritionist if he is alloted one
             findnutri = employeecontrol.objects.get(Q(employeetype="Nutritionist") & Q(alloted=user))
         else:
+            #else part making that var none
             findnutri = None
         if user.allottrain:
+            #get user trainer if he is alloted one.
             findtrain = employeecontrol.objects.get(Q(employeetype="Fitness Trainer") & Q(alloted=user))
         else:
+            #else making that var none
             findtrain = None
+        #creating a list for storing single object of bmii as it returns a queryset of single obj but we cant send it to html
         tmp = []
         for i in bmii:
+            #appending tmp with bmi value
             tmp.append(i.bmi)
+        #creating a list for storing grocery items
         grolist = []
         try:
+            #trying to check for grocery list object
             grocery = grocerylist.objects.get(id=user.id)
+        #if object does not exist then list will be none
         except ObjectDoesNotExist:
             grocery = None
+        #if list is not none then get all the items from that object of grocery and store in list
         if grocery != None:
             grolist = grocery.items.all()
+        #get all the meeting objects of that user
         meet = user.lives.all()
+        #make a flag variable for checking if meet object is empty or not
         flag = False
+        #if meet count is 0 flag is true
         if meet.count() == 0:
             flag = True
+        #if tmp list is empty then we pass these parameters basically bmi is passed as none
+        #now code for diet plans.
+        day = timezone.now().day
+        dietplans = user.diets.filter(day=day)
+        print(dietplans)
         if tmp == []:
             parms = {
                 'title':title,
                 'bmi':None,
+                'bmr':bmrr,
                 'grolist':grolist,
                 'meet':meet,
                 'flag':flag,
                 'findnutri':findnutri,
                 'finddieti':finddieti,
                 'findtrain':findtrain,
+                'day':timezone.now().day,
             }
+            #else bmi will be passed along with other parameters
         else:
             parms = {
                 'title':title,
                 'bmi':tmp[0],
+                'bmr':bmrr,
                 'grolist':grolist,
                 'meet':meet,
                 'flag':flag,
                 'findnutri':findnutri,
                 'finddieti':finddieti,
                 'findtrain':findtrain,
+                'day':timezone.now().day,
             }
         return render(request,'dashboard.html',parms)
+    #if user is not logged in then it will redirect to login
     else:
-        return render(request,'404.html',parms)
+        return redirect(login)
     
     return render(request,'dashboard.html',parms)
 
 ##Login / Signup ###
-
+#logout function 
 def logoutuser(request):
     logout(request)
     return redirect('login')
 
+#activate email sending function!
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -151,15 +190,20 @@ def activate(request, uidb64, token):
     else:
         return HttpResponse('Activation link is invalid!')
 
+
+#login function
 def login(request):
     title = "Login | Lifestyles"
     if request.method == 'POST':
+        #login with username and password
         username = request.POST['username']
         password = request.POST['password']
         user = auth.authenticate(username=username,password=password)
+        #checking for one more condition that is_staff is false or not to prevent employees to login as customer.
         if user is not None and user.is_staff == False:
             auth.login(request,user)
-            messages.info(request,'Logged In')
+            messages.info(request,'Logged In Successfuly')
+            #redirects to dashboard
             return redirect('dashboard')
         else:
             messages.info(request,'Invalid Credentials')
@@ -167,15 +211,18 @@ def login(request):
 
     return render(request,'login.html',{'title':title})
 
+#login for any type of employee!
 def elogin(request):
     title = "Employee Login | lifeStyles"
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = auth.authenticate(username=username,password=password)
+        #checking for is_staff and is_active for true to make sure its a active employee.
         if user is not None and user.is_staff == True and user.is_active == True:
             auth.login(request,user)
             messages.info(request,'Logged In')
+            #after logging in redirect to edashboard
             return redirect('edashboard')
         else:
             messages.info(request,'Invalid Credentials')
@@ -184,9 +231,11 @@ def elogin(request):
     else:
         return render(request,'elogin.html',{'title':title})
 
+#signup for customer only
 def signup(request):
     title = "Register | LifeStyles"
     if request.method == 'POST':
+        #signing up with all these fields
         username = request.POST['username']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
@@ -209,6 +258,9 @@ def signup(request):
                 user = MyUser.objects.create_user(username=username,password=password1,email=email,gender=gender,height=height,weight=weight,target=target,mobno=mobno,age=age,sub=subscription).save()
                 user = auth.authenticate(username=username,password=password1)
                 auth.login(request,user)
+                #sending verification mail!
+                user.is_active = False
+                user.save()
                 current_site = get_current_site(request)
                 mail_subject = 'Activate your account.'
                 message = render_to_string('registration/acc_active_email.html', {
@@ -223,15 +275,19 @@ def signup(request):
                 )
                 email.send()
                 messages.info(request,'Check email and Verify your account')
+                #after that return to index
                 return redirect(index)
         else:
             messages.info(request,'Password not matched')
             return redirect('signup')
     return render(request,'signup.html',{'title':title})
 
+
+#sign up for any kind of Employee
 def esignup(request):
     title = "Register | LifeStyles"
     if request.method == 'POST':
+        #sign up fields for any kind of employee
         username = request.POST['username']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
@@ -250,9 +306,10 @@ def esignup(request):
                 return redirect('esignup')
             else:
                 user = MyUser.objects.create_user(username=username,password=password1,email=email).save()
-                user = auth.authenticate(username=username,password=password1)
-                auth.login(request,user)
+                user.is_active = False
+                user.save()
                 employee = employeecontrol.objects.create(id=user,gender=gender,certificate=certificate,resume=resume,employeetype=employeetype,mobno=mobno)
+                #manual verification in case of employees
                 messages.info(request,'We will Verify and mail You with the details!')
                 return redirect(index)
         else:
@@ -262,93 +319,108 @@ def esignup(request):
 
 ##########################################
 
+#dashboard for Employee!
 def edashboard(request):
     title = "Employee Dashboard | LifeStyles"
     user = request.user
-    if user.is_authenticated and user.is_staff == True and user.is_active == True:
-        try:
-            employee = employeecontrol.objects.get(id=user)
-            users = MyUser.objects.all()
-            lives = user.lives.all()
-            emptype = employee.employeetype
-            if emptype == 'employee':
-                unaln = []
-                unald = []
-                unalf = []
-                for us in users:
-                    if us.is_staff == False:
-                        if us.allotnutri == False:
-                            if us.sub == 'Basic Plan' or us.sub == 'Semi-Premium Plan' or us.sub == 'Premium Plan':
-                                unaln.append(us)
-                        if us.allotdieti == False:
-                            if us.sub == 'Premium Plan' or us.sub == 'Semi-Premium Plan':
-                                unald.append(us)
-                        if us.sub == 'Basic Plan' or us.sub == 'Semi-Premium Plan' or us.sub == 'Premium Plan':
-                            unalf.append(us)
-                totpeeps = employeecontrol.objects.filter(Q(employeetype="Dietician") | Q(employeetype="Nutritionist") | Q(employeetype="Dietician"))[:5]
-                freepeeps = []
-                for peep in totpeeps:
-                    counter = peep.alloted.count()
-                    if counter <= 25:
-                        freepeeps.append(peep)
-                contacted = contact.objects.filter(check=False)
-                parms = {
-                    'title':title,
-                    'employee':employee,
-                    'emptype':emptype,
-                    'unaln':unaln,
-                    'unald':unald,
-                    'unalf':unalf,
-                    'freepeeps':freepeeps,
-                    'contacted':contacted[:5],
-                    'lives':lives,
-                    }
-            return render(request,'edashboard.html',parms)
-        except ObjectDoesNotExist:
-            messages.error(request,'Not Authorized!')
-            return redirect(elogin)
+    try:
+        employee = employeecontrol.objects.get(id=user)
+    except ObjectDoesNotExist:
+        messages.error(request,"Nope,You are not our Employee, Sorry!")
+        return redirect(index)
+    if user.is_authenticated and user.is_staff == True and user.is_active == True and employee.employeetype == 'employee':
+        users = MyUser.objects.all()
+        lives = user.lives.all()
+        emptype = employee.employeetype
+        unaln = []
+        unald = []
+        unalf = []
+        for us in users:
+            if us.is_staff == False:
+                if us.allotnutri == False:
+                    if us.sub == 'Basic Plan' or us.sub == 'Semi-Premium Plan' or us.sub == 'Premium Plan':
+                        unaln.append(us)
+                if us.allotdieti == False:
+                    if us.sub == 'Premium Plan' or us.sub == 'Semi-Premium Plan':
+                        unald.append(us)
+                if us.sub == 'Basic Plan' or us.sub == 'Semi-Premium Plan' or us.sub == 'Premium Plan':
+                    unalf.append(us)
+        totpeeps = employeecontrol.objects.filter(Q(employeetype="Dietician") | Q(employeetype="Nutritionist") | Q(employeetype="Dietician"))[:5]
+        freepeeps = []
+        for peep in totpeeps:
+            counter = peep.alloted.count()
+            if counter <= 25:
+                freepeeps.append(peep)
+        contacted = contact.objects.filter(check=False)
+        parms = {
+            'title':title,
+            'employee':employee,
+            'emptype':emptype,
+            'unaln':unaln,
+            'unald':unald,
+            'unalf':unalf,
+            'freepeeps':freepeeps,
+            'contacted':contacted[:5],
+            'lives':lives,
+            }
+        return render(request,'edashboard.html',parms)
     else:
         messages.error(request,'Login First')
         return redirect('elogin')
     return render(request,'edashboard.html',{'title':title})
 
+#profile for customer
 def profile(request,id):
     title = "Profile | Lifestyles"
     user = request.user
+    #check for user logged in
     if user.is_authenticated:
+        #check user accessing the profile page is same user passsed in id or not
         if user.id == id:
+            #check user is active or not
             if user.is_active == True:
                 if request.method == 'POST':
                     user.mobno = request.POST['mobno']
                     user.target = request.POST['target']
                     user.age = request.POST['age']
+                    #checking user sub plans and then taking values from html if he wants to change or not!
                     if user.sub.plan == 'Basic Plan':
                         checknutri = request.POST['checknutri']
                         checkfitness = request.POST['checkfitness']
                         if checknutri == "yes":
+                            resnut = request.POST['resnut']
                             user.allotnutri = False
                             findnut = employeecontrol.objects.get(Q(employeetype="Nutritionist") & Q(alloted=user))
                             findnut.alloted.remove(user)
+                            complaint.objects.create(us=user,emptype=findnut,reason=resnut)
                         if checkfitness == "yes":
+                            resfit = request.POST['resfit']
                             user.allottrain = False
                             findfit = employeecontrol.objects.get(Q(employeetype="Fitness Trainer") & Q(alloted=user))
                             findfit.alloted.remove(user)
+                            complaint.objects.create(us=user,emptype=findfit,reason=resfit)
                     if user.sub.plan == "Semi-Premium Plan" or user.sub.plan == "Premium Plan":
                         checkdieti = request.POST['checkdieti']
                         checknutri = request.POST['checknutri']
                         checkfitness = request.POST['checkfitness']
                         if checknutri == "yes":
+                            resnut = request.POST['resnut']
                             user.allotnutri = False
                             findnut = employeecontrol.objects.get(Q(employeetype="Nutritionist") & Q(alloted=user))
                             findnut.alloted.remove(user)
+                            complaint.objects.create(us=user,emptype=findnut,reason=resnut)
                         if checkfitness == "yes":
+                            resfit = request.POST['resfit']
                             user.allottrain = False
                             findfit = employeecontrol.objects.get(Q(employeetype="Fitness Trainer") & Q(alloted=user))
                             findfit.alloted.remove(user)
+                            complaint.objects.create(us=user,emptype=findfit,reason=resfit)
                         if checkdieti == "yes":
+                            resdiet = request.POST['resdiet']
                             user.allotdieti = False
                             finddieti = employeecontrol.objects.get(Q(employeetype="Dietician") & Q(alloted=user))
                             finddieti.alloted.remove(user)
+                            complaint.objects.create(us=user,emptype=finddieti,reason=resdiet)
                     user.save()
                     messages.success(request,"Changes Saved")
                     return redirect('dashboard')
@@ -361,6 +433,7 @@ def profile(request,id):
     }
     return render(request,'profile.html', parms)
 
+#Employee profile! -- Right now it can be used by other employee types too!
 def eprofile(request,id):
     title = "E-Profile | Lifestyles"
     user = request.user
@@ -372,6 +445,8 @@ def eprofile(request,id):
     }
     return render(request,'eprofile.html', parms)
 
+
+#invoices function right now it just renders a html page!
 def invoices(request):
     title = "Invoices | Lifestyles"
     parms = {
@@ -379,6 +454,8 @@ def invoices(request):
     }
     return render(request,'invoice.html',parms)
 
+
+#Lives function -- right now it redirects to video chat application and if user is not logged in it will tell a 404 error
 def lives(request):
     user = request.user
     if user.is_authenticated and user.is_active == True:
@@ -386,38 +463,65 @@ def lives(request):
     else:
         return render(request,'404.html')
 
+
+#book function used by all employee types and customers too to book a slot time and date for user. 
+#needs updating time feature to have slots!
 def book(request):
     title = "Book Appointment | Lifestyles"
     user = request.user
+    #checking user is logged in or not!
     if user.is_authenticated:
+        #chcking for employee type
         if user.is_staff == True and user.is_active == True:
+            #if its a employee then flag is set to true
             flag = True
+            #get employee details
             findemp = employeecontrol.objects.get(id=user)
+            #get employee alloted users
             allot = findemp.alloted.all()
-            if findemp.employeetype == "Nutritionist" or findemp.employeetype == "Dietician" or findemp.employeetype == "trainee":
+            #checking if employee is any of the three types then only invoke the booking functionality
+            if findemp.employeetype == "Nutritionist" or findemp.employeetype == "Dietician" or findemp.employeetype == "Fitness Trainer":
                 if request.method == 'POST':
+                    #for these three employees one more form field will be userid to send book appointment to that user.
                     userid = request.POST['userid']
                     slottime = request.POST['slottime']
                     date = request.POST['date']
+                    #creating a live model object
                     obj = live.objects.create(id=userid,slottime=slottime,date=date)
                     conf = MyUser.objects.get(id=userid)
+                    #adding that live object to that user
                     conf.lives.add(obj.id)
+                    #adding that live object to our employee user too!
                     user.lives.add(obj.id)
+                    #sending success message
                     messages.success(request,"Success")
                     return redirect(edashboard)
+        #when user is customer
         elif user.is_staff == False:
+            #user is customer so flag is set to false
             flag = False
-            findemp = employeecontrol.objects.get(alloted=user)
-            allot = findemp.alloted.all()
-            getus = MyUser.objects.get(username=findemp.id)
-            if request.method == "POST":
-                slottime = request.POST['slottime']
-                date = request.POST['date']
-                obj = live.objects.create(slottime=slottime,date=date)
-                user.lives.add(obj.id)
-                getus.lives.add(obj.id)
-                messages.success(request,"Success")
-                return redirect(dashboard)
+            if user.sub.plan != "Free Plan":
+                if request.method == "POST":
+                    #booking for which type of user
+                    bookfor = request.POST['bookfor']
+                    slottime = request.POST['slottime']
+                    date = request.POST['date']
+                    #find that employee
+                    findemp = employeecontrol.objects.get(Q(alloted=user) & Q(employeetype=bookfor))
+                    allot = findemp.alloted.all()
+                    #getting the user id of that employee
+                    getus = MyUser.objects.get(username=findemp.id)
+                    #creating live object
+                    obj = live.objects.create(slottime=slottime,date=date)
+                    #adding this live object to user
+                    user.lives.add(obj.id)
+                    #addling this live object to that employee user id
+                    getus.lives.add(obj.id)
+                    messages.success(request,"Success")
+                    return redirect(dashboard)
+            else:
+                messages.error(request,"Change to a Paid Plan First!")
+                return redirect('dashboard')
     else:
         return redirect(login)
     parms = {
@@ -428,34 +532,13 @@ def book(request):
 
     return render(request,'book.html',parms)
 
+#bmi calculator -- 
 def bmic(request):
     headtitle = "BMI | Lifestyles"
     bmii =0.0
     state = ""
-    script = None
-    div = None
     user = request.user
     if user.is_authenticated:
-        objs = bmi.objects.filter(us=user)
-        x = []
-        y = []
-        for obj in objs:
-            x.append(obj.bmi)
-            y.append(obj.date)
-        title = 'BMI Graph'
-
-        plot = figure(title= title , 
-            x_axis_label= 'X-Axis', 
-            y_axis_label= 'Y-Axis', 
-            plot_width =400,
-            plot_height =400)
-
-        plot.line(x, y, legend= 'f(x)', line_width = 2)
-        #Store components 
-        script, div = components(plot)
-        if user.is_staff == True:
-            emp = employeecontrol.objects.get(id=user)
-            usertype = emp.employeetype
         if request.method=="POST":
             weight_metric = request.POST.get("weight-metric")
             weight_imperial = request.POST.get("weight-imperial")
@@ -481,11 +564,10 @@ def bmic(request):
         'title':headtitle,
         'bmi':bmii,
         'state':state,
-        'script':script,
-        'div':div,
     }
     return render(request,'bmi.html',parms)
 
+#subs plan -- will be added in future only rendering subs page right now
 def subs(request):
     title = "Subs Plan | Lifestyles"
     parms = {
@@ -493,6 +575,7 @@ def subs(request):
     }
     return render(request,'sub.html',parms)
 
+#growth page rendered only in this.
 def growth(request):
     title = "Growth | Lifestyles"
     parms = {
@@ -500,11 +583,14 @@ def growth(request):
     }
     return render(request,'growth.html',parms)
 
+#grocery function according to user id!
 def grocery(request,id):
     title = "Grocery | Lifestyles"
     user = request.user
+    #confirming user is authenticated and only that particular user id is accessing its id.
     if user.is_authenticated and user.id == id:
         try:
+            #getting that grocery object
             grocery = grocerylist.objects.get(id=id)
             grolist = grocery.items.all()
             if grocery.billitem.invoicepdf:
@@ -521,62 +607,140 @@ def grocery(request,id):
     }
     return render(request,'grocery.html',parms)
 
-def fooddetail(request,fooditem):
-    title = "Food Details | Lifestyles"
-    user = request.user
-    if user.is_authenticated:
-        if user.diets.breakfast == fooditem:
-            obj = foodplan.objects.get(fooditem=user.diets.breakfast)
-        elif user.diets.lunch == fooditem:
-            obj = foodplan.objects.get(fooditem=user.diets.lunch)
-        elif user.diets.snacks == fooditem:
-            obj = foodplan.objects.get(fooditem=user.diets.snacks)
-        else:
-            obj = foodplan.objects.get(fooditem=user.diets.dinner)
-        parms = {
-            'obj':obj,
-            'title':title,
-        }
-        return render(request,'fooddetail.html',parms)
-    parms = {
-        'title':title,
-    }
-    return render(request,'fooddetail.html',parms)
 
-
+#allocate function to allocate unallocated customers to free dieticians nutritionist and trainers.
 def allocate(request,id):
     title = "Allocate | Lifestyles"
     user = request.user
-    if user.is_authenticated and user.is_staff == True and user.is_active == True:
+    #getting the emp object
+    try:
+        emp = employeecontrol.objects.get(id=user)
+    except ObjectDoesNotExist:
+        return render(request,'404.html')
+    #security checking for employee.
+    if user.is_authenticated and user.is_staff == True and user.is_active == True and emp.employeetype == 'employee':
+        #getting the target user to allocate
         target = MyUser.objects.get(id=id)
-        totpeeps = employeecontrol.objects.filter(Q(employeetype="Dietician") | Q(employeetype="Nutritionist"))
-        freepeeps = []
-        for peep in totpeeps:
-            counter = peep.alloted.count()
-            if counter <= 25:
-                freepeeps.append(peep)
+        #creating lists for storing free nutritionist dietician and trainers/
+        freenutpeeps = []
+        freefitpeeps = []
+        freediepeeps = []
+        #if conditions to check for user subscription plan.
+        if target.sub.plan == 'Free Plan':
+            messages.error(request,"User subbed to Free Plan, Not Applicable!")
+            return redirect(edashboard)
+        elif target.sub.plan == 'Basic Plan':
+            #if fitness trainer is not alloted to that user
+            if target.allottrain == False:
+                totfitpeeps = employeecontrol.objects.filter(employeetype="Fitness Trainer")
+                #get free fitness trainers in list
+                for peep in totfitpeeps:
+                    counter = peep.alloted.count()
+                    if counter <= 100:
+                        freefitpeeps.append(peep)
+            #if nutritionist is not alloted to user
+            if target.allotnutri == False:
+                totnutpeeps = employeecontrol.objects.filter(employeetype="Nutritionist")
+                for peep in totnutpeeps:
+                    counter = peep.alloted.count()
+                    if counter <= 50:
+                        freenutpeeps.append(peep)
+        #if he has dieitician too
+        elif target.sub.plan == 'Semi-Premium Plan' or target.sub.plan == 'Premium Plan':
+            if target.allottrain == False:
+                totfitpeeps = employeecontrol.objects.filter(employeetype="Fitness Trainer")
+                for peep in totfitpeeps:
+                    counter = peep.alloted.count()
+                    if counter <= 100:
+                        freefitpeeps.append(peep)
+            if target.allotnutri == False:
+                totnutpeeps = employeecontrol.objects.filter(employeetype="Nutritionist")
+                for peep in totnutpeeps:
+                    counter = peep.alloted.count()
+                    if counter <= 50:
+                        freenutpeeps.append(peep)
+            if target.allotdieti == False:
+                totdiepeeps = employeecontrol.objects.filter(employeetype="Dietician")
+                for peep in totdiepeeps:
+                    counter = peep.alloted.count()
+                    if counter <= 25:
+                        freediepeeps.append(peep)     
+        else:
+            return render(request,'404.html')
+        #form code to allocate the user!
         if request.method == 'POST':
-            diet = request.POST['diet']
-            for peep in freepeeps:
-                tmp = str(peep.id)
-                if tmp == diet:
-                    getuser = employeecontrol.objects.get(id=peep.id)
-                    print(getuser)
+            if target.sub.plan == 'Basic Plan':
+                if target.allottrain == False:
+                    fit = request.POST['fit']
+                else:
+                    fit = None
+                if target.allotnutri == False:
+                    nut = request.POST['nut']
+                else:
+                    nut = None
+                if fit:
+                    getus = MyUser.objects.get(username=fit)
+                    getuser = employeecontrol.objects.get(id=getus.id)
                     getuser.alloted.add(id)
-                    target.allot = True
+                    target.allottrain = True
                     target.save()
-                    messages.success(request,"Success")
-                    return redirect(unalo)
-                    break
+                    messages.success(request,'Fitness Trainer Added')
+                if nut:
+                    getus = MyUser.objects.get(username=nut)
+                    getuser = employeecontrol.objects.get(id=getus.id)
+                    getuser.alloted.add(id)
+                    target.allotnutri = True
+                    target.save()
+                    messages.success(request,'Nutritionist Added')
+            elif target.sub.plan == 'Semi-Premium Plan' or target.sub.plan == 'Premium Plan':
+                if target.allotdieti == False:
+                    diet = request.POST['diet']
+                else:
+                    diet = None
+                if target.allottrain == False:
+                    fit = request.POST['fit']
+                else:
+                    fit = None
+                if target.allotnutri == False:
+                    nut = request.POST['nut']
+                else:
+                    nut = None
+                if fit:
+                    getus = MyUser.objects.get(username=fit)
+                    getuser = employeecontrol.objects.get(id=getus.id)
+                    getuser.alloted.add(id)
+                    target.allottrain = True
+                    target.save()
+                    messages.success(request,'Fitness Trainer Added')
+                if nut:
+                    getus = MyUser.objects.get(username=nut)
+                    getuser = employeecontrol.objects.get(id=getus.id)
+                    getuser.alloted.add(id)
+                    target.allotnutri = True
+                    target.save()
+                    messages.success(request,'Nutritionist Added')
+                if diet:
+                    getus = MyUser.objects.get(username=diet)
+                    getuser = employeecontrol.objects.get(id=getus.id)
+                    getuser.alloted.add(id)
+                    target.allotdieti = True
+                    target.save()
+                    messages.success(request,'Dietician Added')
+            else:
+                messages.error(request,'Error, User not Subscribed!')
+        parms = {
+                'title':title,
+                'target':target,
+                'freediepeeps':freediepeeps,
+                'freenutpeeps':freenutpeeps,
+                'freefitpeeps':freefitpeeps,
+        } 
     else:
         messages.error(request,"Not Authorized!")
-    parms = {
-            'title':title,
-            'target':target,
-            'freepeeps':freepeeps,
-        } 
+        return render(request,'404.html')
     return render(request, 'allocate.html',parms)
 
+#contact us fucntion to render the html
 def contactus(request):
     title = "Contact | Lifestyles"
     parms = {
@@ -584,7 +748,7 @@ def contactus(request):
     }
     return render(request,'contact.html',parms)
 
-
+#check contact entries for employee
 def contactchecker(request):
     title = "Check Contact | Lifestyles"
     user = request.user
@@ -598,6 +762,7 @@ def contactchecker(request):
     }
     return render(request,'contactchecker.html',parms)
 
+#get the specific contact entry!
 def contid(request,id):
     title = "Check Contact | Lifestyles"
     user = request.user
@@ -616,28 +781,52 @@ def contid(request,id):
     }
     return render(request,'contid.html',parms)
 
-def unalo(request):
-    title = "Unallocated Users and Free Dieticians"
+
+#get unallocated users for employee and shows free diet, nut and fitness
+def unalo(request,emptype):
+    title = "Unallocated | KOWI"
     user = request.user
-    if user.is_authenticated and user.is_staff == True and user.is_active == True:
+    try:
+        emp = employeecontrol.objects.get(id=user)
+    except ObjectDoesNotExist:
+        return render(request,'404.html')
+    
+    if user.is_authenticated and user.is_staff == True and user.is_active == True and emp.employeetype == 'employee':
         users = MyUser.objects.all()
         unal = []
         for us in users:
-            if us.is_staff == False and us.allot == False:
-                unal.append(us)
-        totpeeps = employeecontrol.objects.filter(Q(employeetype="Dietician") | Q(employeetype="Nutritionist"))
+            if emptype == 'Dietician':
+                if us.is_staff == False and us.allotdieti == False:
+                    if us.sub == 'Semi-Premium Plan' or us.sub == 'Premium Plan':
+                        unal.append(us)
+            elif emptype == 'Nutritionist':
+                if us.is_staff == False and us.allotnutri == False:
+                    unal.append(us)
+            elif emptype == 'Fitness Trainer':
+                if us.is_staff == False and us.allottrain == False:
+                    unal.append(us)
+        totpeeps = employeecontrol.objects.filter(employeetype=emptype)
         freepeeps = []
         for peep in totpeeps:
             counter = peep.alloted.count()
-            if counter <= 25:
-                freepeeps.append(peep)
+            if emptype == 'Dietician':
+                if counter <= 25:
+                    freepeeps.append(peep)
+            elif emptype == 'Nutritionist':
+                if counter <= 50:
+                    freepeeps.append(peep)
+            elif emptype == 'Fitness Trainer':
+                if counter <= 100:
+                    freepeeps.append(peep)
     parms = {
         "title":title,
         'unal':unal,
         'freepeeps':freepeeps,
+        'emptype':emptype,
     }
     return render(request,'unalo.html',parms)
 
+#bmr calculate
 def bmrmain(weight,height,age,gender):
     heightincm=height*100
     if gender == 'male':
@@ -646,36 +835,13 @@ def bmrmain(weight,height,age,gender):
         bmr=655.1+(9.563*weight)+(1.85*heightincm)-(4.676*age)
     return bmr
 
-
+#bmr calculater!
 def bmrcal(request):
     headtitle = "Life Styles | Bmr"
     user = request.user
     usertype = None
     bmrr =0.0
-    
-    script = None
-    div = None
     if user.is_authenticated:
-        objs = bmr.objects.filter(us=user)
-        x = []
-        y = []
-        for obj in objs:
-            x.append(obj.bmr)
-            y.append(obj.date)
-        title = 'BMR Graph'
-
-        plot = figure(title= title , 
-            x_axis_label= 'X-Axis', 
-            y_axis_label= 'Y-Axis', 
-            plot_width =400,
-            plot_height =400)
-
-        plot.line(x, y, legend= 'f(x)', line_width = 2)
-        #Store components 
-        script, div = components(plot)
-        if user.is_staff == True:
-            emp = employeecontrol.objects.get(id=user)
-            usertype = emp.employeetype
         if request.method=="POST":
             weight_metric = request.POST.get("weight-metric")
             weight_imperial = request.POST.get("weight-imperial")
@@ -689,12 +855,9 @@ def bmrcal(request):
                 weight = float(request.POST.get("weight-imperial"))/2.205
                 height = (float(request.POST.get("feet"))*30.48 + float(request.POST.get("inches"))*2.54)/100
                 age = int(request.POST.get("age-imperial"))
-                gender = str(request.POST.get("gender-imperial"))
-
-            
+                gender = str(request.POST.get("gender-imperial"))        
             cont = bmrmain(weight,height,age,gender)
             bmrr = cont
-            
             save = request.POST.get("save")
             if save == "on":
                 user = request.user
@@ -708,8 +871,5 @@ def bmrcal(request):
         'title':headtitle,
         'usertype':usertype,
         'bmr':bmrr,
-        'script':script,
-        'div':div,
     }
-
     return render(request,'bmrmain.html',parms)

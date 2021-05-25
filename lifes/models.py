@@ -35,7 +35,15 @@ sizes = (
     ("serving","serving"),
     ("mg","mg"),
 )
-
+day = (
+    ('Monday','Monday'),
+    ('Tuesday','Tuesday'),
+    ('Wednesday','Wednesday'),
+    ('Thursday','Thursday'),
+    ('Friday','Friday'),
+    ('Saturday','Saturday'),
+    ('Sunday','Sunday'),
+)
 class food(models.Model):
     pic = models.URLField()
     name = models.CharField(max_length=100)
@@ -66,6 +74,7 @@ class foodplan(models.Model):
         verbose_name_plural = "Manage Food Plans!"
 
 class dietplan(models.Model):
+    day = models.CharField(choices=day,max_length=50,default='Monday')
     preworkout = models.ManyToManyField(foodplan,related_name="Pre_Workout")
     postworkout = models.ManyToManyField(foodplan,related_name="Post_Workout")
     lunch = models.ManyToManyField(foodplan,related_name="Lunch")
@@ -148,7 +157,7 @@ class MyUser(AbstractUser):
     allotnutri = models.BooleanField(default=False)
     allotdieti = models.BooleanField(default=False)
     allottrain = models.BooleanField(default=False)
-    sub = models.OneToOneField(subplans,on_delete=models.CASCADE,blank=True,null=True)
+    sub = models.ForeignKey(subplans,on_delete=models.CASCADE,blank=True,null=True)
     streaks = models.ForeignKey(streak,on_delete=models.CASCADE,blank=True,null=True)
     bio = models.CharField(max_length=5000,blank=True,null=True)
     location = models.CharField(max_length=100,blank=True,null=True)
@@ -192,6 +201,14 @@ class employeecontrol(models.Model):
     class Meta:
         verbose_name_plural = "Check Employees!"
 
+class complaint(models.Model):
+    us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+    emptype = models.ForeignKey(employeecontrol,on_delete=models.CASCADE)
+    reason = models.CharField(max_length=10000)
+    
+    class Meta:
+        verbose_name_plural = "User Complaints"
+
 class grocerylist(models.Model):
     id = models.OneToOneField(MyUser,on_delete=models.CASCADE,primary_key=True)
     items = models.ManyToManyField(food,blank=True)
@@ -231,3 +248,4 @@ class bmr(models.Model):
 
     class Meta:
         verbose_name_plural = "BMR INDEX"
+

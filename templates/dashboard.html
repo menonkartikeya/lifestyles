@@ -84,6 +84,17 @@
                 {%endif%}
                 <!-- Button trigger modal -->
             </div>
+            <div class="col-5 op p-5 col123 shadow fony">
+                <h1>Your Previous BMR Index</h1>
+                {% if bmr == none %}
+                <p>Nothing Logged Yet!</p>
+                <a href="{% url 'bmrcal' %}"> <button class="btn btn-primary btn-small">Get BMR Now</button></a>
+                {% else %}
+                <p>{{bmr.bmr}} kcal/day</p>
+                <a href="{% url 'bmrcal' %}"> <button class="btn btn-primary btn-small">More</button></a>
+                {%endif%}
+                <!-- Button trigger modal -->
+            </div>
 
             <div class="col-3 op  p-5 shadow col1234 ml-4 fony">
                 <h3>Your Subscription:</h3>
@@ -157,16 +168,17 @@
 
             <div class="col-3 op col1234  p-5 shadow ml-5 fony ">
                 <h1>Meal Plan:</h1>
-                {% if user.diets != none %}
+                <!-- {% if user.diets != none %}
                 <ul class="list-group my-2">
-                    <a href="{% url 'fooddetail' user.diets.breakfast.fooditem  %}"><li class="list-group-item list-group-item-warning">Breakfast: {{user.diets.breakfast}}</li></a>
-                    <a href="{% url 'fooddetail' user.diets.lunch.fooditem  %}"><li class="list-group-item list-group-item-warning">Lunch: {{user.diets.lunch}}</li></a>
-                    <a href="{% url 'fooddetail' user.diets.snacks.fooditem  %}"><li class="list-group-item list-group-item-warning">Snacks: {{user.diets.snacks}}</li></a>
-                    <a href="{% url 'fooddetail' user.diets.dinner.fooditem  %}"><li class="list-group-item list-group-item-warning">Dinner: {{user.diets.dinner}}</li></a>
+                    {% for prework in user.diets.preworkout%}
+                    <a href=""><li class="list-group-item list-group-item-warning">Breakfast: {{user.diets.breakfast}}</li></a>
+                    <a href=""><li class="list-group-item list-group-item-warning">Lunch: {{user.diets.lunch}}</li></a>
+                    <a href=""><li class="list-group-item list-group-item-warning">Snacks: {{user.diets.snacks}}</li></a>
+                    <a href=""><li class="list-group-item list-group-item-warning">Dinner: {{user.diets.dinner}}</li></a>
                 </ul>
                 {%else%}
                 <p>No Meal Plan Set yet!</p>
-                {%endif%}
+                {%endif%} -->
             </div>
         </div>
     </div>

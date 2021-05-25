@@ -2,17 +2,53 @@
   {% block body %}
   {% load static %}
 <h2>Target: {{target.username}}</h2>
-{% if freepeeps is null %}
-<h2>No Free Dietician/Nutritionist Available</h2>
-{%else%}
+<h3>{{target.sub.plan}}</h3>
+{% if target.sub.plan == "Free Plan" %}
+<h2>User Not Subscribed to Paid Plans</h2>
+{%elif target.sub.plan == 'Basic Plan' %}
 <form action="" method="post">
     {%csrf_token%}
-    <select name="diet" id="">
-        {% for peep in freepeeps%}
-        <option value="{{peep.id}}">{{peep.id}}</option>
-        {%endfor%}
-    </select>
-    <input type="submit" value="Allocate">
+    <label for="nut">Nutritionist</label>
+    <select name="nut" id="">
+      {% for peep in freenutpeeps%}
+      <option value="{{peep.id}}">{{peep.id}}</option>
+      {%endfor%}
+  </select>
+  <br>
+  <label for="fit">Fitness Trainer</label>
+  <select name="fit" id="">
+    {% for peep in freefitpeeps%}
+    <option value="{{peep.id}}">{{peep.id}}</option>
+    {%endfor%}
+</select>
+<input type="submit" value="Allocate">
+</form>
+{%elif target.sub.plan == 'Semi-Premium Plan' or target.sub.plan == 'Premium Plan' %}
+<form action="" method="post">
+{%csrf_token%}
+<label for="diet">Dietician</label>
+<select name="diet" id="">
+  {% for peep in freediepeeps%}
+  <h2>{{peep}}</h2>
+  <option value="{{peep.id}}">{{peep.id}}</option>
+  {%endfor%}
+</select>
+<br>
+<label for="nut">Nutritionist</label>
+<select name="nut" id="">
+{% for peep in freenutpeeps%}
+<option value="{{peep.id}}">{{peep.id}}</option>
+{%endfor%}
+</select>
+<br>
+<label for="fit">Fitness Traineer</label>
+<select name="fit" id="">
+{% for peep in freefitpeeps%}
+<option value="{{peep.id}}">{{peep.id}}</option>
+{%endfor%}
+</select>
+<input type="submit" value="Allocate">
 </form>
 {%endif%}
+
   {% endblock body %}
