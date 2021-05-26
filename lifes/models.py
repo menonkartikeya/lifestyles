@@ -44,6 +44,12 @@ day = (
     ('Saturday','Saturday'),
     ('Sunday','Sunday'),
 )
+billtypes = (
+    ('subscriptions','subscriptions'),
+    ('grocery','grocery'),
+    ('products','products'),
+    ('Other','Other'),
+)
 class food(models.Model):
     pic = models.URLField()
     name = models.CharField(max_length=100)
@@ -73,6 +79,7 @@ class foodplan(models.Model):
     class Meta:
         verbose_name_plural = "Manage Food Plans!"
 
+
 class dietplan(models.Model):
     day = models.CharField(choices=day,max_length=50,default='Monday')
     preworkout = models.ManyToManyField(foodplan,related_name="Pre_Workout")
@@ -85,11 +92,14 @@ class dietplan(models.Model):
     class Meta:
         verbose_name_plural = "Manage Diet Plans Issued!"
 
-
 class bills(models.Model):
     invoicepdf = models.FileField(null=True,blank=True)
     name = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
+    date = models.DateField(auto_now_add=True)
+    billtype = models.CharField(choices=billtypes,max_length=1000,default="Other")
+    expiry = models.BooleanField(default=False)
+    paid = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -149,9 +159,8 @@ class MyUser(AbstractUser):
     height = models.FloatField(default=0.0,blank=True)
     weight = models.FloatField(default=0.0,blank=True)
     target = models.CharField(choices=targets,max_length=60,blank=True,null=True)
-    diets = models.ForeignKey(dietplan, on_delete=models.CASCADE,blank=True,null=True)
+    diets = models.ManyToManyField(dietplan,blank=True)
     bill = models.ManyToManyField(bills,blank=True)
-    foodplans = models.ManyToManyField(foodplan,blank=True)
     lives = models.ManyToManyField(live,blank=True)
     age = models.IntegerField(blank=True,null=True)
     allotnutri = models.BooleanField(default=False)
@@ -200,6 +209,16 @@ class employeecontrol(models.Model):
 
     class Meta:
         verbose_name_plural = "Check Employees!"
+
+
+class requestchange(models.Model):
+    us = models.ForeignKey(MyUser,on_delete=models.CASCADE,blank=True,null=True)
+    emp = models.ForeignKey(employeecontrol,on_delete=models.CASCADE,blank=True,null=True)
+    reason = models.CharField(max_length=10000)
+    diet = models.ForeignKey(dietplan,on_delete=models.CASCADE,blank=True,null=True)
+
+    class Meta:
+        verbose_name_plural = "User Requests"
 
 class complaint(models.Model):
     us = models.ForeignKey(MyUser,on_delete=models.CASCADE)

@@ -27,7 +27,7 @@
         <button class="btn btn-white bu col-12 nm" type="submit">
             <div class="d-flex flex-row ">
                 <img class="lll" src="https://cdn1.iconfinder.com/data/icons/network-and-comminications-flat-circle-shadow-vo-1/120/content__blog__media__articles__news__management__edit-512.png" alt="" />
-                <a href="{% url 'invoices' %}"><h4 class="ml-3">Invoices</h4></a>
+                <a href="{% url 'invoices' user.id %}"><h4 class="ml-3">Invoices</h4></a>
             </div>
         </button>
         <br />
@@ -147,17 +147,21 @@
                 {%if user.sub.plan != "Free Plan" %}
                 <div class="col-12 op col12345  p-5 shadow ml-4 y mt-4">
                     {% if user.sub.plan == "Basic Plan" %}
-                    <h4><b>Note From Nutritionist({{findnutri.id}}):</b></h4>
-                    {% if user.diets.remarks is empty %}
-                    <p>Nope! All's Good!</p>
-                    {%else%}
-                    <p>{{user.diets.remarks}}</p>
-                    {%endif%}
+                        <h4><b>Note From Nutritionist({{findnutri.id}}):</b></h4>
+                        {% if dietplans.remarks is empty %}
+                             <p>Nope! All's Good!</p>
+                        {%else%}
+                        <p>{{dietplans.remarks}}</p>
+                        {%endif%}
                     <h4><b>Note From Fitness Trainer({{findtrain.id}}):</b></h4>
                     <p>Add Jinja here</p>
                     {%else %}
                     <h4><b>Note From Nutritionist & Dietician({{findnutri.id}} & {{finddieti.id}}):</b></h4>
-                    <p>{{user.diets.remarks}}</p>
+                    {% if dietplans.remarks is empty %}
+                             <p>Nope! All's Good!</p>
+                        {%else%}
+                        <p>{{dietplans.remarks}}</p>
+                        {%endif%}
                     <h4><b>Note From Fitness Trainer({{findtrain.id}}):</b></h4>
                     <p>Add Jinja here</p>
                     {%endif%}
@@ -168,17 +172,38 @@
 
             <div class="col-3 op col1234  p-5 shadow ml-5 fony ">
                 <h1>Meal Plan:</h1>
-                <!-- {% if user.diets != none %}
                 <ul class="list-group my-2">
-                    {% for prework in user.diets.preworkout%}
-                    <a href=""><li class="list-group-item list-group-item-warning">Breakfast: {{user.diets.breakfast}}</li></a>
-                    <a href=""><li class="list-group-item list-group-item-warning">Lunch: {{user.diets.lunch}}</li></a>
-                    <a href=""><li class="list-group-item list-group-item-warning">Snacks: {{user.diets.snacks}}</li></a>
-                    <a href=""><li class="list-group-item list-group-item-warning">Dinner: {{user.diets.dinner}}</li></a>
+                    <li class="list-group-item list-group-item-primary">Preworkout Meal:
+                    {% for item in premeal %}
+                     <a href="">{{item.fooditem}}</a>
+                     <br>
+                     {%endfor%}
+                    </li>
+                    <li class="list-group-item list-group-item-primary">Postworkout Meal:
+                        {% for item in postmeal %}
+                         <a href="">{{item.fooditem}}</a>
+                         <br>
+                         {%endfor%}
+                        </li>
+                        <li class="list-group-item list-group-item-primary">Lunch:
+                            {% for item in lunch %}
+                             <a href="">{{item.fooditem}}</a>
+                             <br>
+                             {%endfor%}
+                            </li>
+                            <li class="list-group-item list-group-item-primary">Snacks:
+                                {% for item in snacks %}
+                                 <a href="">{{item.fooditem}}</a>
+                                 <br>
+                                 {%endfor%}
+                                </li>
+                                <li class="list-group-item list-group-item-primary">Dinner:
+                                    {% for item in dinner %}
+                                     <a href="">{{item.fooditem}}</a>
+                                     <br>
+                                     {%endfor%}
+                                    </li>
                 </ul>
-                {%else%}
-                <p>No Meal Plan Set yet!</p>
-                {%endif%} -->
             </div>
         </div>
     </div>

@@ -18,11 +18,13 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
+import _datetime
 from django.contrib import messages
 from django.db.models.query import EmptyQuerySet
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
+from background_task import background
 # Create your views here.
 
 #Home Page - currently renders which type of user is there and shows links according to that.
@@ -88,7 +90,7 @@ def dashboard(request):
     #checks for user logged in and user is not any kind of employee
     if user.is_authenticated and user.is_staff == False:
         #get all bmi object of that particular user and then get the latest bmi of that user
-        bmii = bmi.objects.filter(us=user).order_by('-id')[:1]
+        bmii = bmi.objects.filter(us=user).order_by('-date').first()
         bmrr = bmr.objects.filter(us=user).order_by('-date').first()
         if user.allotdieti:
             #get user dietician if he is alloted one.
@@ -108,11 +110,6 @@ def dashboard(request):
         else:
             #else making that var none
             findtrain = None
-        #creating a list for storing single object of bmii as it returns a queryset of single obj but we cant send it to html
-        tmp = []
-        for i in bmii:
-            #appending tmp with bmi value
-            tmp.append(i.bmi)
         #creating a list for storing grocery items
         grolist = []
         try:
@@ -133,36 +130,48 @@ def dashboard(request):
             flag = True
         #if tmp list is empty then we pass these parameters basically bmi is passed as none
         #now code for diet plans.
-        day = timezone.now().day
-        dietplans = user.diets.filter(day=day)
-        print(dietplans)
-        if tmp == []:
-            parms = {
-                'title':title,
-                'bmi':None,
-                'bmr':bmrr,
-                'grolist':grolist,
-                'meet':meet,
-                'flag':flag,
-                'findnutri':findnutri,
-                'finddieti':finddieti,
-                'findtrain':findtrain,
-                'day':timezone.now().day,
-            }
-            #else bmi will be passed along with other parameters
-        else:
-            parms = {
-                'title':title,
-                'bmi':tmp[0],
-                'bmr':bmrr,
-                'grolist':grolist,
-                'meet':meet,
-                'flag':flag,
-                'findnutri':findnutri,
-                'finddieti':finddieti,
-                'findtrain':findtrain,
-                'day':timezone.now().day,
-            }
+        currday = datetime.datetime.today().weekday()
+        currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+        curday = currweek[currday]
+        dietplans = user.diets.get(day=curday)
+        i = dietplans.preworkout.all()
+        premeal = []
+        for item in i:
+            premeal.append(item)
+        j = dietplans.postworkout.all()
+        postmeal = []
+        for item in j:
+            postmeal.append(item)
+        lunch = []
+        k = dietplans.lunch.all()
+        for item in k:
+            lunch.append(item)
+        snacks = []
+        l = dietplans.snacks.all()
+        for item in l:
+            snacks.append(item)
+        m = dietplans.dinner.all()
+        dinner = []
+        for item in m:
+            dinner.append(item)
+        parms = {
+            'title':title,
+            'bmi':bmii,
+            'bmr':bmrr,
+            'grolist':grolist,
+            'meet':meet,
+            'flag':flag,
+            'findnutri':findnutri,
+            'finddieti':finddieti,
+            'findtrain':findtrain,
+            'curday':curday,
+            'dietplans':dietplans,
+            'premeal':premeal,
+            'postmeal':postmeal,
+            'lunch':lunch,
+            'snacks':snacks,
+            'dinner':dinner,
+        }
         return render(request,'dashboard.html',parms)
     #if user is not logged in then it will redirect to login
     else:
@@ -445,12 +454,37 @@ def eprofile(request,id):
     }
     return render(request,'eprofile.html', parms)
 
+@background(schedule=2629746)
+def unsubscribe_user(user_id,bill_id):
+    user = MyUser.objects.get(id=user_id)
+    bill = MyUser.bill.get(id=bill_id)
+    bill.expiry = True
+    user.email_user("Plan Expired","Your Subscription Plan Expired, Please Change Your Plan!")
+    bill.save()
+    
 
 #invoices function right now it just renders a html page!
-def invoices(request):
+def invoices(request,id):
     title = "Invoices | Lifestyles"
+    user = request.user
+    if user.is_authenticated and user.id == id and user.is_staff == False and user.is_active == True:
+        lastthree = user.bill.filter(paid=True).order_by('-id')[:3][::-1]
+        subbill = user.bill.filter(Q(paid=True) & Q(expiry=False) & Q(billtype="subscriptions"))
+        duedate = []
+        for bill in subbill:
+            a = int(bill.date.strftime('%Y%m%d'))
+            a_string = str(a)
+            a_length = len(a_string)
+            c = int(a_string[a_length - 2: a_length])
+            b = _datetime.date.today()
+            a_strings = str(b)
+            a_lengths = len(a_strings)
+            d = int(a_strings[a_lengths - 2: a_lengths])
+            duedate.append((c+30)-d)
     parms = {
         'title':title,
+        'lastthree':lastthree,
+        'duedate':duedate,
     }
     return render(request,'invoice.html',parms)
 

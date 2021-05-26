@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'lifes',
+    'background_task',
 ]
 X_FRAME_OPTIONS='SAMEORIGIN'
 

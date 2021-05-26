@@ -1,0 +1,460 @@
+{%load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- CSS only -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+	<!-- Load an icon library to show a hamburger menu (bars) on small screens -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="{% static 'BillsInvoice.css' %}" rel="stylesheet">
+	<title>{{title}}</title>
+</head>
+
+<body>
+	<!-- The sidebar -->
+	<div class="container-fluid xcx">
+		<div class="row">
+			<button type="button" name="button" class="sidebtn"></button>
+			<div class=" sidebar " id="mySideBar">
+				<img height="150px" class="assddf" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
+				<h2>{{user.username}}</h2>
+			  <hr class="rule" />
+				<button class="btn btn-white bu col-12 nm " type="submit">
+					<div class="d-flex flex-row ">
+						<img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
+						<h5 class="ml-3 mt-3">Dashboard</h5>
+					</div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm " type="submit" onclick="location.href='\profile\{{user.id}}';">
+					<div class="d-flex flex-row ">
+						<img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
+						<h5 class="ml-3 mt-3">Profile</h5>
+					</div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm shadow" type="submit">
+					<div class="d-flex flex-row ">
+						<img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
+						<h5 class="ml-3 mt-3">Bills</h5>
+					</div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm " type="submit">
+					<div class="d-flex flex-row ">
+						<img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
+						<h5 class="ml-3 mt-3">Live</h5>
+					</div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm " type="submit">
+					<div class="d-flex flex-row ">
+						<img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
+						<h5 class="ml-3 mt-3">Foodplans</h5>
+					</div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm " type="submit">
+					<div class="d-flex flex-row ">
+						<img class="lll" src="https://i.ibb.co/JrWk5dr/Whats-App-Image-2021-05-16-at-20-37-24-1.jpg" alt="" />
+						<h5 class="ml-3 mt-3">Logout</h5>
+					</div>
+				</button>
+					<hr class="rule" />
+					<p><small>All Copyrights Reserved by KOWI LIFESTYLES</small></p>
+			</div>
+			<div class="back12 col-lg-12 main">
+				<div class="row">
+
+				<div class="col-lg-12 p-3">
+
+					<div class="d-flex flex-row ">
+						<div class="bv">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb">
+									<li class="breadcrumb-item"><a href="#">Home</a>
+									</li>
+									<li class="breadcrumb-item"><a href="#myTab">Bills</a>
+									</li>
+									<li class="breadcrumb-item active" aria-current="page">Subscriptions</li>
+								</ol>
+							</nav>
+							<!-- <button class="btn btn-primary orangeBTN">Go Back</button> -->
+						</div>
+						<div class="mar">
+							<img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" />
+							<img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" />
+						</div>
+					</div>
+				</div>
+				<div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
+					<div class="col-12 text-center"  >
+						<div class="alert alert-warning alert-dismissible fade show" id="debugDiv" role="alert">
+							{% for message in messages %}
+							<div class="container-fluid p-0">
+							  <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+							    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							      <span aria-hidden="true">&times;</span>
+							    </button>
+							    {{ message }}
+							  </div>
+							</div>
+							{% endfor %}
+							<!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close" >
+							  <span aria-hidden="true">&times;</span>
+							</button> -->
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-12 p-5 shadow  you">
+					<ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+						<li class="nav-item"> <a class="nav-link active orangeTab" id="SubscriptionsTab" data-toggle="tab" href="#subscriptions" role="tab" aria-controls="subscriptions" aria-selected="true"><h5>Subscriptions</h5></a>
+						</li>
+						<li class="nav-item"> <a class="nav-link orangeTab" id="GroceryTab" data-toggle="tab" href="#grocery" role="tab" aria-controls="grocery" aria-selected="false"><h5>Grocery</h5></a>
+						</li>
+						<li class="nav-item"> <a class="nav-link orangeTab" id="ProductsTab" data-toggle="tab" href="#products" role="tab" aria-controls="products" aria-selected="false"><h5>Products</h5></a>
+						</li>
+					</ul>
+					<div class="tab-content" id="TabContent">
+						<div class="tab-pane fade show active" id="subscriptions" role="tabpanel" aria-labelledby="SubscriptionsTab">
+							<div class="row mt-5 ">
+								<div class="col-md-12  mb-1">
+									<h2>Your Plan: </h2>
+								</div>
+							</div>
+							<div class="row mt-5 justify-content-center">
+								<div class="col-lg-8 col-md-6 shadow you text-center mb-5">
+									<img src="{% static 'graphics/fitnesstrainer1.png' %}" class="img-fluid rounded-circle" alt="Current plan" style="width: 50%; float:left;">
+                                    <h3>{{user.sub.plan}}</h3>
+								</div>
+							</div>
+							<hr class="my-4" />
+							<div class="row mt-5 ">
+								<div class="col-md-6  mb-1">
+									<h2>Your Due date: </h2>
+                                    {%for due in duedate%}
+									<div class="col-lg-8 col-md-6 shadow you text-center mb-5">
+                                        {{due}}
+                                    </div>
+                                    {%endfor%}
+								</div>
+								<div class="col-md-6  mb-1">
+									<h2>Your Last Payments: </h2>
+									<div class="col-lg-12 col-md-6 shadow you text-center mb-5 pb-3">
+										<table class="table table-striped">
+											<thead>
+												<tr>
+													<th>Plan Name</th>
+													<th>Date</th>
+													<th>Receipt</th>
+												</tr>
+											</thead>
+											<tbody>
+                                                {%for last in lastthree %}
+												<tr>
+													<td>{{last.name}}</td>
+													<td>{{last.date}}</td>
+													<td><a href="{{last.invoicepdf}}">Click here</a>
+													</td>
+												</tr>
+                                                {%endfor%}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<hr class="my-4" />
+							<div class="row mt-5 ">
+								<div class="col-md-12  mb-1">
+									<h2>Change Your Plan: </h2>
+								</div>
+							</div>
+							<div class="row no-gutters justify-content-center">
+								<div class="col-lg-4 col-md-7 col-sm-9">
+									<div class="single-pricing text-center pricing-color-1 mt-30 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.3s">
+										<div class="pricing-price"> <span class="price"><b>999</b>/m.<span class="symbol">₹</span></span>
+										</div>
+										<div class="pricing-title mt-20"> <span class="btn">20% Off</span>
+											<h4 class="title">Fitness</h4>
+										</div>
+										<div class="pricing-list pt-20">
+											<ul>
+												<li>Trainer to guide you</li>
+												<li>Workout plans</li>
+												<li>Exercises</li>
+												<li>24 hr Support</li>
+											</ul>
+										</div>
+										<div class="pricing-btn pt-70"> <a class="main-btn main-btn-2" href="#">Subscribe !</a>
+										</div>
+									</div>
+									<!-- single pricing -->
+								</div>
+								<div class="col-lg-4 col-md-7 col-sm-9">
+									<div class="single-pricing text-center pricing-active pricing-color-2 mt-30 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.6s">
+										<div class="pricing-price"> <span class="price"><b>4999</b>/m.<span class="symbol">₹</span></span>
+										</div>
+										<div class="pricing-title mt-20"> <span class="btn">Special</span>
+											<h4 class="title">Nutritionist </h4>
+										</div>
+										<div class="pricing-list pt-20">
+											<ul>
+												<li>Professional Nutritionist</li>
+												<li>24 hr guidance</li>
+												<li>Measure Nutrient Intake</li>
+												<li>Live video calling</li>
+											</ul>
+										</div>
+										<div class="pricing-btn pt-70"> <a class="main-btn" href="#">Subscribe !</a>
+										</div>
+									</div>
+									<!-- single pricing -->
+								</div>
+								<div class="col-lg-4 col-md-7 col-sm-9">
+									<div class="single-pricing text-center pricing-color-3 mt-30 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.9s">
+										<div class="pricing-price"> <span class="price"><b>2499</b>/m.<span class="symbol">₹</span></span>
+										</div>
+										<div class="pricing-title mt-20"> <span class="btn">New</span>
+											<h4 class="title">Diet</h4>
+										</div>
+										<div class="pricing-list pt-20">
+											<ul>
+												<li>Full Meal Plan</li>
+												<li>Dietician Support</li>
+												<li>Live Recipes</li>
+												<li>24 hr Support</li>
+											</ul>
+										</div>
+										<div class="pricing-btn pt-70"> <a class="main-btn main-btn-2" href="#">Subscribe !</a>
+										</div>
+									</div>
+									<!-- single pricing -->
+								</div>
+							</div>
+							<!-- row -->
+							<!-- <div class="row mt-5 justify-content-center">
+                      <div class="col-4 ">
+                        <div class="card " >
+                            <img src="graphics/dieticians1.png" alt="" class="pb-3">
+                            <div class="card-body">
+                              <h5 class="card-title text-center">Fitness</h5>
+                              <p class="card-text">
+                                Some quick example text to build on the card title and make up the bulk of
+                                the card's content.
+                              </p>
+                              <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>
+                      </div>
+
+
+                      <div class="col-4">
+                      <div class="card ">
+                          <img src="graphics/nutritionist1.png" alt="">
+                          <div class="card-body">
+                            <h5 class="card-title">Bootstrap video card with controls</h5>
+                            <p class="card-text">
+                              Some quick example text to build on the card title and make up the bulk of
+                              the card's content.
+                            </p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div class="card " >
+                          <img src="graphics/fitnesstrainer1.png" alt="">
+                          <div class="card-body">
+                            <h5 class="card-title">Bootstrap video card with controls</h5>
+                            <p class="card-text">
+                              Some quick example text to build on the card title and make up the bulk of
+                              the card's content.
+                            </p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                          </div>
+                      </div>
+                     </div>
+                   </div> --></div>
+						<div class="tab-pane fade" id="grocery" role="tabpanel" aria-labelledby="GroceryTab">
+							<div class="row mt-5 ">
+								<div class="col-md-12  mb-1">
+									<h2>Grocery Bills: </h2>
+								</div>
+							</div>
+							<div class="row  mt-3">
+								<!-- <div class="col-lg-1">
+
+                      </div> -->
+								<div class="col-lg-12 col-md-12 shadow you  mb-5 pb-3 ">
+									<h4 class="pt-2 pb-2 text-center">Pending Bills</h4>
+									<table class="table table-bordered table-hover">
+										<thead class=" thead-light">
+											<tr>
+												<th>Name</th>
+												<th>Price</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>Paneer</td>
+												<td>200/-</td>
+											</tr>
+											<tr>
+												<td>Broccoli</td>
+												<td>150/-</td>
+											</tr>
+											<tr>
+												<td>Carrots</td>
+												<td>50/-</td>
+											</tr>
+											<tr class=" table-light">
+												<td><b>Total : </b>
+												</td>
+												<td><b>400/-</b>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="text-center">
+										<button class="btn btn-primary orangeBTN" type="button" name="button">Pay Now</button>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="col-lg-1">
+
+                            </div> -->
+							<div class="row ">
+								<div class="col-lg-12 col-md-12 shadow you mb-5 pb-3">
+									<h4 class="pt-2 pb-2 text-center">Paid Bills</h4>
+									<table class="table table-bordered table-hover">
+										<thead class="thead-light">
+											<tr>
+												<th>Name</th>
+												<th>Price</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>Capsicum</td>
+												<td>50/-</td>
+											</tr>
+											<tr>
+												<td>Milk</td>
+												<td>160/-</td>
+											</tr>
+											<tr>
+												<td>Lettuce</td>
+												<td>60/-</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="text-center">
+										<button class="btn btn-primary orangeBTN " type="button" name="button">Show Previous</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="products" role="tabpanel" aria-labelledby="ProductsTab">
+							<div class="row mt-5 ">
+								<div class="col-md-12  mb-1">
+									<h2>Product Bills: </h2>
+								</div>
+							</div>
+							<div class="row  mt-3">
+								<!-- <div class="col-lg-1">
+
+                              </div> -->
+								<div class="col-lg-12 col-md-12 shadow you mb-5 pb-3 ">
+									<h4 class="pt-2 pb-2 text-center">Pending Bills</h4>
+									<table class="table table-bordered table-hover">
+										<thead class=" thead-light">
+											<tr>
+												<th>Name</th>
+												<th>Price</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>Calories Scale</td>
+												<td>1200/-</td>
+											</tr>
+											<tr>
+												<td>Body Composition Scale</td>
+												<td>1350/-</td>
+											</tr>
+											<!-- <tr>
+                                            <td>Carrots</td>
+                                            <td>50/-</td>
+                                          </tr> -->
+											<tr class=" table-light">
+												<td><b>Total : </b>
+												</td>
+												<td><b>2550/-</b>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="text-center">
+										<button class="btn btn-primary orangeBTN " type="button" name="button">Pay Now</button>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="col-lg-1">
+
+                                    </div> -->
+							<div class="row ">
+								<div class="col-lg-12 col-md-12 shadow you mb-5 pb-3">
+									<h4 class="pt-2 pb-2 text-center">Paid Bills</h4>
+									<table class="table table-bordered table-hover">
+										<thead class="thead-light">
+											<tr>
+												<th>Name</th>
+												<th>Price</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>Weighing Machine</td>
+												<td>1200/-</td>
+											</tr>
+											<tr>
+												<td>Calories Meter</td>
+												<td>1100/-</td>
+											</tr>
+											<!-- <tr>
+                                              <td>Lettuce</td>
+                                              <td>60/-</td>
+                                            </tr> -->
+										</tbody>
+									</table>
+									<div class="text-center">
+										<button class="btn btn-primary orangeBTN " type="button" name="button">Show Previous</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+	<div style="margin-bottom: 3cm;">
+		<!--Just for extra space-->
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="{% static 'BillsInvoice.js' %}"></script>
+</body>
+
+</html>

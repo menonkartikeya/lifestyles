@@ -1,0 +1,368 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap');
+
+/* .back1234 {
+    background-color: white;
+    height: 100vh;
+    background-size: cover;
+
+} */
+
+
+/* The side navigation menu */
+.sidebar {
+  background-color: white;
+  width: 300px;
+  position: fixed;
+  top:0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+
+  padding: 20px;
+  text-align: center;
+  /* overflow-x: hidden; */
+  /* overflow-y: auto;  Scrollable contents if viewport is shorter than content.  */
+  border-right: 1px solid #eee;
+}
+@media (min-width: 780px) {
+  .main {
+  padding-right: 40px;
+  padding-left: 340px; /* 300 + 40 */
+  }
+  .sidebtn{
+    display: none;
+  }
+  .sidebar{
+    display: block;
+  }
+}
+@media screen and (max-width: 780px) {
+  .sidebtn{
+    display: block;
+  }
+  .sidebar{
+    display: none;
+    overflow-x: hidden;
+    /* transition: opacity 0.4s ease-out;
+    opacity: 0;
+    overflow-x: hidden; */
+  }
+}
+
+.sidebtn{
+  border-radius: 50%;
+  background-color: orange;
+  padding: 10px;
+  z-index: 101;
+  position: fixed;
+  margin: 25px 10px;
+}
+.showSidebar{
+  display: block;
+  /* opacity: 1; */
+}
+.back12 {
+    background-color: white;
+}
+/* .withOpacity{
+    background-color: grey;
+} */
+
+
+
+
+.nm{
+   transition-duration: 0.2s;
+}
+.nm:hover{
+  background-color: whitesmoke;
+  color:tomato;
+}
+
+
+
+
+
+.assddf {
+    border-radius: 80px;
+}
+
+.h {
+    text-align: center;
+}
+
+.ij1 {
+    height: 50px;
+    border-radius: 60px;
+}
+
+.aaa:hover {
+    background-color: white;
+
+}
+
+.bu {
+    border-width: 0px;
+    text-align: left;
+    border-radius: 20px;
+
+
+}
+
+.lll {
+    height: 50px;
+    border-radius: 25px;
+}
+
+.op {
+    border-radius: 25px;
+}
+
+.col123 {
+    background-color: #ff0b52;
+}
+
+.col1234 {
+    background-color: lightgreen;
+}
+
+.col12345 {
+    background-color: white;
+}
+
+.fony {
+    color: white;
+
+}
+
+.imj {
+    height: 50px;
+
+}
+
+.mar {
+    margin-left: auto;
+}
+
+.imj1 {
+    height: 50px;
+    border-radius: 23px;
+
+
+}
+
+.mar1 {
+    margin-top: 180px;
+    color: grey;
+}
+
+.rule {
+    border-width: 3px;
+}
+
+.you {
+    border-radius: 25px;
+
+
+}
+
+.xcx {
+    font-family: "Titillium Web";
+}
+
+.texth {
+    text-align: center;
+}
+
+.hicon {
+    height: 120px;
+}
+
+.infog {
+    color: grey;
+    font-size: 15px;
+}
+
+.bv {
+    text-align: right;
+    margin-left: 30px;
+}
+
+.bv1 {
+    margin-left: auto;
+}
+
+
+
+
+
+
+
+
+/* Orange Button */
+.orangeBTN{
+  background-color:orange;
+  border:orange;
+}
+.orangeBTN:hover{
+  background-color:orange;
+  opacity:0.8;
+}
+
+/* BreadCrumbs */
+ol.breadcrumb {
+  padding: 10px 16px;
+  list-style: none;
+  background-color: white;
+}
+/* Add a color to all links inside the list */
+ol.breadcrumb li a , a{
+  color: orange;
+  text-decoration: none;
+}
+/* Add a color on mouse-over */
+ol.breadcrumb li a:hover , a:hover{
+  color: tomato;
+  text-decoration: underline;
+}
+
+ /* Tabs color */
+ .orangeTab{
+   color: #FFA500;
+ }
+.orangeTab:hover{
+  color: tomato;
+}
+.orangeTab.active{
+  color:black;
+}
+
+
+.card {
+  transition: transform 0.2s ease;
+  box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
+  border-radius: 0;
+  border: 0;
+    margin-bottom: 1.5em;
+}
+video {
+  max-width: 100%;
+}
+.card:hover {
+  transform: scale(1.1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.single-pricing {
+  padding: 65px 50px 70px; }
+  @media (max-width: 767px) {
+    .single-pricing {
+      padding: 45px 30px 50px; } }
+  .single-pricing .pricing-price .price {
+    font-size: 42px;
+    color: #222;
+    font-family: "Titillium Web", sans-serif; }
+    .single-pricing .pricing-price .price b {
+      font-weight: 800; }
+    .single-pricing .pricing-price .price .symbol {
+      font-size: 18px;
+      color: #f14836;
+      font-weight: 700;
+      font-family: "Titillium Web", sans-serif; }
+  .single-pricing .pricing-title {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    border-bottom: 1px solid #dedede4f;
+    padding-bottom: 50px; }
+    .single-pricing .pricing-title .btn {
+      padding: 0 15px;
+      line-height: 25px;
+      border-radius: 50px;
+      background-color: #4bb3f9;
+      color: #fff;
+      font-size: 14px; }
+    .single-pricing .pricing-title .title {
+      font-weight: 600;
+      font-size: 24px;
+      font-family: "Titillium Web", sans-serif;
+      padding-left: 10px; }
+  .single-pricing .pricing-list ul li {
+    font-size: 14px;
+    color: #798795;
+    margin-top: 20px; }
+  .single-pricing .pricing-btn .main-btn {
+    text-transform: uppercase; }
+    .single-pricing .pricing-btn .main-btn.main-btn-2 {
+      border-color: transparent;
+      color: #222; }
+  .single-pricing.pricing-color-1 .pricing-title .btn {
+    background-color: #4bb3f9; }
+  .single-pricing.pricing-color-2 .pricing-title .btn {
+    background-color: #f14836; }
+  .single-pricing.pricing-color-3 .pricing-title .btn {
+    background-color: #63b85f; }
+  .single-pricing.pricing-active {
+    -webkit-box-shadow: 0px 30px 30px 0px rgba(0, 0, 0, 0.07);
+    -moz-box-shadow: 0px 30px 30px 0px rgba(0, 0, 0, 0.07);
+    box-shadow: 0px 30px 30px 0px rgba(0, 0, 0, 0.07); }
+
+
+
+    .main-btn {
+      display: inline-block;
+      font-weight: 700;
+      font-family: "Titillium Web", sans-serif;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      border: 2px solid tomato;
+      padding: 0 30px;
+      font-size: 16px;
+      height: 55px;
+      line-height: 51px;
+      border-radius: 50px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 5;
+      -webkit-transition: all 0.4s ease-out 0s;
+      -moz-transition: all 0.4s ease-out 0s;
+      -ms-transition: all 0.4s ease-out 0s;
+      -o-transition: all 0.4s ease-out 0s;
+      transition: all 0.4s ease-out 0s;
+      background-color: tomato; }
+
+      .main-btn:hover {
+        background-color: rgba(241, 72, 54, 0.3);
+        color: tomato;
+        border-color: tomato; }
+      .main-btn.main-btn-2 {
+        background-color: #fff;
+        color: #f14836;
+        border-color: tomato; }
+        .main-btn.main-btn-2:hover {
+          color:tomato;
+          background-color: rgba(241, 72, 54, 0.3);
+          border-color: tomato; }
