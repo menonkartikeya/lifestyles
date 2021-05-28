@@ -968,10 +968,10 @@ def foodapi(request):
         serializers = foodSerializer(foods,many=True)
         return Response(serializers.data)
 
-def callfoodapi(request):
-    resp = requests.get('http://127.0.0.1:8000/api/food/',headers={'Authorization':'Token deb22ecbedae623617daca421564a28e04186826'})
-    data = resp.json()
-    return JsonResponse(data,safe=False)
+# def callfoodapi(request):
+#     resp = requests.get('http://127.0.0.1:8000/api/food/',headers={'Authorization':'Token deb22ecbedae623617daca421564a28e04186826'})
+#     data = resp.json()
+#     return JsonResponse(data,safe=False)
 
 @api_view(['POST',])
 def registration_view(request):
@@ -990,6 +990,56 @@ def registration_view(request):
         
         return Response(data)
     
+class ChangePasswordView(generics.UpdateAPIView):
+    """
+    An endpoint for changing password.
+    """
+    serializer_class = ChangePasswordSerializer
+    model = MyUser
+    permission_classes = (IsAuthenticated,)
 
-#profile_serialize -profile update and get
-#change password, reset pass serializer
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            # Check old password
+            if not self.object.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            response = {
+                'status': 'success',
+                'code': status.HTTP_200_OK,
+                'message': 'Password updated successfully',
+                'data': []
+            }
+
+            return Response(response)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST','PUT','GET',])
+@permission_classes((IsAuthenticated, ))
+def profile_view(request):
+    if request.method == "POST" or request.method == "PUT":
+        serializer = ProfileSerializer(data=request.data,many=False)
+        data = {}
+        if serializer.is_valid():
+            user = request.user
+            user = serializer.update(user,serializer.validated_data)
+            data['response'] = "Succesfully Updated!"            
+        else:
+            data = serializer.errors
+        
+        return Response(data)
+    elif request.method == 'GET':
+        user = request.user
+        serializer = ProfileSerializer(user)
+        return Response(serializer.data)
+

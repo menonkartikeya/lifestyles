@@ -51,9 +51,10 @@ urlpatterns = [
     path('register/',signup,name="signup"),
     path('eregister/',esignup,name="esignup"),
     path('api/food/',foodapi,name="foodapi"),
-    path('api/callfoodapi/',callfoodapi,name="callfoodapi"),
     path('api/register/',registration_view,name="registeration_view"),
     path('api/login/',obtain_auth_token,name="Apilogin"),
+    path('api/change-password/', ChangePasswordView.as_view(), name='change-password'),
+    path('api/profile/',profile_view,name="profile_view"),
     url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]
