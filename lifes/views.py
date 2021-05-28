@@ -25,6 +25,16 @@ from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
 from background_task import background
+from .serializers import *
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import *
+from rest_framework.permissions import IsAuthenticated
+import requests
+from rest_framework import generics, permissions
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 #Home Page - currently renders which type of user is there and shows links according to that.
@@ -92,6 +102,8 @@ def dashboard(request):
         #get all bmi object of that particular user and then get the latest bmi of that user
         bmii = bmi.objects.filter(us=user).order_by('-date').first()
         bmrr = bmr.objects.filter(us=user).order_by('-date').first()
+
+            
         if user.allotdieti:
             #get user dietician if he is alloted one.
             finddieti = employeecontrol.objects.get(Q(employeetype="Dietician") & Q(alloted=user))
@@ -114,7 +126,7 @@ def dashboard(request):
         grolist = []
         try:
             #trying to check for grocery list object
-            grocery = grocerylist.objects.get(id=user.id)
+            grocery = grocerylist.objects.filter(groid=user.id).first()
         #if object does not exist then list will be none
         except ObjectDoesNotExist:
             grocery = None
@@ -334,7 +346,7 @@ def edashboard(request):
     user = request.user
     try:
         employee = employeecontrol.objects.get(id=user)
-    except ObjectDoesNotExist:
+    except:
         messages.error(request,"Nope,You are not our Employee, Sorry!")
         return redirect(index)
     if user.is_authenticated and user.is_staff == True and user.is_active == True and employee.employeetype == 'employee':
@@ -361,6 +373,18 @@ def edashboard(request):
             if counter <= 25:
                 freepeeps.append(peep)
         contacted = contact.objects.filter(check=False)
+        complaints = complaint.objects.filter(check=False)
+        if request.method == "POST":
+            check = request.POST['check']
+            cid = request.POST['id']
+            obj = complaint.objects.get(id=cid)
+            if check=="on":
+                obj.check = True
+            else:
+                obj.check = False
+            obj.cid = cid
+            obj.save()
+            return redirect('edashboard')
         parms = {
             'title':title,
             'employee':employee,
@@ -371,6 +395,7 @@ def edashboard(request):
             'freepeeps':freepeeps,
             'contacted':contacted[:5],
             'lives':lives,
+            'complaint':complaints,
             }
         return render(request,'edashboard.html',parms)
     else:
@@ -392,7 +417,7 @@ def profile(request,id):
                     user.mobno = request.POST['mobno']
                     user.target = request.POST['target']
                     user.age = request.POST['age']
-                    #checking user sub plans and then taking values from html if he wants to change or not!
+                    #checking user sub plans and then taking values ##from html if he wants to change or not!#https://medium.com/django-rest/django-rest-framework-change-password-and-update-profile-1db0c144c0a3
                     if user.sub.plan == 'Basic Plan':
                         checknutri = request.POST['checknutri']
                         checkfitness = request.POST['checkfitness']
@@ -481,10 +506,31 @@ def invoices(request,id):
             a_lengths = len(a_strings)
             d = int(a_strings[a_lengths - 2: a_lengths])
             duedate.append((c+30)-d)
+        grocery = grocerylist.objects.filter(groid=user.id)
+        paid = []
+        unpaid = []
+        unpaidtot = 0
+        unpaidprod = 0
+        for gro in grocery:
+            if gro.billitem.paid == True:
+                paid.append(gro)
+            else:
+                unpaid.append(gro)
+                unpaidtot+=gro.billitem.price
+        unprodbill = user.bill.filter(Q(paid=False) & Q(expiry=False) & Q(billtype="products"))
+        for i in unprodbill:
+            unpaidprod+=i.price
+        prodbill = user.bill.filter(Q(paid=True) & Q(expiry=True) & Q(billtype="products"))
     parms = {
         'title':title,
         'lastthree':lastthree,
         'duedate':duedate,
+        'paid':paid,
+        'unpaid':unpaid,
+        'unpaidtot':unpaidtot,
+        'unpaidprod':unpaidprod,
+        'unprodbill':unprodbill,
+        'prodbill':prodbill,
     }
     return render(request,'invoice.html',parms)
 
@@ -625,19 +671,24 @@ def grocery(request,id):
     if user.is_authenticated and user.id == id:
         try:
             #getting that grocery object
-            grocery = grocerylist.objects.get(id=id)
-            grolist = grocery.items.all()
-            if grocery.billitem.invoicepdf:
-                check = True
-            else:
-                check = False
+            grocery = grocerylist.objects.filter(groid=user.id)
+            paid = []
+            unpaid = []
+            unpaidtot = 0
+            for gro in grocery:
+                if gro.billitem.paid == True:
+                    paid.append(gro)
+                else:
+                    unpaid.append(gro)
+                    unpaidtot+=gro.billitem.price
         except ObjectDoesNotExist:
             return render(request,'404.html')
     parms = {
         'title':title,
-        'grolist':grolist,
         'grocery':grocery,
-        'check':check,
+        'paid':paid,
+        'unpaid':unpaid,
+        'unpaidtot':unpaidtot,
     }
     return render(request,'grocery.html',parms)
 
@@ -907,3 +958,38 @@ def bmrcal(request):
         'bmr':bmrr,
     }
     return render(request,'bmrmain.html',parms)
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
+def foodapi(request):
+    if request.method == 'GET':
+        foods = food.objects.all()
+        serializers = foodSerializer(foods,many=True)
+        return Response(serializers.data)
+
+def callfoodapi(request):
+    resp = requests.get('http://127.0.0.1:8000/api/food/',headers={'Authorization':'Token deb22ecbedae623617daca421564a28e04186826'})
+    data = resp.json()
+    return JsonResponse(data,safe=False)
+
+@api_view(['POST',])
+def registration_view(request):
+    if request.method == "POST":
+        serializer = RegistrationSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            user = serializer.save()
+            data['response'] = "Succesfully registered a new user"
+            data['email'] = user.email
+            data['username'] = user.username
+            token = Token.objects.get(user=user).key
+            data['token'] = token
+        else:
+            data = serializer.errors
+        
+        return Response(data)
+    
+
+#profile_serialize -profile update and get
+#change password, reset pass serializer

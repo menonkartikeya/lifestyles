@@ -139,7 +139,51 @@
                    {%endfor%}
                 </ul>
             </div>
+
+            <div class="col-3 op col1234  p-5 shadow ml-5 fony ">
+                <h2>User Complaints:</h2>
+                <ul class="list-group my-2">
+                   {%for comp in complaint %}
+                   <li class='list-group-item list-group-item-primary' data-toggle="modal" data-target="#myModal">User- {{comp.us.username}} against {{comp.emptype.id.username}}</li>
+                   <div class="modal fade" id="myModal" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="staticBackdropLabel">Check!</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                            Username - {{comp.us.username}}
+                            Against - {{comp.emptype.id.username}}
+                            Reason - 
+                            {{comp.reason}}
+                            <form action="" method="post" id="submitform">
+                                {%csrf_token%}
+                                <input type="text" name="id" value="{{comp.id}}">
+                                <label for="check">Check</label>
+                                <input type="checkbox" name="check" id="">
+                                <div class="modal-footer">
+                                <input type="submit" value="SUBMIT" class="btn" onclick="form_submit() ">
+                                </div>
+                            </form>
+                            <script>
+                                function form_submit() {
+                                    document.getElementById("submitform").submit();
+                               }  
+                            </script>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                   {% empty %}
+                   <p>No New Complaints</p>
+                   {%endfor%}
+                </ul>
+            </div>
             </div>
     </div>
 </div>
+
     {% endblock body %}

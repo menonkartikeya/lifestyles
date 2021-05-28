@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from django.views.static import serve
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
+from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,6 +50,10 @@ urlpatterns = [
     path('elogin/',elogin,name="elogin"),
     path('register/',signup,name="signup"),
     path('eregister/',esignup,name="esignup"),
+    path('api/food/',foodapi,name="foodapi"),
+    path('api/callfoodapi/',callfoodapi,name="callfoodapi"),
+    path('api/register/',registration_view,name="registeration_view"),
+    path('api/login/',obtain_auth_token,name="Apilogin"),
     url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]

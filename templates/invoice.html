@@ -29,28 +29,28 @@
 				<button class="btn btn-white bu col-12 nm " type="submit">
 					<div class="d-flex flex-row ">
 						<img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
-						<h5 class="ml-3 mt-3">Dashboard</h5>
+						<a href="{% url 'dashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
 					</div>
 				</button>
 				<br />
 				<button class="btn btn-white bu col-12 nm " type="submit" onclick="location.href='\profile\{{user.id}}';">
 					<div class="d-flex flex-row ">
 						<img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
-						<h5 class="ml-3 mt-3">Profile</h5>
+						<a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
 					</div>
 				</button>
 				<br />
 				<button class="btn btn-white bu col-12 nm shadow" type="submit">
 					<div class="d-flex flex-row ">
 						<img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
-						<h5 class="ml-3 mt-3">Bills</h5>
+						<a href="{% url 'invoices' user.id %}"><h5 class="ml-3 mt-3">Bills</h5></a>
 					</div>
 				</button>
 				<br />
 				<button class="btn btn-white bu col-12 nm " type="submit">
 					<div class="d-flex flex-row ">
 						<img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
-						<h5 class="ml-3 mt-3">Live</h5>
+						<a href="{% url 'book' %}"><h5 class="ml-3 mt-3">Live</h5></a>
 					</div>
 				</button>
 				<br />
@@ -64,7 +64,7 @@
 				<button class="btn btn-white bu col-12 nm " type="submit">
 					<div class="d-flex flex-row ">
 						<img class="lll" src="https://i.ibb.co/JrWk5dr/Whats-App-Image-2021-05-16-at-20-37-24-1.jpg" alt="" />
-						<h5 class="ml-3 mt-3">Logout</h5>
+						<a href="{% url 'logoutme' %}"><h5 class="ml-3 mt-3">Logout</h5></a>
 					</div>
 				</button>
 					<hr class="rule" />
@@ -96,7 +96,6 @@
 				</div>
 				<div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
 					<div class="col-12 text-center"  >
-						<div class="alert alert-warning alert-dismissible fade show" id="debugDiv" role="alert">
 							{% for message in messages %}
 							<div class="container-fluid p-0">
 							  <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
@@ -110,7 +109,6 @@
 							<!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close" >
 							  <span aria-hidden="true">&times;</span>
 							</button> -->
-						</div>
 					</div>
 				</div>
 				<div class="col-lg-12 p-5 shadow  you">
@@ -300,26 +298,44 @@
 											<tr>
 												<th>Name</th>
 												<th>Price</th>
+												<th>Reciept</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>Paneer</td>
-												<td>200/-</td>
-											</tr>
-											<tr>
-												<td>Broccoli</td>
-												<td>150/-</td>
-											</tr>
-											<tr>
-												<td>Carrots</td>
-												<td>50/-</td>
+												{%for grocery in unpaid %}
+												<td data-toggle="modal" data-target="#myModal">{{grocery.billitem.name}}</td>
+												<td>{{grocery.billitem.price}}/-</td>
+												<td><a href="{{grocery.billitem.invoicepdf}}">Click Here</a></td>
+												<div class="modal fade" id="myModal" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-scrollable">
+													  <div class="modal-content">
+														<div class="modal-header">
+														  <h5 class="modal-title" id="staticBackdropLabel">Items</h5>
+														  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<span aria-hidden="true">&times;</span>
+														  </button>
+														</div>
+														<div class="modal-body">
+															<ul class="list-group">
+															{%for gro in grocery.items.all%}
+															<li class="list-group-item list-group-item-primary">
+																{{gro.name}}
+															</li>
+															{%endfor%}
+														</ul>
+														</div>
+													  </div>
+													</div>
+												  </div>
+												{%endfor%}
 											</tr>
 											<tr class=" table-light">
 												<td><b>Total : </b>
 												</td>
-												<td><b>400/-</b>
+												<td><b>{{unpaidtot}}/-</b>
 												</td>
+												<td></td>
 											</tr>
 										</tbody>
 									</table>
@@ -339,29 +355,47 @@
 											<tr>
 												<th>Name</th>
 												<th>Price</th>
+												<th>Reciept</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>Capsicum</td>
-												<td>50/-</td>
-											</tr>
-											<tr>
-												<td>Milk</td>
-												<td>160/-</td>
-											</tr>
-											<tr>
-												<td>Lettuce</td>
-												<td>60/-</td>
+												{%for grocery in paid %}
+												<td data-toggle="modal" data-target="#myModal2">{{grocery.billitem.name}}</td>
+												<td>{{grocery.billitem.price}}/-</td>
+												<td><a href="{{grocery.billitem.invoicepdf}}">Click Here</a></td>
+												<div class="modal fade" id="myModal2" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-scrollable">
+													  <div class="modal-content">
+														<div class="modal-header">
+														  <h5 class="modal-title" id="staticBackdropLabel">Items</h5>
+														  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<span aria-hidden="true">&times;</span>
+														  </button>
+														</div>
+														<div class="modal-body">
+															<ul class="list-group">
+															{%for gro in grocery.items.all%}
+															<li class="list-group-item list-group-item-primary">
+																{{gro.name}}
+															</li>
+															{%endfor%}
+														</ul>
+														</div>
+													  </div>
+													</div>
+												  </div>
+												{%endfor%}
 											</tr>
 										</tbody>
 									</table>
 									<div class="text-center">
-										<button class="btn btn-primary orangeBTN " type="button" name="button">Show Previous</button>
+										<button class="btn btn-primary orangeBTN " type="button" name="button">Paginator</button>
 									</div>
 								</div>
 							</div>
 						</div>
+						
 						<div class="tab-pane fade" id="products" role="tabpanel" aria-labelledby="ProductsTab">
 							<div class="row mt-5 ">
 								<div class="col-md-12  mb-1">
@@ -379,26 +413,23 @@
 											<tr>
 												<th>Name</th>
 												<th>Price</th>
+												<th>Reciept</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>Calories Scale</td>
-												<td>1200/-</td>
+												{% for bill in unprodbill %}
+												<td>{{bill.name}}</td>
+												<td>{{bill.price}}/-</td>
+												<td><a href="{{bill.invoicepdf}}">Click Here</a></td>
+												{%endfor%}
 											</tr>
-											<tr>
-												<td>Body Composition Scale</td>
-												<td>1350/-</td>
-											</tr>
-											<!-- <tr>
-                                            <td>Carrots</td>
-                                            <td>50/-</td>
-                                          </tr> -->
 											<tr class=" table-light">
 												<td><b>Total : </b>
 												</td>
-												<td><b>2550/-</b>
+												<td><b>{{unpaidprod}}/-</b>
 												</td>
+												<td></td>
 											</tr>
 										</tbody>
 									</table>
@@ -418,25 +449,21 @@
 											<tr>
 												<th>Name</th>
 												<th>Price</th>
+												<th>Reciept</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>Weighing Machine</td>
-												<td>1200/-</td>
+												{% for bill in prodbill %}
+												<td>{{bill.name}}</td>
+												<td>{{bill.price}}/-</td>
+												<td><a href="{{bill.invoicepdf}}">Click Here</a></td>
+												{%endfor%}
 											</tr>
-											<tr>
-												<td>Calories Meter</td>
-												<td>1100/-</td>
-											</tr>
-											<!-- <tr>
-                                              <td>Lettuce</td>
-                                              <td>60/-</td>
-                                            </tr> -->
 										</tbody>
 									</table>
 									<div class="text-center">
-										<button class="btn btn-primary orangeBTN " type="button" name="button">Show Previous</button>
+										<button class="btn btn-primary orangeBTN " type="button" name="button">Paginator</button>
 									</div>
 								</div>
 							</div>

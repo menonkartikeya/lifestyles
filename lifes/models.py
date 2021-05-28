@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.conf import settings
+from rest_framework.authtoken.models import Token
 # Create your models here.
 
 targets = (
@@ -50,15 +54,21 @@ billtypes = (
     ('products','products'),
     ('Other','Other'),
 )
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
 class food(models.Model):
     pic = models.URLField()
     name = models.CharField(max_length=100)
     stuff = models.CharField(max_length=10000)
-    calories = models.IntegerField(default=0)
-    protein = models.IntegerField(default=0)
-    fat = models.IntegerField(default=0)
-    carbs = models.IntegerField(default=0)
-    fiber = models.IntegerField(default=0)
+    calories = models.FloatField(default=0)
+    protein = models.FloatField(default=0)
+    fat = models.FloatField(default=0)
+    carbs = models.FloatField(default=0)
+    fiber = models.FloatField(default=0)
     unit = models.CharField(choices=sizes,max_length=100)
 
     def __str__(self):
@@ -155,7 +165,7 @@ class logger(models.Model):
 
 class MyUser(AbstractUser):
     gender = models.CharField(choices=gen,max_length=50,blank=True,null=True)
-    mobno = models.BigIntegerField(default=0)
+    mobno = models.BigIntegerField(unique=True)
     height = models.FloatField(default=0.0,blank=True)
     weight = models.FloatField(default=0.0,blank=True)
     target = models.CharField(choices=targets,max_length=60,blank=True,null=True)
@@ -172,6 +182,9 @@ class MyUser(AbstractUser):
     location = models.CharField(max_length=100,blank=True,null=True)
     address = models.CharField(max_length=1000,blank=True,null=True)
     log = models.ManyToManyField(logger,blank=True)
+
+    USERNAME_FIELD = 'mobno'
+
 
     def __str__(self):
         return self.username
@@ -224,17 +237,18 @@ class complaint(models.Model):
     us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
     emptype = models.ForeignKey(employeecontrol,on_delete=models.CASCADE)
     reason = models.CharField(max_length=10000)
+    check = models.BooleanField(default=False)
     
     class Meta:
         verbose_name_plural = "User Complaints"
 
 class grocerylist(models.Model):
-    id = models.OneToOneField(MyUser,on_delete=models.CASCADE,primary_key=True)
+    groid = models.ForeignKey(MyUser,on_delete=models.CASCADE)
     items = models.ManyToManyField(food,blank=True)
     billitem = models.OneToOneField(bills,on_delete=models.CASCADE,null=True,blank=True)
 
     def name(self):
-        obj = MyUser.objects.get(id=self.id.id)
+        obj = MyUser.objects.get(id=self.groid.id)
         return obj.username
 
     class Meta:

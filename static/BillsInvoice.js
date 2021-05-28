@@ -8,19 +8,6 @@ $('.main').on('click',function(){
   // $('.main').removeClass("withOpacity");
 });
 
-$("#debugDiv").hide();
-// console.log = function(message) {
-//   $('#debugDiv').show();
-//   $('#debugDiv').html('<p>' + message + '</p>');
-//   setTimeout(function() {$("#debugDiv").hide();}, 6000);
-// };
-// console.error = console.debug = console.info =  console.log;
-//
-
-
-
-
-
 var setText = $('.breadcrumb .active');
 setText.text('Subscriptions');
 

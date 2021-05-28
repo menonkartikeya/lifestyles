@@ -118,7 +118,7 @@
                 {%else%}
                 <ul class="list-group my-2">
                     {%for gro in grolist %}
-                    <li class="list-group-item list-group-item-primary">{{gro.items.name}}</li>
+                    <li class="list-group-item list-group-item-primary">{{gro}}</li>
                     {%empty%}
                     <p>No List Yet!</p>
                     {%endfor%}
@@ -205,6 +205,43 @@
                                     </li>
                 </ul>
             </div>
+        </div>
+        <div class="col-12 op col12345  p-5 shadow ml-4 y mt-4">
+            <h1>Log Meal:</h1>
+            <form action="" method="post">
+                <ul class="list-group my-2">
+                        <li class="list-group-item list-group-item-primary">Preworkout Meal:
+                        {% for item in premeal %}
+                         <a href="">{{item.fooditem}}</a>
+                         <br>
+                         {%endfor%}
+                        </li>
+                        <li class="list-group-item list-group-item-primary">Postworkout Meal:
+                            {% for item in postmeal %}
+                             <a href="">{{item.fooditem}}</a>
+                             <br>
+                             {%endfor%}
+                            </li>
+                            <li class="list-group-item list-group-item-primary">Lunch:
+                                {% for item in lunch %}
+                                 <a href="">{{item.fooditem}}</a>
+                                 <br>
+                                 {%endfor%}
+                                </li>
+                                <li class="list-group-item list-group-item-primary">Snacks:
+                                    {% for item in snacks %}
+                                     <a href="">{{item.fooditem}}</a>
+                                     <br>
+                                     {%endfor%}
+                                    </li>
+                                    <li class="list-group-item list-group-item-primary">Dinner:
+                                        {% for item in dinner %}
+                                         <a href="">{{item.fooditem}}</a>
+                                         <br>
+                                         {%endfor%}
+                                        </li>
+            </ul>
+            </form>
         </div>
     </div>
 </div>
