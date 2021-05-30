@@ -1,3 +1,4 @@
+from django.db.models import fields
 from .models import *
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
@@ -60,3 +61,15 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class DietSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MyUser
+        fields = ['diets']
+
+
+class BillSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MyUser
+        fields = ['bill']

@@ -1,3 +1,5 @@
+from rest_framework import response
+from lifestyles.settings import DATABASES
 from typing_extensions import ParamSpecArgs
 from django.shortcuts import render,redirect
 from django.http import Http404
@@ -974,6 +976,8 @@ def foodapi(request):
 #     return JsonResponse(data,safe=False)
 
 @api_view(['POST',])
+@authentication_classes([])
+@permission_classes([])
 def registration_view(request):
     if request.method == "POST":
         serializer = RegistrationSerializer(data=request.data)
@@ -1043,3 +1047,114 @@ def profile_view(request):
         serializer = ProfileSerializer(user)
         return Response(serializer.data)
 
+@api_view(['GET',])
+@permission_classes((IsAuthenticated, ))
+def dietapi(request):
+    if request.method == "GET":
+        user = request.user
+        serializers = DietSerializer(user,many=False)
+        data = {}
+        data['response'] = "Successfull"
+        currday = datetime.datetime.today().weekday()
+        currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+        curday = currweek[currday]
+        dietplans = user.diets.get(day=curday)
+        data['current day']=dietplans.day
+        i = dietplans.preworkout.all()
+        for item in i:
+            count=1
+            data["premeal"+" "+str(count)+":"] = item.fooditem.name
+            count+=1
+        j = dietplans.postworkout.all()
+        for item in j:
+            count=1
+            data["postmeal"+" "+str(count)+":"] = item.fooditem.name
+            count+=1
+        k = dietplans.lunch.all()
+        for item in k:
+            count=1
+            data["lunch"+" "+str(count)+":"] = item.fooditem.name
+            count+=1
+        l = dietplans.snacks.all()
+        for item in l:
+            count=1
+            data["snacks"+" "+str(count)+":"] = item.fooditem.name
+            count+=1
+        m = dietplans.dinner.all()
+        for item in m:
+            count=1
+            data["dinner"+" "+str(count)+":"] = item.fooditem.name
+            count+=1
+        data['remarks']=dietplans.remarks
+        return Response(data)
+
+
+#ddd8091cacace327db59ff09a8ef8a4d3cb15b96
+@api_view(['GET',])
+@permission_classes((IsAuthenticated, ))
+def billapi(request):
+    if request.method == "GET":
+        user = request.user
+        serializers = BillSerializer(user,many=False)
+        data = {}
+        data['response'] = "Successful"
+        return Response(data)       
+
+
+
+
+@api_view(['GET',])
+@permission_classes((IsAuthenticated, ))
+def dietallapi(request):
+    if request.method == "GET":
+        user = request.user
+        serializers = DietSerializer(user,many=False)
+        data = {
+
+        }
+        data['response'] = "Successfull"
+        dietplans = user.diets.all()
+        for diet in dietplans:
+            data[diet.day] = {}
+            data[diet.day]["preworkout"]  = {}
+            count=1
+            for pre in diet.preworkout.all():
+                data[diet.day]["preworkout"][count] =  pre.fooditem.name
+                count+=1
+            data[diet.day]["postworkout"] = {}
+            count2=1
+            for pos in diet.postworkout.all():
+                data[diet.day]["postworkout"][count2] = pos.fooditem.name
+                count2+=1
+            data[diet.day]["lunch"]  = {}
+            count3=1
+            for lun in diet.lunch.all():
+                data[diet.day]["lunch"][count3] = lun.fooditem.name    
+                count3+=1
+            data[diet.day]["snacks"] = {}
+            count4=1
+            for snc in diet.snacks.all():
+                data[diet.day]["snacks"][count4] = snc.fooditem.name
+                count4+=1
+            data[diet.day]["dinner"]  = {}
+            count5=1
+            for din in diet.dinner.all():
+                data[diet.day]["dinner"][count5] = din.fooditem.name
+                count5+=1
+            data[diet.day]["remarks"] = diet.remarks
+        return Response(data)
+
+
+#             data = {}
+# data['response'] = "successful"
+# for diet in dietplans:
+# data[diet.day] = {}
+# data[diet.day]["preworkout"]  = {}
+# for pre in diet.preworkout.all():
+# data[diet.day]["preworkout"] = pre.fooditem.name
+# data[diet.day["postworkout"] = {}
+# data[diet.day]["lunch"]  = {}
+# data[diet.day["snacks"] = {}
+# data[diet.day]["dinner"]  = {}
+        
+    
