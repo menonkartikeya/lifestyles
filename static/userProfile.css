@@ -1,0 +1,365 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap');
+/* .back1234 {
+    background-color: white;
+    height: 100vh;
+
+    background-size: cover;
+
+} */
+/* The side navigation menu */
+.sidebar {
+  background-color: white;
+  width: 300px;
+  position: fixed;
+  top:0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+
+  padding: 20px;
+  text-align: center;
+  /* overflow-x: hidden; */
+  /* overflow-y: auto;  Scrollable contents if viewport is shorter than content.  */
+  border-right: 1px solid #eee;
+}
+@media (min-width: 780px) {
+  .main {
+  padding-right: 40px;
+  padding-left: 340px; /* 300 + 40 */
+  }
+  .sidebtn{
+    display: none;
+  }
+  .sidebar{
+    display: block;
+  }
+}
+@media screen and (max-width: 780px) {
+  .sidebtn{
+    display: block;
+  }
+  .sidebar{
+    display: none;
+    overflow-x: hidden;
+    /* transition: opacity 0.4s ease-out;
+    opacity: 0;
+    overflow-x: hidden; */
+  }
+}
+
+.sidebtn{
+  border-radius: 50%;
+  background-color: orange;
+  padding: 10px;
+  z-index: 101;
+  position: fixed;
+  margin: 25px 10px;
+}
+.showSidebar{
+  display: block;
+  /* opacity: 1; */
+}
+.back12 {
+    background-color: white;
+}
+/* .withOpacity{
+    background-color: grey;
+} */
+
+
+
+
+.nm{
+   transition-duration: 0.2s;
+}
+.nm:hover{
+  background-color: whitesmoke;
+  color:tomato;
+}
+
+
+
+.assddf {
+    border-radius: 80px;
+}
+
+.h {
+    text-align: center;
+}
+
+.ij1 {
+    height: 50px;
+    border-radius: 60px;
+}
+
+.aaa:hover {
+    background-color: white;
+
+}
+
+.bu {
+    border-width: 0px;
+    text-align: left;
+    border-radius: 20px;
+
+
+}
+
+.lll {
+    height: 50px;
+    border-radius: 25px;
+}
+
+.back12 {
+    background-color: white;
+}
+
+.op {
+    border-radius: 25px;
+}
+
+.col123 {
+    background-color: #ff0b52;
+}
+
+.col1234 {
+    background-color: lightgreen;
+}
+
+.col12345 {
+    background-color: white;
+}
+
+.fony {
+    color: white;
+
+}
+
+.imj {
+    height: 50px;
+
+}
+
+.mar {
+    margin-left: auto;
+}
+
+.imj1 {
+    height: 50px;
+    border-radius: 23px;
+
+
+}
+
+.mar1 {
+    margin-top: 180px;
+    color: grey;
+}
+
+.rule {
+    border-width: 3px;
+}
+
+.you {
+    border-radius: 25px;
+
+
+}
+
+.xcx {
+    font-family: "Titillium Web";
+}
+
+.texth {
+    text-align: center;
+}
+
+.hicon {
+    height: 120px;
+}
+
+.infog {
+    color: grey;
+    font-size: 15px;
+}
+
+.bv {
+    text-align: right;
+    margin-left: 30px;
+}
+
+.bv1 {
+    margin-left: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* BreadCrumbs */
+ol.breadcrumb {
+  padding: 10px 16px;
+  list-style: none;
+  background-color: white;
+}
+/* Add a color to all links inside the list */
+ol.breadcrumb li a {
+  color: orange;
+  text-decoration: none;
+}
+/* Add a color on mouse-over */
+ol.breadcrumb li a:hover {
+  color: tomato;
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+/* Orange Button */
+.orangeBTN{
+  background-color:orange;
+  border:orange;
+}
+.orangeBTN:hover{
+  background-color:orange;
+  opacity:0.8;
+}
+
+ /* Tabs color */
+ .orangeTab{
+   color: #FFA500;
+ }
+.orangeTab:hover{
+  color: tomato;
+}
+.orangeTab.active{
+  color:black;
+}
+
+/*Profile pic*/
+.rounded-box {
+  width: 150px;
+  height: 150px;
+  display: block;
+  margin: 0 auto;
+}
+
+.outer {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 150px !important; /* any size */
+  max-height: 150px !important; /* any size */
+  margin: auto;
+  background-color: #6eafd4;
+  border-radius: 100%;
+  position: relative;
+  }
+
+.inner {
+  background-color: grey;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transition: transform .2s; /* Animation */
+  opacity: 0.7;
+}
+
+.inner:hover {
+  background-color: black;
+  transform: scale(1.2); /* 150% zoom*/
+}
+.inputfile {
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: 1;
+    width: 50px;
+    height: 50px;
+}
+.inputfile + label {
+    font-size: 1.25rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    overflow: hidden;
+    width: 50px;
+    height: 50px;
+    pointer-events: none;
+    cursor: pointer;
+    line-height: 50px;
+    text-align: center;
+}
+.inputfile + label svg {
+    fill: #fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*Gender Checkbuttons*/
+.emojiRadio{
+  width: 70px;
+  transition-duration: 0.2s;
+  transform-origin: 50% 50%;
+}
+
+:checked+.emojiRadio {
+  border-color: #ddd;
+  color: black ;
+  background-color: ghostwhite;
+  /* font-weight: 900;
+  font-family: Arial, Helvetica, sans-serif; */
+}
+
+:checked+.emojiRadio::before {
+  background-color: grey;
+  transform: scale(1);
+}
+
+:checked+.emojiRadio {
+  transform: scale(1.2);
+  box-shadow: 0 0 5px yellow ;
+  z-index: -1;
+}

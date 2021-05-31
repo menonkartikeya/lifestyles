@@ -1,4 +1,3 @@
-from django.db.models import fields
 from .models import *
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
@@ -16,12 +15,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = ['email','username','password', 'password2','mobno']
+        fields = ['password', 'password2','mobno']
         extra_kwargs = {'password': {'write_only': True}}
     
     def save(self):
-        user = MyUser(email=self.validated_data['email'],
-                    username=self.validated_data['username'],
+        user = MyUser(
                     mobno=self.validated_data['mobno'],
         )
         password = self.validated_data['password']
@@ -33,23 +31,17 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
-class ChangePasswordSerializer(serializers.Serializer):
-    model = MyUser
-
-    """
-    Serializer for password change endpoint.
-    """
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-
 class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = ['email','height','weight','target','age','bio','location','address']
+        fields = ['first_name','last_name','pic','email','height','weight','target','age','bio','location','address']
 
     def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.username = validated_data.get('username', instance.username)
+        instance.pic = validated_data.get('pic', instance.pic)
         instance.email = validated_data.get('email', instance.email)
         instance.height = validated_data.get('height', instance.height)
         instance.weight = validated_data.get('weight', instance.weight)
@@ -67,9 +59,3 @@ class DietSerializer(serializers.ModelSerializer):
         model = MyUser
         fields = ['diets']
 
-
-class BillSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = MyUser
-        fields = ['bill']

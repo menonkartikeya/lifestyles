@@ -1,5 +1,3 @@
-from rest_framework import response
-from lifestyles.settings import DATABASES
 from typing_extensions import ParamSpecArgs
 from django.shortcuts import render,redirect
 from django.http import Http404
@@ -126,17 +124,29 @@ def dashboard(request):
             findtrain = None
         #creating a list for storing grocery items
         grolist = []
-        try:
-            #trying to check for grocery list object
-            grocery = grocerylist.objects.filter(groid=user.id).first()
-        #if object does not exist then list will be none
-        except ObjectDoesNotExist:
-            grocery = None
-        #if list is not none then get all the items from that object of grocery and store in list
-        if grocery != None:
-            grolist = grocery.items.all()
+        if user.sub.plan != "Free Plan":
+            try:
+                #trying to check for grocery list object
+                grocery = grocerylist.objects.filter(groid=user.id).first()
+            #if object does not exist then list will be none
+            except ObjectDoesNotExist:
+                grocery = None
+            #if list is not none then get all the items from that object of grocery and store in list
+            if grocery != None:
+                grolist = grocery.items.all()
         #get all the meeting objects of that user
         meet = user.lives.all()
+        live = []
+        emps = []
+        usem = []
+        for per in meet:
+            obj = MyUser.objects.filter(lives=per.id)
+            for ob in obj:
+                if ob.mobno != user.mobno:
+                    emp = employeecontrol.objects.get(id=ob)
+                    usem.append(ob)
+                    live.append(per)
+                    emps.append(emp)
         #make a flag variable for checking if meet object is empty or not
         flag = False
         #if meet count is 0 flag is true
@@ -173,7 +183,7 @@ def dashboard(request):
             'bmi':bmii,
             'bmr':bmrr,
             'grolist':grolist,
-            'meet':meet,
+            'zip':zip(emps,live,usem),
             'flag':flag,
             'findnutri':findnutri,
             'finddieti':finddieti,
@@ -416,53 +426,72 @@ def profile(request,id):
             #check user is active or not
             if user.is_active == True:
                 if request.method == 'POST':
-                    user.mobno = request.POST['mobno']
-                    user.target = request.POST['target']
-                    user.age = request.POST['age']
-                    #checking user sub plans and then taking values ##from html if he wants to change or not!#https://medium.com/django-rest/django-rest-framework-change-password-and-update-profile-1db0c144c0a3
-                    if user.sub.plan == 'Basic Plan':
-                        checknutri = request.POST['checknutri']
-                        checkfitness = request.POST['checkfitness']
-                        if checknutri == "yes":
-                            resnut = request.POST['resnut']
-                            user.allotnutri = False
-                            findnut = employeecontrol.objects.get(Q(employeetype="Nutritionist") & Q(alloted=user))
-                            findnut.alloted.remove(user)
-                            complaint.objects.create(us=user,emptype=findnut,reason=resnut)
-                        if checkfitness == "yes":
-                            resfit = request.POST['resfit']
-                            user.allottrain = False
-                            findfit = employeecontrol.objects.get(Q(employeetype="Fitness Trainer") & Q(alloted=user))
-                            findfit.alloted.remove(user)
-                            complaint.objects.create(us=user,emptype=findfit,reason=resfit)
-                    if user.sub.plan == "Semi-Premium Plan" or user.sub.plan == "Premium Plan":
-                        checkdieti = request.POST['checkdieti']
-                        checknutri = request.POST['checknutri']
-                        checkfitness = request.POST['checkfitness']
-                        if checknutri == "yes":
-                            resnut = request.POST['resnut']
-                            user.allotnutri = False
-                            findnut = employeecontrol.objects.get(Q(employeetype="Nutritionist") & Q(alloted=user))
-                            findnut.alloted.remove(user)
-                            complaint.objects.create(us=user,emptype=findnut,reason=resnut)
-                        if checkfitness == "yes":
-                            resfit = request.POST['resfit']
-                            user.allottrain = False
-                            findfit = employeecontrol.objects.get(Q(employeetype="Fitness Trainer") & Q(alloted=user))
-                            findfit.alloted.remove(user)
-                            complaint.objects.create(us=user,emptype=findfit,reason=resfit)
-                        if checkdieti == "yes":
-                            resdiet = request.POST['resdiet']
-                            user.allotdieti = False
-                            finddieti = employeecontrol.objects.get(Q(employeetype="Dietician") & Q(alloted=user))
-                            finddieti.alloted.remove(user)
-                            complaint.objects.create(us=user,emptype=finddieti,reason=resdiet)
+                    if request.FILES['pic']:
+                        myfile = request.FILES['pic']
+                        fs = FileSystemStorage()
+                        filename = fs.save(myfile.name, myfile)
+                        user.pic = fs.url(filename)
+                    if 'myprofile' in request.POST:
+                        user.height = request.POST['height']
+                        user.weight = request.POST['weight']
+                        user.target = request.POST['target']
+                        user.age = request.POST['age']
+                        gender = request.POST['exampleRadios']
+                        user.gender = gender
+                        #checking user sub plans and then taking values ##from html if he wants to change or not!
+                        if user.sub.plan == 'Basic Plan':
+                            checknutri = request.POST['checknutri']
+                            checkfitness = request.POST['checkfit']
+                            if checknutri == "yes":
+                                resnut = request.POST['resnut']
+                                user.allotnutri = False
+                                findnut = employeecontrol.objects.get(Q(employeetype="Nutritionist") & Q(alloted=user))
+                                findnut.alloted.remove(user)
+                                complaint.objects.create(us=user,emptype=findnut,reason=resnut)
+                            if checkfitness == "yes":
+                                resfit = request.POST['resfit']
+                                user.allottrain = False
+                                findfit = employeecontrol.objects.get(Q(employeetype="Fitness Trainer") & Q(alloted=user))
+                                findfit.alloted.remove(user)
+                                complaint.objects.create(us=user,emptype=findfit,reason=resfit)
+                        if user.sub.plan == "Semi-Premium Plan" or user.sub.plan == "Premium Plan":
+                            checkdieti = request.POST['checkdieti']
+                            checknutri = request.POST['checknutri']
+                            checkfitness = request.POST['checkfit']
+                            if checknutri == "yes":
+                                resnut = request.POST['resnut']
+                                user.allotnutri = False
+                                findnut = employeecontrol.objects.get(Q(employeetype="Nutritionist") & Q(alloted=user))
+                                findnut.alloted.remove(user)
+                                complaint.objects.create(us=user,emptype=findnut,reason=resnut)
+                            if checkfitness == "yes":
+                                resfit = request.POST['resfit']
+                                user.allottrain = False
+                                findfit = employeecontrol.objects.get(Q(employeetype="Fitness Trainer") & Q(alloted=user))
+                                findfit.alloted.remove(user)
+                                complaint.objects.create(us=user,emptype=findfit,reason=resfit)
+                            if checkdieti == "yes":
+                                resdiet = request.POST['resdiet']
+                                user.allotdieti = False
+                                finddieti = employeecontrol.objects.get(Q(employeetype="Dietician") & Q(alloted=user))
+                                finddieti.alloted.remove(user)
+                                complaint.objects.create(us=user,emptype=finddieti,reason=resdiet)
+                    if 'personal' in request.POST:
+                        user.first_name = request.POST['firstname']
+                        user.last_name = request.POST['lastname']
+                        user.mobno = request.POST['mobno']
+                        user.email = request.POST['email']
+                        user.bio = request.POST.get('bio')
+                        user.address = request.POST['address']
                     user.save()
                     messages.success(request,"Changes Saved")
-                    return redirect('dashboard')
+                    #return redirect('profile',user.id)
             else:
                 messages.error(request,"Verify Account First")
                 return redirect('dashboard')
+    else:
+        messages.error(request,"Login first")
+        return redirect('login')
                     
     parms = {
         'title':title,
@@ -985,8 +1014,7 @@ def registration_view(request):
         if serializer.is_valid():
             user = serializer.save()
             data['response'] = "Succesfully registered a new user"
-            data['email'] = user.email
-            data['username'] = user.username
+            data['mobno'] = user.mobno
             token = Token.objects.get(user=user).key
             data['token'] = token
         else:
@@ -994,39 +1022,6 @@ def registration_view(request):
         
         return Response(data)
     
-class ChangePasswordView(generics.UpdateAPIView):
-    """
-    An endpoint for changing password.
-    """
-    serializer_class = ChangePasswordSerializer
-    model = MyUser
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self, queryset=None):
-        obj = self.request.user
-        return obj
-
-    def update(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        serializer = self.get_serializer(data=request.data)
-
-        if serializer.is_valid():
-            # Check old password
-            if not self.object.check_password(serializer.data.get("old_password")):
-                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
-            # set_password also hashes the password that the user will get
-            self.object.set_password(serializer.data.get("new_password"))
-            self.object.save()
-            response = {
-                'status': 'success',
-                'code': status.HTTP_200_OK,
-                'message': 'Password updated successfully',
-                'data': []
-            }
-
-            return Response(response)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST','PUT','GET',])
 @permission_classes((IsAuthenticated, ))
@@ -1046,62 +1041,6 @@ def profile_view(request):
         user = request.user
         serializer = ProfileSerializer(user)
         return Response(serializer.data)
-
-@api_view(['GET',])
-@permission_classes((IsAuthenticated, ))
-def dietapi(request):
-    if request.method == "GET":
-        user = request.user
-        serializers = DietSerializer(user,many=False)
-        data = {}
-        data['response'] = "Successfull"
-        currday = datetime.datetime.today().weekday()
-        currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-        curday = currweek[currday]
-        dietplans = user.diets.get(day=curday)
-        data['current day']=dietplans.day
-        i = dietplans.preworkout.all()
-        for item in i:
-            count=1
-            data["premeal"+" "+str(count)+":"] = item.fooditem.name
-            count+=1
-        j = dietplans.postworkout.all()
-        for item in j:
-            count=1
-            data["postmeal"+" "+str(count)+":"] = item.fooditem.name
-            count+=1
-        k = dietplans.lunch.all()
-        for item in k:
-            count=1
-            data["lunch"+" "+str(count)+":"] = item.fooditem.name
-            count+=1
-        l = dietplans.snacks.all()
-        for item in l:
-            count=1
-            data["snacks"+" "+str(count)+":"] = item.fooditem.name
-            count+=1
-        m = dietplans.dinner.all()
-        for item in m:
-            count=1
-            data["dinner"+" "+str(count)+":"] = item.fooditem.name
-            count+=1
-        data['remarks']=dietplans.remarks
-        return Response(data)
-
-
-#ddd8091cacace327db59ff09a8ef8a4d3cb15b96
-@api_view(['GET',])
-@permission_classes((IsAuthenticated, ))
-def billapi(request):
-    if request.method == "GET":
-        user = request.user
-        serializers = BillSerializer(user,many=False)
-        data = {}
-        data['response'] = "Successful"
-        return Response(data)       
-
-
-
 
 @api_view(['GET',])
 @permission_classes((IsAuthenticated, ))
@@ -1143,18 +1082,3 @@ def dietallapi(request):
                 count5+=1
             data[diet.day]["remarks"] = diet.remarks
         return Response(data)
-
-
-#             data = {}
-# data['response'] = "successful"
-# for diet in dietplans:
-# data[diet.day] = {}
-# data[diet.day]["preworkout"]  = {}
-# for pre in diet.preworkout.all():
-# data[diet.day]["preworkout"] = pre.fooditem.name
-# data[diet.day["postworkout"] = {}
-# data[diet.day]["lunch"]  = {}
-# data[diet.day["snacks"] = {}
-# data[diet.day]["dinner"]  = {}
-        
-    

@@ -2,216 +2,435 @@
 <!DOCTYPE html>
 <html>
 
-
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="{% static 'dashboard.css' %}" >
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- CSS only -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+	<link href="{% static 'userProfile.css' %}" rel="stylesheet">
+	<title>{{title}}</title>
 </head>
 
 <body>
-    <div class="container-fluid xcx">
-        <div class="row">
-            <div class="col-lg-3  back1234 p-4 ">
-                <div class="h col-12">
-                    <img height="150px" class="assddf" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
-                    <h2>{{title}}</h2>
+	<div class="container-fluid xcx">
+		<div class="row">
+			<button type="button" name="button" class="sidebtn"></button>
+			<div class=" sidebar " id="mySideBar">
+				<img height="150px" class="assddf" src="{{user.pic}}" alt="" />
+				<h2>{{user.username}}</h2>
+				<hr class="rule" />
+				<button class="btn btn-white bu col-12 nm shadow" type="submit">
+				  <div class="d-flex flex-row ">
+					<img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
+					<a href="{% url 'dashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
+				  </div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm " type="submit">
+				  <div class="d-flex flex-row ">
+					<img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
+					<a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
+				  </div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm " type="submit">
+				  <div class="d-flex flex-row ">
+					<img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
+					<a href="{% url 'invoices' user.id %}"><h5 class="ml-3 mt-3">Billings</h5></a>
+				  </div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm " type="submit">
+				  <div class="d-flex flex-row ">
+					<img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
+					<a href="{% url 'book' %}"><h5 class="ml-3 mt-3">Live</h5></a>
+				  </div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm " type="submit">
+				  <div class="d-flex flex-row ">
+					<img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
+					<a href="http://"><h5 class="ml-3 mt-3">Food Plans</h5></a>
+				  </div>
+				</button>
+				<br />
+				<button class="btn btn-white bu col-12 nm " type="submit">
+				  <div class="d-flex flex-row ">
+					<img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
+					<a href="http://"><h5 class="ml-3 mt-3">Exercises</h5></a>
+				  </div>
+				</button>
+					<hr class="rule" />
+					<p><small>All Copyrights Reserved by KOWI LIFESTYLES</small></p>
+			</div>
+			<div class="back12 col-lg-12 main">
+				<div class="row">
+				<div class="col-lg-12 p-3">
+					<div class="d-flex flex-row">
+						<div class="bv">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb">
+									<li class="breadcrumb-item"><a href="#">Home</a>
+									</li>
+									<li class="breadcrumb-item"><a href="#myTab">Profile</a>
+									</li>
+									<li class="breadcrumb-item active" aria-current="page">My Profile</li>
+								</ol>
+							</nav>
+							<!-- <button class="btn btn-primary orangeBTN"> Go Back</button> -->
+						</div>
+						<div class="mar">
+							<a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
+							<a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
+						</div>
+					</div>
+				</div>
+				<div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
+					<div class="col-12 text-center"  >
+							{% for message in messages %}
+							<div class="container-fluid p-0" id="debugDiv">
+							  <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+							    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							      <span aria-hidden="true">&times;</span>
+							    </button>
+							    {{ message }}
+							  </div>
+							</div>
+							{% endfor %}
+					</div>
+				</div>
+				<div class="col-lg-12 p-5 shadow  you">
+					<ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+						<li class="nav-item"> <a class="nav-link active orangeTab" id="myProfileTab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true"><h5>My Profile</h5></a>
+						</li>
+						<li class="nav-item"> <a class="nav-link orangeTab" id="perInfoTab" data-toggle="tab" href="#perInfo" role="tab" aria-controls="perInfo" aria-selected="false"><h5>Personal Info</h5></a>
+						</li>
+						<!-- <li class="nav-item"> <a class="nav-link orangeTab" id="passwordTab" data-toggle="tab" href="#password" role="tab" aria-controls="password" aria-selected="false"><h5 >Change Password</h5></a>
+						</li> -->
+					</ul>
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="myProfileTab">
+              
+							<div class="row mt-5 align-items-center">
+								<div class="col-md-3 text-center mb-5">
+									<div class="rounded-box">
+										<div class="outer">
+											<img height="150px" class="assddf" src="{{user.pic}}" alt="">
+											<form action="" name="picform" method="post" enctype="multipart/form-data">
+												{%csrf_token%}
+											<div class="inner">
+												<input class="inputfile" type="file" name="pic" accept="image/*"  onchange="form.submit()">
+												<label>
+													<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+														<path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path>
+													</svg>
+												</label>
+											</div>
+										</form>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									<div class="row align-items-center">
+										<div class="col-md-7">
+											<h4 class="mb-1">{{user.username}}</h4>
+											<p class="small mb-3"><span class="badge badge-dark">{{user.location}}</span>
+											</p>
+										</div>
+									</div>
+									<div class="row mb-4">
+										<div class="col-md-7">
+											<p class="text-muted">{{user.bio}}</p>
+										</div>
+										<div class="col-md-5 you text-center mb-2" style="border-style: groove;">
+													<p>Fit Points</p>
+                          <p>{{user.streaks.points}}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr class="my-4" />
+							<form action="" method="post" >
+								{%csrf_token%}
+							<div class="form-row">
+								<div class="form-group col-md-6">
+									<label for="height">Height:</label>
+									<input type="text" id="height" name="height" class="form-control" value="{{user.height}}" placeholder=" cm" />
+								</div>
+								<div class="form-group col-md-6">
+									<label for="weight">Weight:</label>
+									<input type="text" id="weight" name="weight" class="form-control" value="{{user.weight}}" placeholder=" kg" />
+								</div>
+							</div>
+							<div class="form-row align-items-center">
+								<div class="form-check col-md-1">
+									<label for="">Gender:</label>
+								</div>
+                {% if user.gender == "Male" %}
+								<div class="form-check col-md-1 text-center">
+									<input class="form-check-input" type="radio" name="exampleRadios" id="checkboxMale" value="Male" checked style="display:none">
+									<label for="checkboxMale" class="emojiRadio">
+										<h2>♂️</h2>
+									</label>
+								</div>
+                <div class="form-check col-md-1 text-center">
+									<input class="form-check-input" type="radio" name="exampleRadios" id="checkboxFemale" value="Female" style="display:none">
+									<label for="checkboxFemale" class="emojiRadio">
+										<h2>♀️</h2>
+									</label>
+								</div>
+                <div class="form-check col-md-1 text-center">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="checkboxTrans"  value="Prefer not to say" style="display:none">
+                  <label for="checkboxTrans" class="emojiRadio"><h2>⚧️</h2></label>
                 </div>
-                <hr class="rule" />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
-                        <a href="{% url 'dashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
-                    </div>
-                </button>
-                <br />
-                <br />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
-                        <a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
-                    </div>
-                </button>
-                <br />
-                <br />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
-                        <a href="{% url 'invoices' user.id %}"><h5 class="ml-3 mt-3">Invoices</h5></a>
-                    </div>
-                </button>
-                <br />
-                <br />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
-                        <a href="{% url 'lives' %}"><h5 class="ml-3 mt-3">Live</h5></a>
-                    </div>
-                </button>
-                <br />
-                <br />
-
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
-                        <a href="{{user.playlist}}"></a><h5 class="ml-3 mt-3">Playlist</h5>
-                    </div>
-                </button>
-                <br />
-                <br />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/JrWk5dr/Whats-App-Image-2021-05-16-at-20-37-24-1.jpg" alt="" />
-                        <a href="{% url 'logoutme' %}"><h5 class="ml-3 mt-3">Logout</h5></a>
-                    </div>
-                </button>
-                <div class="mar1">
-                    <hr class="rule" />
-                    <p class="">All Copyrights Reserved by KOWI LIFESTYLES</p>
+                {%elif user.gender == "Female" %}
+                <div class="form-check col-md-1 text-center">
+									<input class="form-check-input" type="radio" name="exampleRadios" id="checkboxMale" value="Male" style="display:none">
+									<label for="checkboxMale" class="emojiRadio">
+										<h2>♂️</h2>
+									</label>
+								</div>
+                <div class="form-check col-md-1 text-center">
+									<input class="form-check-input" type="radio" name="exampleRadios" id="checkboxFemale" value="Female" checked style="display:none">
+									<label for="checkboxFemale" class="emojiRadio">
+										<h2>♀️</h2>
+									</label>
+								</div>
+                <div class="form-check col-md-1 text-center">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="checkboxTrans"  value="Prefer not to say" style="display:none">
+                  <label for="checkboxTrans" class="emojiRadio"><h2>⚧️</h2></label>
                 </div>
+                {%elif user.gender == "Prefer not to say" %}
+                <div class="form-check col-md-1 text-center">
+									<input class="form-check-input" type="radio" name="exampleRadios" id="checkboxMale" value="Male" style="display:none">
+									<label for="checkboxMale" class="emojiRadio">
+										<h2>♂️</h2>
+									</label>
+								</div>
+                <div class="form-check col-md-1 text-center">
+									<input class="form-check-input" type="radio" name="exampleRadios" id="checkboxFemale" value="Female" style="display:none">
+									<label for="checkboxFemale" class="emojiRadio">
+										<h2>♀️</h2>
+									</label>
+								</div>
+                <div class="form-check col-md-1 text-center">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="checkboxTrans" checked  value="Prefer not to say" style="display:none">
+                  <label for="checkboxTrans" class="emojiRadio"><h2>⚧️</h2></label>
+                </div>
+                {%else%}
+                <div class="form-check col-md-1 text-center">
+									<input class="form-check-input" type="radio" name="exampleRadios" id="checkboxMale" value="Male" style="display:none">
+									<label for="checkboxMale" class="emojiRadio">
+										<h2>♂️</h2>
+									</label>
+								</div>
+                <div class="form-check col-md-1 text-center">
+									<input class="form-check-input" type="radio" name="exampleRadios" id="checkboxFemale" value="Female" style="display:none">
+									<label for="checkboxFemale" class="emojiRadio">
+										<h2>♀️</h2>
+									</label>
+								</div>
+                <div class="form-check col-md-1 text-center">
+                  <input class="form-check-input" type="radio" name="exampleRadios" id="checkboxTrans" value="Prefer not to say" style="display:none">
+                  <label for="checkboxTrans" class="emojiRadio"><h2>⚧️</h2></label>
+                </div>
+                {%endif%}
+				<div class="col-md-2"></div>
+								<div class="form-group col-md-6">
+									<label for="dob">Age:</label>
+									<input type="number" class="form-control" name="age" id="dob" value="{{user.age}}">
+								</div>
+							</div>
+							<hr class="my-4" />
+              {% if user.target == "Gain Weight" %}
+							<div class="form-group">
+								<label for="target">Target</label>
+								<select class="form-control" name="target" id="target">
+									<option value="Loose Weight">Loose Weight</option>
+									<option value="Stay Fit">Stay Fit</option>
+									<option value="Gain Weight" selected>Gain Weight</option>
+								</select>
+							</div>
+              {%elif user.target == "Loose Weight" %}
+              <div class="form-group">
+								<label for="target">Target</label>
+								<select class="form-control" name="target" id="target">
+									<option value="Loose Weight" selected>Loose Weight</option>
+									<option value="Stay Fit">Stay Fit</option>
+									<option value="Gain Weight">Gain Weight</option>
+								</select>
+							</div>
+              {%elif user.target == "Stay Fit" %}
+              <div class="form-group">
+								<label for="target">Target</label>
+								<select class="form-control" name="target" id="target">
+									<option value="Loose Weight">Loose Weight</option>
+									<option value="Stay Fit" selected>Stay Fit</option>
+									<option value="Gain Weight">Gain Weight</option>
+								</select>
+							</div>
+              {%else%}
+              <div class="form-group">
+								<label for="target">Target</label>
+								<select class="form-control" name="target" id="target">
+									<option value="Loose Weight">Loose Weight</option>
+									<option value="Stay Fit">Stay Fit</option>
+									<option value="Gain Weight">Gain Weight</option>
+								</select>
+							</div>
+              {%endif%}
+							<hr class="my-4" />
+							<div class="form-group">
+								<label for="change">Want to Change : </label>
+                {% if user.sub.plan == "Premium Plan" or user.sub.plan == "Semi-Premium Plan" %}
+								<div class="form-row">
+									<label class="col-lg-3 mt-2">Dietician ? </label>
+									<select class="form-control col-lg-4 " name="checkdieti" id="diet" onChange="changetextbox();">
+										<option value="no">No. Everything's Great! </option> <!-- 😇 -->
+										<option value="yes">Yes 🙁</option>
+									</select>
+									<label class="col-lg-1"></label>
+									<textarea rows="1" class="form-control col-lg-4" name="resdiet" disabled id="inputReason1" placeholder="Reason..." style="max-height: 150px; min-height: 40px;"></textarea>
+								</div>
+								<div class="form-row mt-2">
+									<label class="col-lg-3 mt-2">Trainer ? </label>
+									<select class="form-control col-lg-4" name="checkfit" id="traine" onChange="changetextbox();">
+										<option value="no">No. Everything's Great! </option>
+										<option value="yes">Yes 🙁</option>
+									</select>
+									<label class="col-lg-1"></label>
+									<textarea rows="1" class="form-control col-lg-4" name="resfit" disabled id="inputReason2" placeholder="Reason..." style="max-height: 150px; min-height: 40px;"></textarea>
+								</div>
+								<div class="form-row mt-2">
+									<label class="col-lg-3 mt-2">Nutritionist ? </label>
+									<select class="form-control col-lg-4" id="nutri" name="checknutri" onChange="changetextbox();">
+										<option value="no">No. Everything's Great! </option>
+										<option value="yes">Yes 🙁</option>
+									</select>
+									<label class="col-lg-1"></label>
+									<textarea rows="1" class="form-control col-lg-4" name="resnut" disabled id="inputReason3" placeholder="Reason..." style="max-height: 150px; min-height: 40px;"></textarea>
+								</div>
+							</div>
+              {%elif user.sub.plan == "Basic Plan" %}
+              <div class="form-row mt-2">
+                <label class="col-lg-3 mt-2">Trainer ? </label>
+                <select class="form-control col-lg-4" name="checkfit" id="traine" onChange="changetextbox();">
+                  <option value="no">No. Everything's Great! </option>
+                  <option value="yes">Yes 🙁</option>
+                </select>
+                <label class="col-lg-1"></label>
+                <textarea rows="1" class="form-control col-lg-4" name="resfit" disabled id="inputReason2" placeholder="Reason..." style="max-height: 150px; min-height: 40px;"></textarea>
+              </div>
+              <div class="form-row mt-2">
+                <label class="col-lg-3 mt-2">Nutritionist ? </label>
+                <select class="form-control col-lg-4" id="nutri" name="checknutri" onChange="changetextbox();">
+                  <option value="no">No. Everything's Great! </option>
+                  <option value="yes">Yes 🙁</option>
+                </select>
+                <label class="col-lg-1"></label>
+                <textarea rows="1" class="form-control col-lg-4" name="resnut" disabled id="inputReason3" placeholder="Reason..." style="max-height: 150px; min-height: 40px;"></textarea>
+              </div>
             </div>
-            <div class="back12 col-lg-9">
-                <div class="col-lg-12 p-5">
-                    <div class="d-flex flex-row">
-                        <h1 class="nm">Welcome {{user.username}}</h1>
-                        <div class="mar">
-                            <a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
-                            <a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-12 p-5 shadow  you">
-                    <h1>Update Details</h1>
-                    <form method="POST">
-                        {%csrf_token%}
-                        <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-2 col-form-label">Mobile Number</label>
-                          <div class="col-sm-10">
-                            <input type="number" name="mobno" class="form-control" id="inputEmail3" value="{{user.mobno}}">
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label for="inputPassword3" class="col-sm-2 col-form-label">Target:</label>
-                          <div class="col-sm-10">
-                            <select name="target" id="inputPassword3">
-                                <option value="Gain Weight">Gain Weight</option>
-                                <option value="Stay Fit">Stay Fit</option>
-                                <option value="Loose Weight">Loose Weight</option>
-                            </select>
-                          </div>
-                        </div>
-                          <div class="form-group row">
-                            <label for="inputage" class="col-sm-2 col-form-label">Age</label>
-                            <div class="col-sm-10">
-                              <input type="number" name="age" class="form-control" id="inputage" value="{{user.age}}">
-                            </div>
-                          </div>
-                          {% if user.sub.plan != "Free Plan"%}
-                          {% if user.sub.plan == "Basic Plan" %}
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Want to Change Trainer?</label>
-                            <div class="col-sm-10">
-                              <select name="checkfitness" id="inputcheck">
-                                  <option value="no">No</option>
-                                  <option value="yes">Yes</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Reason!</label>
-                            <div class="col-sm-10">
-                              <input type="text" name="resfit" id="">
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Want to Change Nutritionist?</label>
-                            <div class="col-sm-10">
-                              <select name="checknutri" id="inputcheck">
-                                  <option value="no">No</option>
-                                  <option value="yes">Yes</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Reason!</label>
-                            <div class="col-sm-10">
-                              <input type="text" name="resnut" id="">
-                            </div>
-                          </div>
-                          {%else%}
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Want to Change Dietician?</label>
-                            <div class="col-sm-10">
-                              <select name="checkdieti" id="inputcheck">
-                                  <option value="no">No</option>
-                                  <option value="yes">Yes</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Reason!</label>
-                            <div class="col-sm-10">
-                              <input type="text" name="resdieti" id="">
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Want to Change Trainer?</label>
-                            <div class="col-sm-10">
-                              <select name="checkfitness" id="inputcheck">
-                                  <option value="no">No</option>
-                                  <option value="yes">Yes</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Reason!</label>
-                            <div class="col-sm-10">
-                              <input type="text" name="resfit" id="">
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Want to Change Nutritionist?</label>
-                            <div class="col-sm-10">
-                              <select name="checknutri" id="inputcheck">
-                                  <option value="no">No</option>
-                                  <option value="yes">Yes</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="form-group row">
-                            <label for="inputcheck" class="col-sm-2 col-form-label">Reason!</label>
-                            <div class="col-sm-10">
-                              <input type="text" name="resnut" id="">
-                            </div>
-                          </div>
-                          {%endif%}
-                          {%endif%}
-                        <div class="form-group row">
-                          <div class="col-sm-10">
-                            <button type="submit" class="btn btn-primary">Update</button>
-                          </div>
-                        </div>
-                      </form>
-                </div>
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-
-<script src="{% static 'dashboard.js' %}"></script>
-
-
-
-
-
+            {%endif%}
+							<div class="text-center">
+								<button type="submit" name="myprofile" class="btn btn-primary orangeBTN">Save Changes</button>
+							</div>
+						</div>
+          </form>
+						<div class="tab-pane fade" id="perInfo" role="tabpanel" aria-labelledby="perInfoTab">
+							<form action="" method="post">
+                {%csrf_token%}
+								<div class="mb-5"></div>
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label for="firstname">Firstname</label>
+										<input type="text" name="firstname" id="firstname" class="form-control" value="{{user.first_name}}" placeholder="First Name"/>
+									</div>
+									<div class="form-group col-md-6">
+										<label for="lastname">Lastname</label>
+										<input type="text" name="lastname" id="lastname" class="form-control" placeholder="Last Name" value="{{user.last_name}}" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="phone">Phone:</label>
+									<input type="text" name="mobno" id="phone" class="form-control" placeholder="(+91) 315-742-1481" value="{{user.mobno}}"/>
+								</div>
+								<div class="form-group">
+									<label for="inputEmail4">Email</label>
+									<input type="email" name="email" class="form-control" id="inputEmail4" placeholder="user@kowi.in" value="{{user.email}}"/>
+								</div>
+								<div class="form-group mb-5">
+									<label for="inputUsername">Biography</label>
+									<textarea rows="2" name="bio" class="form-control" id="inputBio" placeholder="Tell something about yourself" style="max-height: 180px; min-height: 40px;">{{user.bio}}</textarea>
+								</div>
+								<div class="form-group ">
+									<p><a href="{% url 'password_change' %}">Click Here</a> to Change Password</p>	
+								</div>
+								<hr class="my-4" />
+								<div class="form-group">
+									<label for="input1Address5">Address</label>
+									<input type="text" name="address" class="form-control" id="input1Address5"  value="{{user.address}}"placeholder="Address Line" />
+								</div>
+								<div class="text-center pt-5">
+									<button type="submit" class="btn btn-primary orangeBTN" name="personal">Save Changes</button>
+								</div>
+							</form>
+						</div>
+						<!-- <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="passwordTab">
+							<form action="" method="post">
+                {%csrf_token%}
+								<div class="row mt-5 mb-4">
+									{{ form.as_p }}
+									 <div class="col-md-6">
+										<div class="form-group">
+											<label for="inputPassword4">Current Password</label>
+											<input type="password" name="oldpassword" class="form-control" id="inputPassword5" /> <small><a href="#" style="color:orange">Forgot your password?</a></small>
+										</div>
+										<div class="form-group">
+											<label for="inputPassword5">New Password</label>
+											<input type="password" name="newpassword" class="form-control" id="inputPassword5" />
+										</div>
+										<div class="form-group">
+											<label for="inputPassword6">Confirm Password</label>
+											<input type="password" class="form-control" name="newpassword2" id="inputPassword6" />
+										</div>
+									</div>
+									<div class="col-md-1">
+									</div>
+									<div class="col-md-5">
+										<p class="mb-2">Password requirements</p>
+										<p class="small text-muted mb-2">To create a new password, you have to meet all of the following requirements:</p>
+										<ul class="small text-muted pl-4 mb-0">
+											<li>Minimum 8 character</li>
+											<li>At least one special character</li>
+											<li>At least one number</li>
+											<li>Can’t be the same as a previous password</li>
+										</ul>
+									</div>
+								</div>
+								<div class="text-center">
+									<button type="submit" class="btn btn-primary orangeBTN" name="changepass">Change Password</button>
+								</div>
+								<form>
+						</div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+		<div style="margin-bottom: 3cm;">
+			<!--Just for extra space-->
+		</div>
+	</div>
+    <script>setTimeout(function() {$("#debugDiv").hide();}, 6000);</script>
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="{% static 'userProfile.js' %}"></script>
 </body>
 
 </html>

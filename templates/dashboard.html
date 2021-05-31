@@ -1,248 +1,406 @@
-{% extends 'base.html' %}
-  {% block body %}
-  {% load static %}
-  <div class="d-flex flex-row">
-    <div class="col-lg-3  back1234 p-4 ">
-        <div class="h col-12">
-            <img class="ij1" src="https://png.pngtree.com/png-clipart/20190520/original/pngtree-vector-users-icon-png-image_4144740.jpg" alt="" />
-            <h1 class="nm">{{user.username}}</h1>
-        </div>
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link href="{% static 'dashboard.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+  <!-- The sidebar -->
+  <div class="container-fluid xcx">
+    <div class="row">
+      <button type="button" name="button" class="sidebtn"></button>
+      <div class=" sidebar " id="mySideBar">
+        <img height="150px" class="assddf" src="{{user.pic}}" alt="" />
+        <h2>{{user.username}}</h2>
         <hr class="rule" />
-        <button class="btn btn-white bu col-12 nm" type="submit">
-            <div class="d-flex flex-row ">
-                <img class="lll" src="https://cdn1.iconfinder.com/data/icons/webina-seo-development-and-marketing/128/seo_web-62-512.png" alt="" />
-                <a href="{% url 'dashboard' %}"><h4 class="ml-3">Dashboard</h4></a>
-            </div>
+        <button class="btn btn-white bu col-12 nm shadow" type="submit">
+          <div class="d-flex flex-row ">
+            <img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
+            <a href="{% url 'dashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
+          </div>
         </button>
         <br />
-        <br />
-        <button class="btn btn-white bu col-12 nm" type="submit">
-            <div class="d-flex flex-row ">
-                <img class="lll" src="https://www.shareicon.net/data/2015/10/03/111427_write_512x512.png" alt="" />
-                <a href="{% url 'profile' user.id %}"><h4 class="ml-3">Profile</h4></a>
-            </div>
+        <button class="btn btn-white bu col-12 nm " type="submit">
+          <div class="d-flex flex-row ">
+            <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
+            <a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
+          </div>
         </button>
         <br />
-        <br />
-        <button class="btn btn-white bu col-12 nm" type="submit">
-            <div class="d-flex flex-row ">
-                <img class="lll" src="https://cdn1.iconfinder.com/data/icons/network-and-comminications-flat-circle-shadow-vo-1/120/content__blog__media__articles__news__management__edit-512.png" alt="" />
-                <a href="{% url 'invoices' user.id %}"><h4 class="ml-3">Invoices</h4></a>
-            </div>
+        <button class="btn btn-white bu col-12 nm " type="submit">
+          <div class="d-flex flex-row ">
+            <img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
+            <a href="{% url 'invoices' user.id %}"><h5 class="ml-3 mt-3">Billings</h5></a>
+          </div>
         </button>
         <br />
-        <br />
-        <button class="btn btn-white bu col-12 nm" type="submit">
-            <div class="d-flex flex-row ">
-                <img class="lll" src="https://image.flaticon.com/icons/png/512/1076/1076323.png" alt="" />
-                <a href="{% url 'book' %}"><h4 class="ml-3">Book Appointment</h4></a>
-            </div>
+        <button class="btn btn-white bu col-12 nm " type="submit">
+          <div class="d-flex flex-row ">
+            <img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
+            <a href="{% url 'book' %}"><h5 class="ml-3 mt-3">Live</h5></a>
+          </div>
         </button>
         <br />
-        <br />
-
-        <button class="btn btn-white bu col-12 nm" type="submit">
-            <div class="d-flex flex-row ">
-                <img class="lll" src="https://cdn2.iconfinder.com/data/icons/flat-style-svg-icons-part-2/512/account_card_user_profile-512.png" alt="" />
-                <a href="{{user.playlist}}"><h4 class="ml-3">Playlist</h4></a>
-            </div>
+        <button class="btn btn-white bu col-12 nm " type="submit">
+          <div class="d-flex flex-row ">
+            <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
+            <a href="http://"><h5 class="ml-3 mt-3">Food Plans</h5></a>
+          </div>
         </button>
         <br />
-        <br />
-        <button class="btn btn-wFood Planshite bu col-12 nm" type="submit">
-            <div class="d-flex flex-row ">
-                <img class="lll" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" />
-                <a href="{% url 'logoutme' %}"><h4 class="ml-3">Logout</h4></a>
-            </div>
+        <button class="btn btn-white bu col-12 nm " type="submit">
+          <div class="d-flex flex-row ">
+            <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
+            <a href="http://"><h5 class="ml-3 mt-3">Exercises</h5></a>
+          </div>
         </button>
-        <div class="mar1">
-            <hr class="rule" />
-            <p class="">Copyright &copy; KOWI LIFESTYLES</p>
-        </div>
-
-
-    </div>
-    <div class="back12 col-lg-9">
-        <div class="col-lg-12 p-5">
-            <div class="d-flex flex-row">
-                <h1 class="nm">Welcome {{user.username}}</h1>
-                <div class="mar">
-                    <a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
-                    <a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
-                </div>
-            </div>
-        </div>
-        <div class="d-flex flex-row">
-            <div class="col-5 op p-5 col123 shadow fony">
-                <h1>Your Previous BMI Index</h1>
-                {% if bmi == none %}
-                <p>Nothing Logged Yet!</p>
-                <a href="{% url 'bmic' %}"> <button class="btn btn-primary btn-small">Get BMI Now</button></a>
-                {% else %}
-                <p>{{bmi}} kg/m²</p>
-                <a href="{% url 'bmic' %}"> <button class="btn btn-primary btn-small">More</button></a>
-                {%endif%}
-                <!-- Button trigger modal -->
-            </div>
-            <div class="col-5 op p-5 col123 shadow fony">
-                <h1>Your Previous BMR Index</h1>
-                {% if bmr == none %}
-                <p>Nothing Logged Yet!</p>
-                <a href="{% url 'bmrcal' %}"> <button class="btn btn-primary btn-small">Get BMR Now</button></a>
-                {% else %}
-                <p>{{bmr.bmr}} kcal/day</p>
-                <a href="{% url 'bmrcal' %}"> <button class="btn btn-primary btn-small">More</button></a>
-                {%endif%}
-                <!-- Button trigger modal -->
-            </div>
-
-            <div class="col-3 op  p-5 shadow col1234 ml-4 fony">
-                <h3>Your Subscription:</h3>
-                <h5><b>{{user.sub.plan}}</b></h5>
-                <a href="{% url 'subs' %}"> <button class="btn btn-warning btn-small">View</button></a>
-            </div>
-            <div class="col-3 op col12345  p-5 shadow ml-4 ">
-                <h1><b>Target:</b></h1>
-                <h5>{{user.target}}</h5>
-                <a href="{% url 'growth' %}"> <button class="btn btn-success btn-small">Check Growth</button></a>
-            </div>
-        </div>
-        <br />
-
-        <div class="d-flex flex-row mb-3">
-            <div class="col-4 op col123 p-5 shadow fony">
-                <h1>Current Grocery List</h1>
-                {% if grolist is null %}
-                <p>Grocery List Empty!</p>
-                <a href="{% url 'grocery' %}"> <button class="btn btn-primary btn-small">Add Items!</button></a>
-                {%else%}
-                <ul class="list-group my-2">
-                    {%for gro in grolist %}
-                    <li class="list-group-item list-group-item-primary">{{gro}}</li>
-                    {%empty%}
-                    <p>No List Yet!</p>
-                    {%endfor%}
-                </ul>
-                <a href="{% url 'grocery' user.id %}"> <button class="btn btn-primary btn-small">More</button></a>
-                {%endif%}
-            </div>
-            <div class="d-flex flex-column col-4">
-                <div class="col-12 op col1234 p-5 shadow ml-4 fony ">
-                    <h3>Live Appointments</h3>
-                    {% if flag is True %}
-                    <p>No Appointments</p>
-                    <a href="{% url 'lives' %}"> <button class="btn btn-primary btn-small">Create Now</button></a>
-                    {%else%}
-                    <ul class="list-group my-2">
-                        {%for link in meet%}
-                        <li class="list-group-item list-group-item-primary">
-                            Time: {{link.slottime}} <span>
-                            Date: {{link.date}}</span>
-                            <a href="{% url 'lives' %}"><button class="btn btn-primary btn-small">Link</button></a>
-                        </li>
-                        {%endfor%}
-                    </ul>
-                    {%endif%}
-                </div>
-                {%if user.sub.plan != "Free Plan" %}
-                <div class="col-12 op col12345  p-5 shadow ml-4 y mt-4">
-                    {% if user.sub.plan == "Basic Plan" %}
-                        <h4><b>Note From Nutritionist({{findnutri.id}}):</b></h4>
-                        {% if dietplans.remarks is empty %}
-                             <p>Nope! All's Good!</p>
-                        {%else%}
-                        <p>{{dietplans.remarks}}</p>
-                        {%endif%}
-                    <h4><b>Note From Fitness Trainer({{findtrain.id}}):</b></h4>
-                    <p>Add Jinja here</p>
-                    {%else %}
-                    <h4><b>Note From Nutritionist & Dietician({{findnutri.id}} & {{finddieti.id}}):</b></h4>
-                    {% if dietplans.remarks is empty %}
-                             <p>Nope! All's Good!</p>
-                        {%else%}
-                        <p>{{dietplans.remarks}}</p>
-                        {%endif%}
-                    <h4><b>Note From Fitness Trainer({{findtrain.id}}):</b></h4>
-                    <p>Add Jinja here</p>
-                    {%endif%}
-                </div>
-                {%endif%}
-            </div>
-
-
-            <div class="col-3 op col1234  p-5 shadow ml-5 fony ">
-                <h1>Meal Plan:</h1>
-                <ul class="list-group my-2">
-                    <li class="list-group-item list-group-item-primary">Preworkout Meal:
-                    {% for item in premeal %}
-                     <a href="">{{item.fooditem}}</a>
-                     <br>
-                     {%endfor%}
+        <!-- <button class="btn btn-white bu col-12 nm " type="submit">
+          <div class="d-flex flex-row ">
+            <img class="lll" src="https://i.ibb.co/JrWk5dr/Whats-App-Image-2021-05-16-at-20-37-24-1.jpg" alt="" />
+            <h5 class="ml-3 mt-3">Logout</h5>
+          </div>
+        </button> -->
+        <hr class="rule" />
+        <p><small>All Copyrights Reserved by KOWI LIFESTYLES</small>
+        </p>
+      </div>
+      <div class="back12 col-lg-12 main">
+        <div class="row">
+          <div class="col-lg-12 p-3">
+            <div class="d-flex flex-row ">
+              <div class="bv">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a>
                     </li>
-                    <li class="list-group-item list-group-item-primary">Postworkout Meal:
-                        {% for item in postmeal %}
-                         <a href="">{{item.fooditem}}</a>
-                         <br>
-                         {%endfor%}
-                        </li>
-                        <li class="list-group-item list-group-item-primary">Lunch:
-                            {% for item in lunch %}
-                             <a href="">{{item.fooditem}}</a>
-                             <br>
-                             {%endfor%}
-                            </li>
-                            <li class="list-group-item list-group-item-primary">Snacks:
-                                {% for item in snacks %}
-                                 <a href="">{{item.fooditem}}</a>
-                                 <br>
-                                 {%endfor%}
-                                </li>
-                                <li class="list-group-item list-group-item-primary">Dinner:
-                                    {% for item in dinner %}
-                                     <a href="">{{item.fooditem}}</a>
-                                     <br>
-                                     {%endfor%}
-                                    </li>
-                </ul>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                  </ol>
+                </nav>
+                <!-- <button class="btn btn-primary orangeBTN">Go Back</button> -->
+              </div>
+              <div class="mar">
+                <a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
+                <a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
             </div>
+            </div>
+          </div>
+          <div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
+            <div class="col-12 text-center"  >
+                {% for message in messages %}
+                <div class="container-fluid p-0" id="debugDiv">
+                  <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{ message }}
+                  </div>
+                </div>
+                {% endfor %}
         </div>
-        <div class="col-12 op col12345  p-5 shadow ml-4 y mt-4">
-            <h1>Log Meal:</h1>
-            <form action="" method="post">
-                <ul class="list-group my-2">
-                        <li class="list-group-item list-group-item-primary">Preworkout Meal:
-                        {% for item in premeal %}
-                         <a href="">{{item.fooditem}}</a>
-                         <br>
-                         {%endfor%}
-                        </li>
-                        <li class="list-group-item list-group-item-primary">Postworkout Meal:
-                            {% for item in postmeal %}
-                             <a href="">{{item.fooditem}}</a>
-                             <br>
-                             {%endfor%}
-                            </li>
-                            <li class="list-group-item list-group-item-primary">Lunch:
-                                {% for item in lunch %}
-                                 <a href="">{{item.fooditem}}</a>
-                                 <br>
-                                 {%endfor%}
-                                </li>
-                                <li class="list-group-item list-group-item-primary">Snacks:
-                                    {% for item in snacks %}
-                                     <a href="">{{item.fooditem}}</a>
-                                     <br>
-                                     {%endfor%}
+          </div>
+                <div class="col-lg-12 p-5 you">
+                    <!-- < h1>DashBoard</h1> -->
+                    <div class="d-flex flex-row">
+                        <div class="col-lg-3 p-4 shadow you">
+                            <h3>BMI</h3>
+                            <hr />
+                            <a class="dasha" href="{% url 'bmic' %}" data-toggle="tooltip" title="Click to see More">
+                            <div class="d-flex flex-row zoom">
+                                <div class="p-2 col-5">
+                                    {% if bmi == none %}
+                                    <h3>Click to Log Now!</h3>
+                                    {% else %}
+                                    <h2>{{bmi.bmi}}</h2>
+                                    <p class="infog">*current BMI</p>
+                                    {%endif%}
+                                </div>
+                                <img class="gymi mt-2 col-7" src="https://cdn3.iconfinder.com/data/icons/forall/1062/gym-512.png" alt="" />
+                            </div>
+                          </a>
+                            <!-- <div class="bv">
+                                <button class="btn btn-primary bmimore orangeBTN" type="submit">More</button>
+                            </div> -->
+                        </div>
+                        <div class="col-lg-3 p-4 shadow you ml-2">
+                            <h3>BMR</h3>
+                            <hr />
+                            <a class="dasha" href="{% url 'bmrcal' %}" data-toggle="tooltip" title="Click to see More">
+                            <div class="d-flex flex-row zoom">
+                                <div class="p-2 col-5">
+                                    {% if bmr == none %}
+                                    <h3>Click to Log Now!</h3>
+                                    {% else %}
+                                    <h1>{{bmr.bmr}}</h1>
+                                    <p class="infog">*current BMR</p>
+                                    {%endif%}
+                                </div>
+                                <img class="gymi mt-2 col-7" src="https://image.flaticon.com/icons/png/512/452/452710.png" alt="" />
+                            </div>
+                              </a>
+                            <!-- <div class="bv">
+                                <button class="btn btn-primary bmimore orangeBTN" type="submit">More</button>
+                            </div> -->
+                        </div>
+                        <div class="col-lg-3 p-4 shadow you ml-2" >
+                            <h3>Subscription</h3>
+                            <hr />
+                            <a class="dasha" href="{% url 'subs' %}" data-toggle="tooltip" title="Click to View">
+                            <div class="d-flex flex-row zoom ">
+                                <div class="p-2 col-5">
+                                    <h2>{{user.sub.plan}}</h2>
+                                    <p class="infog">*current Plan</p>
+                                </div>
+                                <img class="gymi mt-2 col-7" src="https://image.flaticon.com/icons/png/512/218/218364.png" alt="" />
+                            </div>
+                              </a>
+                            <!-- <div class="bv mt-2">
+                                <button class="btn btn-primary bmimore orangeBTN" type="submit">View</button>
+                            </div> -->
+                        </div>
+                        <div class="col-lg-3 p-4 shadow you ml-2">
+                            <h3>Target</h3>
+                            <hr />
+                            <a class="dasha" href="{% url 'growth' %}" data-toggle="tooltip" title="Click to View">
+                            <div class="d-flex flex-row zoom">
+                                <div class="p-2 col-5">
+                                    <h4>{{user.target}}</h4>
+                                    <p class="infog">*current Target</p>
+                                </div>
+                                <img class="gymi mt-2 col-7" src="https://image.flaticon.com/icons/svg/283/283490.svg" alt="" />
+                            </div>
+                            </a>
+                            <!-- <div class="bv ">
+                                <button class="btn btn-primary bmimore orangeBTN" type="submit">View</button>
+                            </div> -->
+                        </div>
+                    </div>
+                    <br />
+                    <div class="d-flex flex-row">
+                        <div class="col-lg-6 shadow you p-4">
+                            <div class="d-flex flex-row">
+                                <h2>Meal Plans</h2>
+                                <img class="foodi" src="http://getdrawings.com/free-icon/rice-icon-63.png" alt="" />
+                            </div>
+                            <hr />
+                            <div class="col-lg-12">
+                                <div class="d-flex flex-row">
+                                    <h4 id="head" class="col-lg-7">Post workout meal</h4>
+                                    <div class="bdafnf col-lg-5">
+                                        <select class="custom-select  ">
+                                            <option value="Lunch" id="breakfast" selected>Lunch</option>
+                                            <option id="snack" value="Snacks">Snacks</option>
+                                            <option id="postmeal" value="Post workout meal">Post workout meal</option>
+                                            <option id="premeal" value="Pre workout meal">Pre workout meal</option>
+                                            <option id="Dinner" value="Dinner">Dinner</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <ol class="mt-3 " id="pre" style="display:none;">
+                                    {%for p in premeal%}
+                                    <li>
+                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
+                                        <label class="labe " for="check112">{{p.fooditem}}</label>
                                     </li>
-                                    <li class="list-group-item list-group-item-primary">Dinner:
-                                        {% for item in dinner %}
-                                         <a href="">{{item.fooditem}}</a>
-                                         <br>
-                                         {%endfor%}
-                                        </li>
-            </ul>
-            </form>
-        </div>
-    </div>
-</div>
-    {% endblock body %}
+                                    {%endfor%}
+                                </ol>
+                                <ol class="mt-3 " id="post" style="display:none;">
+                                    {%for p in postmeal%}
+                                    <li>
+                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
+                                        <label class="labe " for="check112">{{p.fooditem}}</label>
+                                    </li>
+                                    {%endfor%}
+                                </ol>
+                                <ol class="mt-3 " id="lunch" style="display:block;">
+                                    {%for p in lunch%}
+                                    <li>
+                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
+                                        <label class="labe " for="check112">{{p.fooditem}}</label>
+                                    </li>
+                                    {%endfor%}
+                                </ol>
+                                <ol class="mt-3 " id="snacks" style="display:none;">
+                                    {%for p in snacks%}
+                                    <li>
+                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
+                                        <label class="labe " for="check112">{{p.fooditem}}</label>
+                                    </li>
+                                    {%endfor%}
+                                </ol>
+                                <ol class="mt-3 " id="dinner" style="display:none;">
+                                    {%for p in dinner%}
+                                    <li>
+                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
+                                        <label class="labe " for="check112">{{p.fooditem}}</label>
+                                    </li>
+                                    {%endfor%}
+                                </ol>
+                                <div class="bv">
+                                    <button class="btn btn-primary orangeBTN" type="submit">Edit</button>
+                                    <button class="btn btn-primary orangeBTN" type="submit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 shadow you ml-3 p-4">
+                            <div class="d-flex flex-row">
+                                <h3>Live Appointements</h3>
+                                <img class="foodi" src="https://cdn3.iconfinder.com/data/icons/elections-filled-line/614/4590_-_Seminar-512.png" alt="" />
+                            </div>
+                            <hr />
+                            {%for em,li,us in zip %}
+                            <div class="d-flex flex-row mt-3 col-lg-12">
+                                <img height="55px" src="/media/{{us.pic}}" alt="" />
+                                <div class="ml-3">
+                                    <h4>{{us.username}}</h4>
+                                    <div class="d-flex flex-row">
+                                        <p>{{em.employeetype}}</p>
+                                        <p class="ml-2">{{li.slottime}}</p>
+                                    </div>
+                                </div>
+                                <div class="bv1">
+                                    <a href="{{li.link}}"><button class="btn btn-primary orangeBTN" type="submit">Join now!</button></a>
+                                </div>
+                            </div>
+                            {%endfor%}
+                        </div>
+                    </div>
+                    <br />
+                    <div class="d-flex flex-row">
+                        <div class="col-lg-6 you shadow p-4">
+                            <div class="d-flex flex-row">
+                                <h3>Exercise Plan</h3>
+                                <img class="foodi" src="https://cdn2.iconfinder.com/data/icons/health-21/64/checklist-exercise-list-gym-routine-training-512.png" alt="" />
+                            </div>
+                            <hr />
+                            <ol class="mt-3 ">
+                                <li>
+                                    <input type="checkbox" class="check" name="" id="check1121" value="" />
+                                    <label class="labe " for="check1121">2x squats</label>
+
+                                </li>
+
+                                <li>
+                                    <input type="checkbox" class="check mt-2" name="" id="check111" value="" />
+                                    <label class="labe " for="check111">10 min jogging</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" class="check mt-2" name="" id="check121" value="" />
+                                    <label class="labe " for="check121">3x pushups</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" class="check mt-2" name="" id="check131" value="" />
+                                    <label class="labe " for="check131">3x Ankle holds</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" class="check mt-2" name="" id="check141" value="" />
+                                    <label class="labe " for="check141">3x Dumbells</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" class="check mt-2" name="" id="check1411" value="" />
+                                    <label class="labe " for="check1411">3x Pullups</label>
+                                </li>
+                            </ol>
+
+                            <div class="bv">
+                                <button class="btn btn-primary orangeBTN" type="submit">Submit</button>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column col-lg-6 ml-3">
+                            <div class="you col-lg-12 shadow p-4">
+                                <div class="d-flex flex-row">
+                                    <h3>Streak</h3>
+                                    <img class="foodi" src="https://cdn4.iconfinder.com/data/icons/flycons/128/speed_streak_fast_motion-11-512.png" alt="" />
+                                </div>
+                                <hr />
+                                <div class="d-flex flex-row">
+                                    {%if user.streaks is none %}
+                                    <div>
+                                        <h2>Log Meal to Obtain Streaks</h2>
+                                        <p>Get points based on your streak and redeem coupons!</p>
+                                    </div>
+                                    {%else%}
+                                    <div>
+                                        <h2>{{user.streaks.days}}x Days</h2>
+                                        <p>Your Streak Lasted</p>
+                                    </div>
+                                    {%endif%}
+                                    <div class="bv1">
+                                        <img class="streaki" src="https://cdn4.iconfinder.com/data/icons/flycons/128/speed_streak_fast_motion-21-512.png" alt="" />
+                                    </div>
+                                </div>
+                                <div class="bv">
+                                    <button class="btn btn-primary orangeBTN" type="submit">More</button>
+
+                                </div>
+                            </div>
+                            <div class="you col-lg-12 shadow mt-2 p-4">
+                                <div class="d-flex flex-row">
+                                    <h4>Dietician/Nutritionist Notes</h4>
+                                    <img class="foodi1" src="https://image.flaticon.com/icons/png/512/190/190703.png" alt="" />
+
+                                </div>
+                                <hr />
+                                <div class="per">
+                                    <p>{{dietplans.remarks}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row mt-3">
+                        <div class="col-lg-6 you shadow p-4">
+                            <div class="d-flex flex-row">
+                                <h3>Grocery List</h3>
+                                <img class="foodi" src="https://www.shareicon.net/data/2016/05/05/760099_food_512x512.png" alt="" />
+                            </div>
+                            <hr />
+                            {% if user.sub.plan != "Free Plan" %}
+                            {% for gro in grolist %}
+                            <ul>
+                                <li class="labe">{{gro}}</li>
+                            </ul>
+                            {%endfor%}
+                            <div class="bv">
+                               <a href="{% url 'grocery' user.id %}"><button class="btn btn-primary orangeBTN" type="submit">More</button></a>
+                            </div>
+                            {%else%}
+                            <h2>Upgrade Plan to Get this feature.</h2>
+                            <div class="bv">
+                                <a href="{% url 'subs' %}"><button class="btn btn-primary orangeBTN" type="submit">Click Here</button></a>
+                            </div>
+                            {%endif%}
+                        </div>
+                        <div class="col-lg-6 you shadow p-4 ml-3">
+                            <div class="d-flex flex-row">
+                                <h3>Trainer</h3>
+                                <img class="foodi" src="https://cdn2.iconfinder.com/data/icons/diversity-avatars-vol-3/64/fitness-instructor-personal-trainer-man-caucasian-512.png" alt="" />
+                            </div>
+                            <hr />
+                            <div class="texth per1">
+                                <h6 class="text-left">Work Hard,keep Pushing yourself and Never give up,Eat Heathy ,wake up early,do workout,do every thing according to the time.
+                                <br> <br>“The last three or four reps is what makes the muscle grow. This area of pain divides a champion from someone who is not a champion.”
+                              </h6>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+              </div>
+    				</div>
+    			</div>
+    		</div>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+      	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/5f59ca6ad3.js" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="{% static 'dashboard.js' %}"></script>
+</body>
+
+</html>

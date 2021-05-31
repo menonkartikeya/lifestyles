@@ -75,7 +75,7 @@ class MyUserAdmin(UserAdmin):
     model = MyUser
     list_display = ['username', 'mobno', 'gender','height','weight','target',]
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ('mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','log')}),
+            (None, {'fields': ('mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','log','pic')}),
     ) #this will allow to change these fields in admin module
 
 

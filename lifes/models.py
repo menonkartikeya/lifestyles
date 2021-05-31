@@ -118,16 +118,6 @@ class bills(models.Model):
         verbose_name_plural = "Manage Bills!"
 
 
-class live(models.Model):
-    slottime = models.TimeField()
-    date = models.DateField()
-
-    def name(self):
-        obj = MyUser.objects.get(lives=self.id)
-        return obj.username
-
-    class Meta:
-        verbose_name_plural = "Check Live Meetings!"
 
 
 class subplans(models.Model):
@@ -163,7 +153,20 @@ class logger(models.Model):
     class Meta:
         verbose_name_plural = "Log Meals!"
 
+class live(models.Model):
+    slottime = models.TimeField()
+    date = models.DateField()
+
+    
+    def name(self):
+        obj = MyUser.objects.get(lives=self.id)
+        return obj.username
+
+    class Meta:
+        verbose_name_plural = "Check Live Meetings!"
+
 class MyUser(AbstractUser):
+    pic = models.ImageField(default='defaultpic.jpg')
     gender = models.CharField(choices=gen,max_length=50,blank=True,null=True)
     mobno = models.BigIntegerField(unique=True)
     height = models.FloatField(default=0.0,blank=True)
@@ -191,7 +194,6 @@ class MyUser(AbstractUser):
 
     class Meta:
         verbose_name_plural = "User Details!"
-
 
 class contact(models.Model):
     email = models.EmailField()
@@ -281,4 +283,4 @@ class bmr(models.Model):
 
     class Meta:
         verbose_name_plural = "BMR INDEX"
-        
+

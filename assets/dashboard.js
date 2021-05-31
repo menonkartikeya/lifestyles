@@ -1,26 +1,40 @@
-const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-];
-data = {
-    labels: labels,
-    datasets: [{
-        label: 'My First dataset',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: [0, 20, 5, 2, 20, 30, 45],
-    }]
-};
-let config = {
-    type: 'line',
-    data,
-    options: {}
-};
-var myChart = new Chart(
-    document.getElementById('myChart'),
-    config
-);
+// mySideBar
+$('.sidebtn').on('click', function () {
+	$('.sidebar').toggleClass("showSidebar");
+	// $('.main').toggleClass("withOpacity");
+});
+$('.main').on('click', function () {
+	$('.sidebar').removeClass("showSidebar");
+	// $('.main').removeClass("withOpacity");
+});
+$("#debugDiv").hide();
+// console.log = function(message) {
+//   $('#debugDiv').show();
+//   $('#debugDiv').html('<p>' + message + '</p>');
+//   setTimeout(function() {$("#debugDiv").hide();}, 6000);
+// };
+// console.error = console.debug = console.info =  console.log;
+//
+
+
+let q1 = document.getElementById('snack');
+let q2 = document.getElementById('head')
+let q3 = document.getElementById('post');
+let q4 = document.getElementById('pre');
+let q5 = document.getElementById('Dinner');
+let q6 = document.getElementById('breakfast');
+q1.addEventListener('click', function(event) {
+    q2.textContent = event.target.value
+})
+q3.addEventListener('click', function(event) {
+    q2.textContent = event.target.value
+})
+q4.addEventListener('click', function(event) {
+    q2.textContent = event.target.value
+})
+q5.addEventListener('click', function(event) {
+    q2.textContent = event.target.value
+})
+q6.addEventListener('click', function(event) {
+    q2.textContent = event.target.value
+})
