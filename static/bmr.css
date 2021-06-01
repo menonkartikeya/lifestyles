@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap');
+/* The side navigation menu */
+.sidebar {
+  background-color: white;
+  width: 300px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding: 20px;
+  text-align: center;
+  /* overflow-x: hidden; */
+  /* overflow-y: auto;  Scrollable contents if viewport is shorter than content.  */
+  border-right: 1px solid #eee;
+}
+@media (min-width: 780px) {
+  .main {
+    padding-right: 40px;
+    padding-left: 340px;
+    /* 300 + 40 */
+  }
+  .sidebtn {
+    display: none;
+  }
+  .sidebar {
+    display: block;
+  }
+}
+@media screen and (max-width: 780px) {
+  .sidebtn {
+    display: block;
+  }
+  .sidebar {
+    display: none;
+    overflow-x: hidden;
+    /* transition: opacity 0.4s ease-out;
+    opacity: 0;
+    overflow-x: hidden; */
+  }
+}
+.sidebtn {
+  border:none;
+  background:none;
+  z-index: 101;
+  position: fixed;
+  margin: 25px 10px;
+}
+.showSidebar {
+  display: block;
+  /* opacity: 1; */
+}
+.back12 {
+  background-color: white;
+}
+.nm {
+  transition-duration: 0.2s;
+}
+.nm:hover {
+  background-color: whitesmoke;
+  color: tomato;
+}
+
+.assddf {
+  border-radius: 80px;
+}
+.h {
+  text-align: center;
+}
+.ij1 {
+  height: 50px;
+  border-radius: 60px;
+}
+.aaa:hover {
+  background-color: white;
+}
+.bu {
+  border-width: 0px;
+  text-align: left;
+  border-radius: 20px;
+}
+.lll {
+  height: 50px;
+  border-radius: 25px;
+}
+.op {
+  border-radius: 25px;
+}
+.col123 {
+  background-color: #ff0b52;
+}
+.col1234 {
+  background-color: lightgreen;
+}
+.col12345 {
+  background-color: white;
+}
+.fony {
+  color: white;
+}
+.imj {
+  height: 50px;
+}
+.mar {
+  margin-left: auto;
+}
+.imj1 {
+  height: 50px;
+  border-radius: 23px;
+}
+.mar1 {
+  margin-top: 180px;
+  color: grey;
+}
+.rule {
+  border-width: 3px;
+}
+.you {
+  border-radius: 25px;
+}
+.xcx {
+  font-family: "Titillium Web";
+}
+.texth {
+  text-align: center;
+}
+.hicon {
+  height: 120px;
+}
+.infog {
+  color: grey;
+  font-size: 15px;
+}
+.bv {
+  text-align: right;
+  margin-left: 30px;
+}
+.bv1 {
+  margin-left: auto;
+}
+/* Orange Button */
+
+.orangeBTN {
+  background-color: orange;
+  border: orange;
+}
+.orangeBTN:hover {
+  background-color: orange;
+  opacity: 0.8;
+}
+/* BreadCrumbs */
+
+ol.breadcrumb {
+  padding: 10px 16px;
+  list-style: none;
+  background-color: white;
+}
+/* Add a color to all links inside the list */
+
+ol.breadcrumb li a,
+a {
+  color: orange;
+  text-decoration: none;
+}
+/* Add a color on mouse-over */
+
+ol.breadcrumb li a:hover,
+a:hover {
+  color: tomato;
+  text-decoration: underline;
+}

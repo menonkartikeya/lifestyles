@@ -1,143 +1,330 @@
-{% extends 'base.html' %}
-  {% block body %}
-  {% load static %}
-  <div class="my-3 p-2">
-      {% if usertype == none %}
-      <h1>Welcome,</h1>
-      {% else %}
-      <h1>Welcome, {{usertype}}</h1>
-      {%endif%}
-  </div>
+{% load static %}
+<!DOCTYPE html>
+<html>
 
-<div class="container">
-  <div class="form-row">
-    <!-#########################Col1###############-->
-    <div class="col-md-6 col-sm-12 col-xs-12">
-      <div class="tab-bmi">
-        <h3>Bmr Calculator</h3>
-        <div class="tab">
-          <button  class="tablinks" onclick="openUnit(event, 'metric')">Metric</button>
-          <button  class="tablinks" onclick="openUnit(event, 'imperial')">Imperial</button>
-        </div>
 
-        <div class="tabcontent" id="metric">
-           <form method="post">
-             {% csrf_token %}
-             <div class="col-12">
-               <label for="">Weight: </label>
-               <input type="text" name="weight-metric" class="form-control" required placeholder="kg">
-             </div>
-             
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-             <div class="col-12">
-               <label for="">Height: </label>
-               <input type="text" name="height-metric" class="form-control" required placeholder="m">
-             </div>
-             
-             <div class="col-12">
-                <label for="">Age(in years): </label>
-                <input type="int" name="age-metric" class="form-control" required placeholder="years">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="{% static 'bmr.css' %}" rel="stylesheet">
+    <title>{{title}}</title>
+</head>
+
+
+<body>
+    <div class="container-fluid xcx">
+        <div class="row">
+          <button type="button" name="button" class="sidebtn">
+            <lord-icon src="https://cdn.lordicon.com/wgwcqouc.json" trigger="morph-two-way" colors="primary:#121331,secondary:#08a88a" stroke="100" style="width:25px;height:25px"></lord-icon>
+          </button>
+          <div class=" sidebar " id="mySideBar">
+            <img height="150px" class="assddf" src="{{user.pic}}" alt="" />
+            <h2>{{user.username}}</h2>
+            <hr class="rule" />
+            <button class="btn btn-white bu col-12 nm shadow" type="submit">
+              <div class="d-flex flex-row ">
+                <img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
+                <a href="{% url 'dashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
               </div>
-
-              <div class="col-12">
-                <label for="">Gender: </label>
-                <input type="char" name="gender-metric" class="form-control" required placeholder="male/female">
+            </button>
+            <br />
+            <button class="btn btn-white bu col-12 nm " type="submit">
+              <div class="d-flex flex-row ">
+                <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
+                <a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
               </div>
-
-             <div class="form-check my-5">
-               <input class="form-check-input" checked="checked" name="save" value="on" type="checkbox">
-               <label for="" class="form-check-label">Save It.
-                 <a href="#" title="Why to save it?" data-toggle="popover" data-trigger="focus"
-         data-content="In case you want to track your weight, you can save it.(login required)">?</a>
-       </label>
-             </div>
-
-
-
-
-             <button type="submit" class="btn btn-primary" action="{% url 'bmrcal' %}">Calculate</button>
-
-           </form>
-        </div>
-
-        <div class="tabcontent" id="imperial">
-          <form method="post">
-            {% csrf_token %}
-            <div class="col-12">
-              <label for="">Weight: </label>
-              <input type="text" name="weight-imperial" class="form-control" required placeholder="lbs">
-            </div>
-
-            <div class="col-12">
-              <label for="">Height: </label>
-              <div class="input-group">
-                <input type="text" name="feet" placeholder="feet" class="form-control">
-                <input type="text" name="inches" placeholder="inches" class="form-control">
+            </button>
+            <br />
+            <button class="btn btn-white bu col-12 nm " type="submit">
+              <div class="d-flex flex-row ">
+                <img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
+                <a href="{% url 'invoices' user.id %}"><h5 class="ml-3 mt-3">Billings</h5></a>
+              </div>
+            </button>
+            <br />
+            <button class="btn btn-white bu col-12 nm " type="submit">
+              <div class="d-flex flex-row ">
+                <img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
+                <a href="{% url 'book' %}"><h5 class="ml-3 mt-3">Live</h5></a>
+              </div>
+            </button>
+            <br />
+            <button class="btn btn-white bu col-12 nm " type="submit">
+              <div class="d-flex flex-row ">
+                <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
+                <a href="http://"><h5 class="ml-3 mt-3">Food Plans</h5></a>
+              </div>
+            </button>
+            <br />
+            <button class="btn btn-white bu col-12 nm " type="submit">
+              <div class="d-flex flex-row ">
+                <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
+                <a href="http://"><h5 class="ml-3 mt-3">Exercises</h5></a>
+              </div>
+            </button>
+            <hr class="rule" />
+            <p><small>All Copyrights Reserved by KOWI LIFESTYLES</small>
+            </p>
+          </div>
+          <div class="back12 col-lg-12 main ">
+            <div class="row">
+              <div class="col-lg-12 p-3">
+                <div class="d-flex flex-row ">
+                  <div class="bv">
+                    <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a>
+                        </li>
+                        <li class="breadcrumb-item"><a href="#">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">BMR</li>
+                      </ol>
+                    </nav>
+                  </div>
+                  <div class="mar">
+                    <a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
+                    <a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
+                </div>
+                </div>
               </div>
             </div>
-             
-            <div class="col-12">
-            <label for="">Age(in years): </label>
-              <input type="int" name="age-imperial" class="form-control" required placeholder="years">
+            <div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
+              <div class="col-12 text-center"  >
+                  {% for message in messages %}
+                  <div class="container-fluid p-0" id="debugDiv">
+                    <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                      {{ message }}
+                    </div>
+                  </div>
+                  {% endfor %}
+          </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 p-5 shadow  you">
+                    <h1>Basal Metabolic Rate</h1>
+                    <div class="d-flex flex-row">
+                        <h3 id="fabio">BMR-Metric</h3>
+                        <div class="bv1">
+                            <button class="btn btn-primary orangeBTN" id="met" type="submit">Metric</button>
+                            <button class="btn btn-primary orangeBTN" id="imp" type="submit">Imperial</button>
+                        </div>
+
+                    </div>
+                    <br />
+                    <form action="" method="post">
+                      {%csrf_token%}
+                    <div id="metdiv">
+                        <div class="d-flex flex-row" id="metdiv">
+                            <div class="col-lg-6 p-4 shadow you">
+                                <h4>Height</h4>
+                                <br />
+                                <div class="d-flex flex-row">
+                                    <div class="col-6">
+                                            <input class="form-control " type="text" name="height-metric" id="" value="" placeholder="In Meters" />
+                                        <br />
+                                        <p class="infog">*Kindly Provide Height in Meters</p>
+                                    </div>
+                                    <img class="hicon col-6" src="https://cdn.iconscout.com/icon/premium/png-256-thumb/height-measurement-3-766796.png" alt="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6 p-4 shadow you ml-3">
+                                <h4>Weight</h4>
+                                <br />
+                                <div class="d-flex flex-row">
+                                    <div class="col-6">
+                                            <input class="form-control " type="text" name="weight-metric" id="" value="" placeholder="In KG" />
+                                        <br />
+                                        <p class="infog">*Kindly Provide Weight in Kilograms</p>
+                                    </div>
+                                    <img class="hicon col-6" src="https://image.flaticon.com/icons/svg/249/249236.svg" alt="" />
+                                </div>
+
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="d-flex flex-row">
+                            <div class="col-lg-6 p-4 shadow you">
+                                <h4>Age</h4>
+                                <br />
+                                <div class="d-flex flex-row">
+                                    <div class="col-6">
+                                            <input class="form-control " type="text" name="age-metric" id="" value="" placeholder="In Years" />
+                                        <br />
+                                        <p class="infog">*Kindly Provide Age in Years</p>
+                                    </div>
+                                    <img class="hicon col-6" src="https://image.flaticon.com/icons/png/512/2040/2040944.png" alt="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6 p-4 shadow you ml-3">
+                                <h4>Gender</h4>
+                                <br />
+                                <div class="d-flex flex-row">
+                                    <div class="col-6">
+                                            <select name="gender-metric" id="">
+                                              <option value="Male">Male</option>
+                                              <option value="Female">Female</option>
+                                            </select>
+                                        <br />
+                                        <p class="infog">*Kindly Provide Gender</p>
+                                    </div>
+                                    <img class="hicon col-6" src="https://image.flaticon.com/icons/png/512/2061/2061488.png" alt="" />
+                                </div>
+                                <div class="bv mt-3">
+                                    <a href="#bmr12"><button class="btn btn-primary orangeBTN " type="submit">Calculate BMR</button></a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="impdiv">
+                        <div class="d-flex flex-row ">
+                            <div class="col-lg-6 p-4 shadow you">
+                                <h4>Height</h4>
+                                <br />
+                                <div class="d-flex flex-row">
+                                    <div class="col-6">
+                                            <input class="form-control " type="text" name="feet" id="" value="" placeholder="In Feet" />
+                                            <input class="form-control mt-3 " type="text" name="inches" id="" value="" placeholder="In Inches" />
+                                        <br />
+                                        <p class="infog">*Kindly Provide Height in Both Feet and Inches</p>
+                                    </div>
+                                    <img class="hicon col-6" src="https://cdn.iconscout.com/icon/premium/png-256-thumb/height-measurement-3-766796.png" alt="" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 p-4 shadow you ml-3">
+                                <h4>Weight</h4>
+                                <br />
+                                <div class="d-flex flex-row">
+                                    <div class="col-6">
+                                            <input class="form-control " type="text" name="weight-imperial" id="" value="" placeholder="In lbs" />
+                                        <br />
+                                        <p class="infog">*Kindly Provide Weight in lbs</p>
+                                    </div>
+                                    <img class="hicon col-6" src="https://image.flaticon.com/icons/svg/249/249236.svg" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <div class="col-lg-6 p-4 shadow you">
+                                <h4>Age</h4>
+                                <br />
+                                <div class="d-flex flex-row">
+                                    <div class="col-6">
+                                            <input class="form-control " type="text" name="age-imperial" id="" value="" placeholder="In Years" />
+                                        <br />
+                                        <p class="infog">*Kindly Provide Age in Years</p>
+                                    </div>
+                                    <img class="hicon col-6" src="https://image.flaticon.com/icons/png/512/2040/2040944.png" alt="" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6 p-4 shadow you ml-3">
+                                <h4>Gender</h4>
+                                <br />
+                                <div class="d-flex flex-row">
+                                    <div class="col-6">
+                                            <select name="gender-imperial" id="">
+                                              <option value="Male">Male</option>
+                                              <option value="Female">Female</option>
+                                            </select>
+                                        <br />
+                                        <p class="infog">*Please Kindy Provide Gender </p>
+                                    </div>
+                                    <img class="hicon col-6" src="https://image.flaticon.com/icons/png/512/2061/2061488.png" alt="" />
+                                </div>
+                                <div class="bv mt-3">
+                                    <a href="#bmr12"><button class="btn btn-primary  orangeBTN" type="submit">Calculate BMR</button></a>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    </form>
+                    <br />
+                    <div class="col-12 shadow p-4 you" id="bmr12">
+                        <h4>BMR</h4>
+
+                        <div class="d-flex flex-row">
+                            <div class="col-6">
+                                <h1>{{bmr.bmr}}</h1>
+                            </div>
+
+                            <img class="hicon col-6" src="https://image.flaticon.com/icons/png/512/2117/premium/2117130.png" alt="" />
+
+                        </div>
+
+                    </div>
+                    <br />
+                    <br />
+                    <h1>BMR Progress graph</h1>
+
+
+
+
+                    <div>
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <br />
+                    <br />
+                    <div class="bv">
+                        <button class="btn btn-primary orangeBTN" type="submit">Back</button>
+
+                    </div>
+
+
+
+
+                </div>
             </div>
 
-            <div class="col-12">
-            <label for="">Gender: </label>
-              <input type="text" name="gender-imperial" class="form-control" required placeholder="male/female">
-            </div>
 
-            {% if user.is_authenticated %}
-            <div class="form-check my-5">
-              <input class="form-check-input" checked="checked" name="save" value="on" type="checkbox">
-              <label for="" class="form-check-label">Save It.
-                <a href="#" title="Why to save it?" data-toggle="popover" data-trigger="focus"
-        data-content="In case you want to track your weight, you can save it.(login required)">?</a>
-      </label>
-            </div>
-            {% else %}
-            <div class="form-check my-5">
-              <input disabled class="form-check-input" checked="checked" name="save" value="on" type="checkbox">
-              <label for="" class="form-check-label">Save It.
-                <a href="#" title="Why to save it?" data-toggle="popover" data-trigger="focus"
-        data-content="In case you want to track your weight, you can save it.(login required)">?</a>
-      </label>
-            </div>
-            {% endif %}
-
-
-
-            <button type="submit" class="btn btn-primary" action="{% url 'bmrcal' %}">Calculate</button>
-
-          </form>
         </div>
-
-
-      </div>
-
-
-    <!-#########################Col2###############-->
 
 
     </div>
-
-
-
-      {% if bmr %}
-    <div class="col-md-6 col-sm-12 col-xs-12">
-      <h2>Result</h2>
-      <p>Your BMR = {{bmr}} Kcal/day </p>
-     
-        
-        
-        
-        
-      
-    </div>
-    {% endif %}
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    var labelss = {{ bmrdate|safe }};
+    var bmrl = {{ bmrlist |safe }};
+    data = {
+        labels: labelss,
+        datasets: [{
+            label: 'BMR Progress Graph',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: bmrl,
+        }]
+    };
+    let config = {
+        type: 'line',
+        data,
+        options: {}
+    };
+    var myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+  </script>
 
-  {{ div | safe }}
-</div>
 
-  {% endblock body %}
-  
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    
+    
+
+<script type="text/javascript" src="{% static 'bmr.js' %}"></script>
+</body>
+
+</html>

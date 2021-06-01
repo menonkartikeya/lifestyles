@@ -35,6 +35,7 @@ from rest_framework import generics, permissions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
+import json
 # Create your views here.
 
 #Home Page - currently renders which type of user is there and shows links according to that.
@@ -100,8 +101,8 @@ def dashboard(request):
     #checks for user logged in and user is not any kind of employee
     if user.is_authenticated and user.is_staff == False:
         #get all bmi object of that particular user and then get the latest bmi of that user
-        bmii = bmi.objects.filter(us=user).order_by('-date').first()
-        bmrr = bmr.objects.filter(us=user).order_by('-date').first()
+        bmii = bmi.objects.filter(us=user).order_by('-id')[0]
+        bmrr = bmr.objects.filter(us=user).order_by('-id')[0]
 
             
         if user.allotdieti:
@@ -647,9 +648,32 @@ def book(request):
 def bmic(request):
     headtitle = "BMI | Lifestyles"
     bmii =0.0
-    state = ""
     user = request.user
+    state = ""
     if user.is_authenticated:
+        bmii = bmi.objects.filter(us=user).order_by('-id')[0]
+        bmiobjlist = bmi.objects.filter(us=user)
+        bmilist = []
+        bmidate = []
+        for i in bmiobjlist:
+            bmilist.append(i.bmi)
+            bmidate.append(i.date)
+        if bmii.bmi<=16.0:
+            state = "Severe Thinness"
+        elif bmii.bmi>16.0 and bmii.bmi<=17.0:
+            state = "Moderate Thinness"
+        elif bmii.bmi > 17.0 and bmii.bmi <= 18.0:
+            state = "Mild Thinness"
+        elif bmii.bmi > 18.0 and bmii.bmi <= 25.0:
+            state = "Normal"
+        elif bmii.bmi > 25.0 and bmii.bmi <= 30.0:
+            state = "Overweight"
+        elif bmii.bmi > 30.0 and bmii.bmi <= 35.0:
+            state = "Obese Class I"
+        elif bmii.bmi > 35.0 and bmii.bmi <= 40.0:
+            state = "Obese Class II"
+        elif bmii.bmi > 40.0:
+            state = "Obese Class III"
         if request.method=="POST":
             weight_metric = request.POST.get("weight-metric")
             weight_imperial = request.POST.get("weight-imperial")
@@ -664,17 +688,17 @@ def bmic(request):
             cont = bmicalc(weight,height)
             bmii = cont[1]
             state = cont[0]
-            save = request.POST.get("save")
-            if save == "on":
-                user = request.user
-                bmi.objects.create(us=user,bmi=round(bmii),date=datetime.date.today())
-                user.weight = weight
-                user.height = height
-                user.save()
+            bmi.objects.create(us=user,bmi=round(bmii),date=datetime.date.today())
+            user.weight = weight
+            user.height = height
+            user.save()
+            return redirect('bmic')
     parms = {
         'title':headtitle,
         'bmi':bmii,
         'state':state,
+        'bmilist':json.dumps(bmilist),
+        'bmidate':json.dumps(bmidate,indent=4, sort_keys=True, default=str),
     }
     return render(request,'bmi.html',parms)
 
@@ -687,11 +711,48 @@ def subs(request):
     return render(request,'sub.html',parms)
 
 #growth page rendered only in this.
-def growth(request):
-    title = "Growth | Lifestyles"
-    parms = {
-        'title':title,
-    }
+def growth(request,id):
+    try:
+        userr = MyUser.objects.get(id=id)
+    except ObjectDoesNotExist:
+        return render(request,'404.html')
+    user = request.user
+    if user.is_authenticated == True:
+        if (user.id == id) or (user.is_staff == True and user.is_active == True):
+            if user.is_staff:
+                flag = True
+            else:
+                flag = False
+            title = "Growth | Lifestyles"
+            bmii = bmi.objects.filter(us=userr).order_by('-id')[0]
+            bmrr = bmr.objects.filter(us=userr).order_by('-id')[0]
+            bmiobjlist = bmi.objects.filter(us=userr)
+            bmilist = []
+            bmidate = []
+            for i in bmiobjlist:
+                bmilist.append(i.bmi)
+                bmidate.append(i.date)
+            bmrobjlist = bmr.objects.filter(us=userr)
+            bmrlist = []
+            bmrdate = []
+            for i in bmrobjlist:
+                bmrlist.append(i.bmr)
+                bmrdate.append(i.date)
+            parms = {
+                'title':title,
+                'bmi':bmii,
+                'bmr':bmrr,
+                'flag':flag,
+                'bmilist':json.dumps(bmilist),
+                'bmidate':json.dumps(bmidate,indent=4, sort_keys=True, default=str),
+                'bmrlist':json.dumps(bmrlist),
+                'bmrdate':json.dumps(bmrdate,indent=4, sort_keys=True, default=str),
+            }
+        else:
+            messages.error(request,'Not authorized')
+            return redirect('login')
+    else:
+        return redirect('login')
     return render(request,'growth.html',parms)
 
 #grocery function according to user id!
@@ -945,9 +1006,9 @@ def unalo(request,emptype):
 #bmr calculate
 def bmrmain(weight,height,age,gender):
     heightincm=height*100
-    if gender == 'male':
+    if gender == 'male' or gender == 'Male':
         bmr=66.47+(13.75*weight)+(5.003*heightincm)-(6.755*age)
-    elif gender == 'female':
+    elif gender == 'female' or gender == 'Female':
         bmr=655.1+(9.563*weight)+(1.85*heightincm)-(4.676*age)
     return bmr
 
@@ -955,9 +1016,15 @@ def bmrmain(weight,height,age,gender):
 def bmrcal(request):
     headtitle = "Life Styles | Bmr"
     user = request.user
-    usertype = None
     bmrr =0.0
     if user.is_authenticated:
+        bmrr = bmr.objects.filter(us=user).order_by('-id')[0]
+        bmrobjlist = bmr.objects.filter(us=user)
+        bmrlist = []
+        bmrdate = []
+        for i in bmrobjlist:
+            bmrlist.append(i.bmr)
+            bmrdate.append(i.date)
         if request.method=="POST":
             weight_metric = request.POST.get("weight-metric")
             weight_imperial = request.POST.get("weight-imperial")
@@ -974,19 +1041,19 @@ def bmrcal(request):
                 gender = str(request.POST.get("gender-imperial"))        
             cont = bmrmain(weight,height,age,gender)
             bmrr = cont
-            save = request.POST.get("save")
-            if save == "on":
-                user = request.user
-                bmr.objects.create(us=user,bmr=round(bmrr),date=datetime.date.today())
-                user.weight = weight
-                user.height = height
-                user.age = age
-                user.gender = gender
-                user.save()
+            user = request.user
+            bmr.objects.create(us=user,bmr=round(bmrr),date=datetime.date.today())
+            user.weight = weight
+            user.height = height
+            user.age = age
+            user.gender = gender
+            user.save()
+            return redirect('bmrcal')
     parms = {
         'title':headtitle,
-        'usertype':usertype,
         'bmr':bmrr,
+        'bmrlist':json.dumps(bmrlist),
+        'bmrdate':json.dumps(bmrdate,indent=4, sort_keys=True, default=str),
     }
     return render(request,'bmrmain.html',parms)
 
@@ -1082,3 +1149,25 @@ def dietallapi(request):
                 count5+=1
             data[diet.day]["remarks"] = diet.remarks
         return Response(data)
+
+
+def lookcustomer(request,id):
+    try:
+        userr = MyUser.objects.get(id=id)
+    except ObjectDoesNotExist:
+        messages.error("No User Found")
+        return redirect('elogin')
+    user = request.user
+    if user.is_authenticated and user.is_staff == True and user.is_active == True and user.id == id:
+        emp = employeecontrol.objects.get(id=userr)
+        emp_type = emp.employeetype
+        alotted_users = emp.alloted.all()
+        parms = {
+            'title':"Lookup Customers | KOWI",
+            'emp_type':emp_type,
+            'alotted':alotted_users,
+        }
+        return render(request,'lookcustomer.html',parms)
+    else:
+        messages.error(request,"Login First")
+        return redirect('elogin')

@@ -1,151 +1,304 @@
-{%load static %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 
-
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="{% static 'dashboard.css' %}" >
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- CSS only -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet">
+	<link href="{% static 'Live.css' %}" rel="stylesheet">
+	<script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+	<title>{{title}}</title>
 </head>
 
 <body>
-    <div class="container-fluid xcx">
-        <div class="row">
-            <div class="col-lg-3  back1234 p-4 ">
-                <div class="h col-12">
-                    <img height="150px" class="assddf" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
-                    <h2>{{title}}</h2>
-                </div>
-                <hr class="rule" />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
+	<!-- The sidebar -->
+	<div class="container-fluid xcx">
+		<div class="row">
+			<button type="button" name="button" class="sidebtn">
+				<lord-icon src="https://cdn.lordicon.com/wgwcqouc.json" trigger="morph-two-way" colors="primary:#121331,secondary:#08a88a" stroke="100" style="width:25px;height:25px"></lord-icon>
+			</button>
+			<div class=" sidebar " id="mySideBar">
+				<img height="150px" class="assddf" src="/media/{{user.pic}}" alt="" />
+				<h2>{{user.username}}</h2>
+				<hr class="rule" />
+                {% if flag == True %}
+				<button class="btn btn-white bu col-12 nm shadow" type="submit">
                     <div class="d-flex flex-row ">
                         <img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
-                        <a href="{% url 'dashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
+                        <a href="{% url 'edashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
                     </div>
                 </button>
                 <br />
-                <br />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
+                <button class="btn btn-white bu col-12 nm " type="submit">
                     <div class="d-flex flex-row ">
                         <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
-                        <a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
+                        <a href="{% url 'eprofile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
                     </div>
                 </button>
                 <br />
-                <br />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
+                <button class="btn btn-white bu col-12 nm " type="submit">
                     <div class="d-flex flex-row ">
                         <img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
-                        <a href="{% url 'invoices' user.id %}"><h5 class="ml-3 mt-3">Invoices</h5></a>
+                        <h5 class="ml-3 mt-3">Pay Me</h5>
                     </div>
                 </button>
                 <br />
-                <br />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
+                <button class="btn btn-white bu col-12 nm " type="submit">
                     <div class="d-flex flex-row ">
                         <img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
-                        <a href="{% url 'book' %}"><h5 class="ml-3 mt-3">Book Appointment</h5></a>
+                        <h5 class="ml-3 mt-3">Live</h5>
                     </div>
                 </button>
                 <br />
-                <br />
-
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
+                <button class="btn btn-white bu col-12 nm" type="submit">
                     <div class="d-flex flex-row ">
                         <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
-                        <a href="{{user.playlist}}"></a><h5 class="ml-3 mt-3">Playlist</h5>
+                        <h5 class="ml-3 mt-3">FoodPlans</h5>
                     </div>
                 </button>
                 <br />
-                <br />
-                <button class="btn btn-white bu col-12 nm shadow" type="submit">
+                <button class="btn btn-white bu col-12 nm " type="submit">
                     <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/JrWk5dr/Whats-App-Image-2021-05-16-at-20-37-24-1.jpg" alt="" />
-                        <a href="{% url 'logoutme' %}"><h5 class="ml-3 mt-3">Logout</h5></a>
+                        <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
+                        <h5 class="ml-3 mt-3">Exercises</h5>
                     </div>
                 </button>
-                <div class="mar1">
+                {%else%}
+                <button type="button" name="button" class="sidebtn">
+                    <lord-icon src="https://cdn.lordicon.com/wgwcqouc.json" trigger="morph-two-way" colors="primary:#121331,secondary:#08a88a" stroke="100" style="width:25px;height:25px"></lord-icon>
+                  </button>
+                  <div class=" sidebar " id="mySideBar">
+                    <img height="150px" class="assddf" src="{{user.pic}}" alt="" />
+                    <h2>{{user.username}}</h2>
                     <hr class="rule" />
-                    <p class="">All Copyrights Reserved by KOWI LIFESTYLES</p>
-                </div>
+                    <button class="btn btn-white bu col-12 nm shadow" type="submit">
+                      <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
+                        <a href="{% url 'dashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
+                      </div>
+                    </button>
+                    <br />
+                    <button class="btn btn-white bu col-12 nm " type="submit">
+                      <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
+                        <a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
+                      </div>
+                    </button>
+                    <br />
+                    <button class="btn btn-white bu col-12 nm " type="submit">
+                      <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
+                        <a href="{% url 'invoices' user.id %}"><h5 class="ml-3 mt-3">Billings</h5></a>
+                      </div>
+                    </button>
+                    <br />
+                    <button class="btn btn-white bu col-12 nm " type="submit">
+                      <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
+                        <a href="{% url 'book' %}"><h5 class="ml-3 mt-3">Live</h5></a>
+                      </div>
+                    </button>
+                    <br />
+                    <button class="btn btn-white bu col-12 nm " type="submit">
+                      <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
+                        <a href="http://"><h5 class="ml-3 mt-3">Food Plans</h5></a>
+                      </div>
+                    </button>
+                    <br />
+                    <button class="btn btn-white bu col-12 nm " type="submit">
+                      <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
+                        <a href="http://"><h5 class="ml-3 mt-3">Exercises</h5></a>
+                      </div>
+                    </button>
+                {%endif%}
+				<hr class="rule" />
+				<p><small>All Copyrights Reserved by KOWI LIFESTYLES</small>
+				</p>
+			</div>
+			<div class="back12 col-lg-12 main ">
+				<div class="row">
+					<div class="col-lg-12 p-3">
+						<div class="d-flex flex-row ">
+							<div class="bv">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Live</li>
+									</ol>
+								</nav>
+							</div>
+							<div class="mar">
+								<a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
+                <a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
             </div>
-            <div class="back12 col-lg-9">
-                <div class="col-lg-12 p-5">
-                    <div class="d-flex flex-row">
-                        <h1 class="nm">Welcome {{user.username}}</h1>
-                        <div class="mar">
-                            <a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
-                            <a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-12 p-5 shadow  you">
-                    <h1>Book Appointment</h1>
-                    <form method="POST">
-                        {%csrf_token%}
-                        <div class="form-group row">
-                          <label for="inputEmail3" class="col-sm-2 col-form-label">Time - </label>
-                          <div class="col-sm-10">
-                            <input type="text" name="slottime" class="form-control" id="inputEmail3" placeholder="HH:MM">
+						</div>
+					</div>
+				</div>
+				<div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
+                    <div class="col-12 text-center"  >
+                        {% for message in messages %}
+                        <div class="container-fluid p-0" id="debugDiv">
+                          <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ message }}
                           </div>
                         </div>
+                        {% endfor %}
+                </div>
+                  </div>
+				<div class="row ">
+					<div class="col-md-12 mb-5 p-4 Kyou shadow">
+						<div class="row">
+							<div class="col-md-6">
+								<h1>Book Live Appointment</h1>
+							</div>
+							<!-- <div class="col-md-6 ">
+								<button type="button" name="button" class="btn btn-primary orangeBTN float-right">Your Meetings</button>
+							</div> -->
+						</div>
+                        <form action="" method="post">
+                            {%csrf_token%}
                         {% if flag == True %}
-                        <div class="form-group row">
-                          <label for="inputPassword3" class="col-sm-2 col-form-label">Select User:</label>
-                          <div class="col-sm-10">
-                            <select name="userid" id="inputPassword3">
-                                {%for al in allot %}
-                                <option value="{{al.id}}">{{al.username}}</option>
-                                {%endfor%}
-                            </select>
-                          </div>
-                        </div>
+						<div class="row justify-content-center">
+							<div class="col-md-6 text-center pt-4	">
+								<div class="form-group">
+									<label for="AppointmentWithWhom">Book Appointment With:</label>
+									<select class="form-control" name="userid" id="AppointmentWithWhom">
+                                        {%for al in allot %}
+                                        <option value="{{al.id}}">{{al.username}}</option>
+                                        {%endfor%}
+									</select>
+								</div>
+							</div>
+						</div>
                         {%else%}
-                        <div class="form-group row">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Select Choice:</label>
-                            <div class="col-sm-10">
-                              <select name="bookfor" id="inputPassword3">
-                                  {% if user.sub.plan == "Semi-Premium Plan" or user.sub.plan == "Premium Plan" %}
-                                  <option value="Dietician">Dietician</option>
-                                  <option value="Nutritionist">Nutritionist</option>
-                                  <option value="Fitness Trainer">Fitness Trainer</option>
-                                  {%elif user.sub.plan == "Basic Plan" %}
-                                  <option value="Dietician">Dietician</option>
-                                  <option value="Nutritionist">Nutritionist</option>
-                                  <option value="Fitness Trainer">Fitness Trainer</option>
-                                  {%endif%}
-                              </select>
-                            </div>
-                          </div>
+                        <div class="row justify-content-center">
+							<div class="col-md-6 text-center pt-4	">
+								<div class="form-group">
+									<label for="AppointmentWithWhom">Book Appointment With:</label>
+									<select class="form-control" name="bookfor" id="AppointmentWithWhom">
+                                        {% if user.sub.plan == "Semi-Premium Plan" or user.sub.plan == "Premium Plan" %}
+                                        <option value="Dietician">Dietician</option>
+                                        <option value="Nutritionist">Nutritionist</option>
+                                        <option value="Fitness Trainer">Fitness Trainer</option>
+                                        {%elif user.sub.plan == "Basic Plan" %}
+                                        <option value="Nutritionist">Nutritionist</option>
+                                        <option value="Fitness Trainer">Fitness Trainer</option>
+                                        {%endif%}
+									</select>
+								</div>
+							</div>
+						</div>
                         {%endif%}
-                        <div class="form-group row">
-                            <label for="inputpl3" class="col-sm-2 col-form-label">Date</label>
-                            <div class="col-sm-10">
-                              <input type="date" name="date" class="form-control" id="inputpl3">
-                            </div>
-                          </div>
-                        <div class="form-group row">
-                          <div class="col-sm-10">
-                            <button type="submit" class="btn btn-primary">Book</button>
-                          </div>
-                        </div>
-                      </form>
-                </div>
-            </div>
+						<hr class="my-4"/>
+						<div class="row form-group">
+							<div class="col-md-12">
+							<!-- <input type="date" class="form-control" id="appoitDate" min="2021-01-01" max="2025-12-31" value="2021-07-22"> -->
+							<div class="app-container" ng-app="dateTimeApp" ng-controller="dateTimeCtrl as ctrl" ng-cloak>
+								<div date-picker datepicker-title="Select Date" picktime="true" pickdate="true" pickpast="false" mondayfirst="false" custom-message="You have selected" selecteddate="ctrl.selected_date" updatefn="ctrl.updateDate(newdate)">
+									<div class="datepicker" ng-class="{'am': timeframe == 'am','pm': timeframe == 'pm','compact': compact}">
+										<div class="datepicker-header">
+											<div class="datepicker-title" ng-if="datepicker_title">{{ datepickerTitle }}</div>
+											<div class="datepicker-subheader">{{ customMessage }} {{ selectedDay }} {{ monthNames[localdate.getMonth()] }} {{ localdate.getDate() }}, {{ localdate.getFullYear() }}</div>
+										</div>
+										<div class="datepicker-calendar">
+											<div class="calendar-header">
+												<div class="goback" ng-click="moveBack()" ng-if="pickdate">
+													<svg width="30" height="30">
+														<path fill="none" stroke="tomato" stroke-width="3" d="M19,6 l-9,9 l9,9" />
+													</svg>
+												</div>
+												<div class="current-month-container">{{ currentViewDate.getFullYear() }} {{ currentMonthName() }}</div>
+												<div class="goforward" ng-click="moveForward()" ng-if="pickdate">
+													<svg width="30" height="30">
+														<path fill="none" stroke="tomato" stroke-width="3" d="M11,6 l9,9 l-9,9" />
+													</svg>
+												</div>
+											</div>
+											<div class="calendar-day-header">	<span ng-repeat="day in days" class="day-label">{{ day.short }}</span>
+											</div>
+											<div class="calendar-grid" ng-class="{false: 'no-hover'}[pickdate]">
+												<div ng-class="{'no-hover': !day.showday}" ng-repeat="day in month" class="datecontainer" ng-style="{'margin-left': calcOffset(day, $index)}" track by $index>
+													<div class="datenumber" ng-class="{'day-selected': day.selected }" ng-click="selectDate(day)">{{ day.daydate }}</div>
+												</div>
+											</div>
+										</div>
+										<div class="timepicker" ng-if="picktime == 'true'">
+											<div ng-class="{'am': timeframe == 'am', 'pm': timeframe == 'pm' }">
+												<div class="timepicker-container-outer" selectedtime="time" timetravel>
+													<div class="timepicker-container-inner">
+														<div class="timeline-container" ng-mousedown="timeSelectStart($event)" sm-touchstart="timeSelectStart($event)">
+															<div class="current-time">
+																<div class="actual-time">{{ time }}</div>
+															</div>
+															<div class="timeline"></div>
+															<div class="hours-container">
+																<div class="hour-mark" ng-repeat="hour in getHours() track by $index"></div>
+															</div>
+														</div>
+														<div class="display-time">
+															<div class="decrement-time" ng-click="adjustTime('decrease')">
+																<svg width="24" height="24">
+																	<path stroke="black" stroke-width="2" d="M8,12 h8" />
+																</svg>
+															</div>
+															<div class="time" ng-class="{'time-active': edittime.active}">
+																<input type="text" class="time-input" ng-model="edittime.input" ng-keydown="changeInputTime($event)" ng-focus="edittime.active = true; edittime.digits = [];" ng-blur="edittime.active = false" />
+																<div class="formatted-time">{{ edittime.formatted }}</div>
+															</div>
+															<div class="increment-time" ng-click="adjustTime('increase')">
+																<svg width="24" height="24">
+																	<path stroke="black" stroke-width="2" d="M12,7 v10 M7,12 h10" />
+																</svg>
+															</div>
+														</div>
+														<div class="am-pm-container">
+															<div class="am-pm-button" ng-click="changetime('am');">am</div>
+															<div class="am-pm-button" ng-click="changetime('pm');">pm</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<hr class="my-4"/>
+					<div class="row justify-content-center pb-3">
+						<div class="col-md-12 text-center">
+							<button type="button" name="button" class="btn btn-primary orangeBTN">Book Now</button>
+						</div>
 
 
-        </div>
+					</div>
+						</div>
 
-
-    </div>
-
-
-
-<script src="{% static 'dashboard.js' %}"></script>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="margin-bottom: 3cm;">
+		<!--Just for extra space-->
+	</div>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
+	<script type="text/javascript" src="{% static 'Live.js' %}"></script>
 </body>
 
 </html>

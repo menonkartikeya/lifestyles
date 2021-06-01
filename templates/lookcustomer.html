@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{% static 'lookcustomer.css' %}">
+</head>
+
+<body>
+    <div class="container-fluid xcx">
+        <div class="row">
+            <button type="button" name="button" class="sidebtn">
+                <lord-icon src="https://cdn.lordicon.com/wgwcqouc.json" trigger="morph-two-way" colors="primary:#121331,secondary:#08a88a" stroke="100" style="width:25px;height:25px"></lord-icon>
+            </button>
+            <div class=" sidebar " id="mySideBar">
+                <img height="150px" class="assddf" src="{{user.pic}}" alt="" />
+                <h2>{{user.username}}</h2>
+                <hr class="rule" />
+                <button class="btn btn-white bu col-12 nm shadow" type="submit">
+                    <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
+                        <a href="{% url 'edashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
+                    </div>
+                </button>
+                <br />
+                <button class="btn btn-white bu col-12 nm " type="submit">
+                    <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
+                        <a href="{% url 'eprofile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
+                    </div>
+                </button>
+                <br />
+                <button class="btn btn-white bu col-12 nm " type="submit">
+                    <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
+                        <h5 class="ml-3 mt-3">Pay Me</h5>
+                    </div>
+                </button>
+                <br />
+                <button class="btn btn-white bu col-12 nm " type="submit">
+                    <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
+                        <h5 class="ml-3 mt-3">Live</h5>
+                    </div>
+                </button>
+                <br />
+                <button class="btn btn-white bu col-12 nm" type="submit">
+                    <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
+                        <h5 class="ml-3 mt-3">FoodPlans</h5>
+                    </div>
+                </button>
+                <br />
+                <button class="btn btn-white bu col-12 nm " type="submit">
+                    <div class="d-flex flex-row ">
+                        <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
+                        <h5 class="ml-3 mt-3">Exercises</h5>
+                    </div>
+                </button>
+                <hr class="rule" />
+                <p><small>All Copyrights Reserved by KOWI LIFESTYLES</small>
+                </p>
+            </div>
+            <div class="back12 col-lg-12 main">
+                <div class="row">
+                    <div class="col-lg-12 p-3">
+                        <div class="d-flex flex-row ">
+                            <div class="bv">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a>
+                                        </li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">Customers</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="mar">
+                                <a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
+                <a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
+            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
+                        <div class="col-12 text-center"  >
+                            {% for message in messages %}
+                            <div class="container-fluid p-0" id="debugDiv">
+                              <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                                {{ message }}
+                              </div>
+                            </div>
+                            {% endfor %}
+                    </div>
+                      </div>
+                <div class="col-lg-12 p-5 shadow you">
+                    <h1>Customers</h1>
+                    <div class="d-flex flex-row p-3 ">
+                        <div class="col-lg-1">
+                            <h5>Pic</h5>
+                        </div>
+                        <div class="col-lg-3">
+                            <h5>Name</h5>
+
+                        </div>
+                        <div class="col-lg-2">
+                            <h5>Plan</h5>
+                        </div>
+                        <div>
+                            <h5>Target</h5>
+
+                        </div>
+                        <div class="bv1">
+                            <h5>Watch</h5>
+                        </div>
+                    </div>
+                    {% for us in alotted %}
+                    <a href="{% url 'growth' us.id %}">
+                    <div class="d-flex flex-row shadow you p-4 zoomx ">
+                        <div class="col-lg-1">
+                            <img class="cusi" src="/media/{{us.pic}}" alt="" />
+                        </div>
+                        <div class="col-lg-3 ">
+                            <h5>{{us.username}}</h5>
+
+                        </div>
+                        <div class="col-lg-2">
+                            <h5>{{us.sub.plan}}</h5>
+                        </div>
+                        <div>
+                            <h5>{{us.target}}</h5>
+                        </div>
+                        <div class="bv1">
+                            <lord-icon src="https://cdn.lordicon.com/tyounuzx.json" trigger="hover" colors="primary:#121331,secondary:#08a88a" stroke="99" style="width:45px;height:45px">
+                            </lord-icon>
+                        </div>
+                    </div>
+                </a>
+                   {%endfor%}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/5f59ca6ad3.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="{% static 'lookcustomer.js' %}">
+
+    </script>
+</body>
+
+</html>
