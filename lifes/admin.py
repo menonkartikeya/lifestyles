@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .forms import MyUserCreationForm, MyUserChangeForm
 from import_export.admin import ImportExportModelAdmin
-
 # Register your models here.
 class subplansAdmin(admin.ModelAdmin):
     list_per_page = 15
@@ -103,7 +102,6 @@ class requestAdmin(admin.ModelAdmin):
 admin.site.register(requestchange,requestAdmin)
 
 
-
 class equipmentadmin(ImportExportModelAdmin):
     list_per_page = 15
 
@@ -114,3 +112,8 @@ class exerciseadmin(ImportExportModelAdmin):
 
 
 admin.site.register(exercise,exerciseadmin)
+
+class otpadmin(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(otpstore,otpadmin)

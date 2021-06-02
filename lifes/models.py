@@ -89,8 +89,6 @@ class foodplan(models.Model):
     class Meta:
         verbose_name_plural = "Manage Food Plans!"
 
-
-
 class equipment(models.Model):
     name = models.CharField(max_length=200)
     image_path = models.URLField(null=True, blank=True)
@@ -125,7 +123,6 @@ class exerciseplan(models.Model):
 
     class Meta:
         verbose_name_plural = "Manage Excercise PLans Issued!"
-
 
 class dietplan(models.Model):
     day = models.CharField(choices=day,max_length=50,default='Monday')
@@ -224,8 +221,7 @@ class MyUser(AbstractUser):
     log = models.ManyToManyField(logger,blank=True)
     fitness = models.ManyToManyField(exerciseplan,blank=True)
 
-    USERNAME_FIELD = 'mobno'
-
+    #USERNAME_FIELD = 'mobno'
 
     def __str__(self):
         return self.username
@@ -322,3 +318,12 @@ class bmr(models.Model):
     class Meta:
         verbose_name_plural = "BMR INDEX"
 
+class otpstore(models.Model):
+    mobno = models.BigIntegerField()
+    otp = models.BigIntegerField()
+    username = models.CharField(max_length=100,blank=True,null=True)
+    passw = models.CharField(max_length=100,blank=True,null=True)
+    gender = models.CharField(choices=gen,max_length=50,blank=True,null=True)
+
+    class Meta:
+        verbose_name_plural = "OTP"

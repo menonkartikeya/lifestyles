@@ -32,8 +32,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_interface',
-    'colorfield',
+    #'admin_interface',
+    #'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'lifestyles.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'kowi',
+        'NAME': 'kowil',
         'CLIENT': {
             'host': "mongodb+srv://root:" + urllib.parse.quote_plus('kt6uQn0kss') + "@cluster0.bm2jr.mongodb.net/test?retryWrites=true&w=majority"
         },   

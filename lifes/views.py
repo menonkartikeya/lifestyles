@@ -36,10 +36,25 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 import json
+import math, random
+
+# import pyrebase
 # Create your views here.
+# config={
+#     "apiKey": "AIzaSyBJ33tV82IcUyz5qG3DcX53cmtNU_VZYm8",
+#     "authDomain": "lifestyle-kowi.firebaseapp.com",
+#     "databaseURL": "https://lifestyle-kowi-default-rtdb.asia-southeast1.firebasedatabase.app",
+#     "projectId": "lifestyle-kowi",
+#     "storageBucket": "lifestyle-kowi.appspot.com",
+#     "messagingSenderId": "937975020079",
+#     "appId": "1:937975020079:web:e34c860b0f6ab87a4464da"
+# }
+# firebase=pyrebase.initialize_app(config)
+# authe = firebase.auth()
+# database=firebase.database()
 
 #Home Page - currently renders which type of user is there and shows links according to that.
-def index(request):
+def index(request): 
     headtitle = "Life Styles | Home"
     user = request.user
     #checks for employee or customer by is_Staff
@@ -1072,41 +1087,150 @@ def foodapi(request):
 #     return JsonResponse(data,safe=False)
 
 
-def exercise(request):
-    title = "Exercise | Lifestyles"
-    user = request.user
-    currday = datetime.datetime.today().weekday()
-    currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-    curday = currweek[currday] 
-    if user.is_authenticated:
-        data = {}
-        exe = user.fitness.get(day=curday)
-        data['day']=exe.day
-        data['exercisename']={}
-        count=1
-        for item in exe.exercisename.all():
-            print(item)
-        print(data)
-        return HttpResponse("<h1>Done</h1>")
+# @api_view(['POST',])
+# @permission_classes([])
+# def registration_view(request):
+#     if request.method == "POST":
+#         serializer = RegistrationSerializer(data=request.data)
+#         data = {}
+#         if serializer.is_valid():
+#             user = serializer.save()
+#             data['response'] = "Succesfully registered a new user"
+#             data['mobno'] = user.mobno
+#             token = Token.objects.get(user=user).key
+#             data['token'] = token
+#         else:
+#             data = serializer.errors
+        
+#         return Response(data)
+def sendsms(mobno,otp):
+    url = "https://www.fast2sms.com/dev/bulkV2"
+    payload = "message=KOWI OTP-"+str(otp)+"&language=english&route=q&numbers="+str(mobno)
+    headers = {
+        'authorization': "ShUlFNBv1LRkpbq4yO8HJcma0W5jzAsYrgod6D9TVfneIZM723PerB2DK5iMEVsCuxX41AcOmvL36w7U",
+        'Content-Type': "application/x-www-form-urlencoded",
+        'Cache-Control': "no-cache",
+        }
+
+    response = requests.request("POST", url, data=payload, headers=headers)
+    r = response.json()
+    state = r['return']
+    return state
+
+def generateOTP() :
+    digits = "0123456789"
+    OTP = ""
+    for i in range(6) :
+        OTP += digits[math.floor(random.random() * 10)]
+  
+    return OTP
 
 @api_view(['POST',])
-@authentication_classes([])
 @permission_classes([])
-def registration_view(request):
-    if request.method == "POST":
-        serializer = RegistrationSerializer(data=request.data)
+def reg_view(request):
+    if request.method == 'POST':
+        serializer = RegSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            user = serializer.save()
-            data['response'] = "Succesfully registered a new user"
-            data['mobno'] = user.mobno
-            token = Token.objects.get(user=user).key
-            data['token'] = token
+            username = serializer.validated_data['username']
+            mobno = serializer.validated_data['mobno']
+            password = serializer.validated_data['password']
+            gender = serializer.validated_data['gender']
+            otp = generateOTP()
+            state = sendsms(mobno,otp)
+            if state == True:
+                otpstore.objects.create(mobno=mobno,username=username,passw=password,otp=otp,gender=gender)
+                data['status'] = True
+            else:
+                data['status'] = False
         else:
             data = serializer.errors
-        
+
+        return Response(data)
+
+@api_view(['POST',])
+@permission_classes([])
+def otp_verify(request):
+    if request.method == "POST":
+        serializer = otpSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            mobno = serializer.validated_data['mobno']
+            otp = serializer.validated_data['otp']
+            try:
+                getobj = otpstore.objects.filter(mobno=mobno).order_by('-id')[0]
+            except:
+                data['response'] = 'Error'
+            if otp == getobj.otp:
+                user = MyUser(username=getobj.username,mobno=mobno,gender=getobj.gender)
+                user.set_password(getobj.passw)
+                user.save()
+                data['response'] = "Successfully registered a new user"
+                data['status'] = True
+                token = Token.objects.get(user=user).key
+                data['token'] = token
+                obj = otpstore.objects.filter(mobno=mobno)
+                for i in obj:
+                    i.delete()
+            else:
+                data['response'] = "Incorrect Otp"
+                data['status'] = False
+        else:
+            data = serializer.errors
+
+        return Response(data)
+
+@api_view(['POST',])
+@permission_classes([])
+def login_view(request):
+    if request.method == "POST":
+        serializer = loginSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            mobno = serializer.validated_data['mobno']
+            print(mobno)
+            otp = generateOTP()
+            state = sendsms(mobno,otp)
+            if state == True:
+                otpstore.objects.create(mobno=mobno,otp=otp)
+                data['status'] = True
+            else:
+                data['status'] = False
+        else:
+            data = serializer.errors
+
         return Response(data)
     
+@api_view(['POST',])
+@permission_classes([])
+def otp_loginverify(request):
+    if request.method == "POST":
+        serializer = otpSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            mobno = serializer.validated_data['mobno']
+            otp = serializer.validated_data['otp']
+            try:
+                getobj = otpstore.objects.filter(mobno=mobno).order_by('-id')[0]
+            except:
+                data['response'] = 'Error'
+            if otp == getobj.otp:
+                user = MyUser.objects.get(mobno=mobno)
+                data['response'] = "Successful Login"
+                data['status'] = True
+                token = Token.objects.get(user=user).key
+                data['token'] = token
+                obj = otpstore.objects.filter(mobno=mobno)
+                for i in obj:
+                    i.delete()
+            else:
+                data['response'] = "Incorrect Otp"
+                data['status'] = False
+        else:
+            data = serializer.errors
+
+        return Response(data)
+
 
 @api_view(['POST','PUT','GET',])
 @permission_classes((IsAuthenticated, ))
@@ -1189,3 +1313,21 @@ def lookcustomer(request,id):
     else:
         messages.error(request,"Login First")
         return redirect('elogin')
+
+def exercise(request):
+    title = "Exercise | Lifestyles"
+    user = request.user
+    currday = datetime.datetime.today().weekday()
+    currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    curday = currweek[currday] 
+    if user.is_authenticated:
+        data = {}
+        exe = user.fitness.get(day=curday)
+        data['day']=exe.day
+        data['exercisename']={}
+        count=1
+        for item in exe.exercisename.all():
+            print(item)
+        print(data)
+        return HttpResponse("<h1>Done</h1>")
+
