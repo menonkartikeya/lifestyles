@@ -40,6 +40,7 @@ urlpatterns = [
     path('book/',book,name="book"),
     path('bmic/',bmic,name="bmic"),
     path('bmrcal/',bmrcal,name="bmrcal"),
+    path('exercise/',exercise,name="exercise"),
     path('subs/',subs,name="subs"),
     path('grocery/<int:id>/',grocery,name="grocery"),
     path('growth/<int:id>/',growth,name="growth"),

@@ -3,6 +3,7 @@ from .models import *
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .forms import MyUserCreationForm, MyUserChangeForm
+from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 class subplansAdmin(admin.ModelAdmin):
@@ -75,7 +76,7 @@ class MyUserAdmin(UserAdmin):
     model = MyUser
     list_display = ['username', 'mobno', 'gender','height','weight','target',]
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ('mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','log','pic')}),
+            (None, {'fields': ('mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','log','pic','fitness')}),
     ) #this will allow to change these fields in admin module
 
 
@@ -100,3 +101,16 @@ class requestAdmin(admin.ModelAdmin):
     list_per_page = 15
 
 admin.site.register(requestchange,requestAdmin)
+
+
+
+class equipmentadmin(ImportExportModelAdmin):
+    list_per_page = 15
+
+admin.site.register(equipment,equipmentadmin)
+
+class exerciseadmin(ImportExportModelAdmin):
+    list_per_page = 15
+
+
+admin.site.register(exercise,exerciseadmin)

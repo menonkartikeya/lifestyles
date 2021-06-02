@@ -90,6 +90,43 @@ class foodplan(models.Model):
         verbose_name_plural = "Manage Food Plans!"
 
 
+
+class equipment(models.Model):
+    name = models.CharField(max_length=200)
+    image_path = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Manage Equipment!"
+
+
+class exercise(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    muscle_group = models.CharField(max_length=100)
+    muscle_worked = models.CharField(max_length=100)
+    equipments = models.ManyToManyField(equipment,blank=True)
+    video_path = models.URLField(null=True, blank=True)
+    image_path = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Manage Exercises!"
+
+
+class exerciseplan(models.Model):
+    day = models.CharField(choices=day,max_length=50,default='Monday')
+    exercisename = models.ManyToManyField(exercise,related_name="Exercise")
+    remarks = models.CharField(max_length=1000,blank=True,null=True)
+
+    class Meta:
+        verbose_name_plural = "Manage Excercise PLans Issued!"
+
+
 class dietplan(models.Model):
     day = models.CharField(choices=day,max_length=50,default='Monday')
     preworkout = models.ManyToManyField(foodplan,related_name="Pre_Workout")
@@ -185,6 +222,7 @@ class MyUser(AbstractUser):
     location = models.CharField(max_length=100,blank=True,null=True)
     address = models.CharField(max_length=1000,blank=True,null=True)
     log = models.ManyToManyField(logger,blank=True)
+    fitness = models.ManyToManyField(exerciseplan,blank=True)
 
     USERNAME_FIELD = 'mobno'
 

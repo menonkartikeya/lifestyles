@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'background_task',
     'rest_framework',
     'rest_framework.authtoken',
+    'import_export',
 ]
 X_FRAME_OPTIONS='SAMEORIGIN'
 

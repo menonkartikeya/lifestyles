@@ -1071,6 +1071,24 @@ def foodapi(request):
 #     data = resp.json()
 #     return JsonResponse(data,safe=False)
 
+
+def exercise(request):
+    title = "Exercise | Lifestyles"
+    user = request.user
+    currday = datetime.datetime.today().weekday()
+    currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    curday = currweek[currday] 
+    if user.is_authenticated:
+        data = {}
+        exe = user.fitness.get(day=curday)
+        data['day']=exe.day
+        data['exercisename']={}
+        count=1
+        for item in exe.exercisename.all():
+            print(item)
+        print(data)
+        return HttpResponse("<h1>Done</h1>")
+
 @api_view(['POST',])
 @authentication_classes([])
 @permission_classes([])
