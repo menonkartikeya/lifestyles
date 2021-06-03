@@ -117,3 +117,9 @@ class otpadmin(admin.ModelAdmin):
     list_per_page = 15
 
 admin.site.register(otpstore,otpadmin)
+
+
+class exerciseplanadmin(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(exerciseplan)

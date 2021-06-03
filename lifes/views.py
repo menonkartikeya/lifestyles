@@ -1327,7 +1327,9 @@ def exercise(request):
         data['exercisename']={}
         count=1
         for item in exe.exercisename.all():
-            print(item)
+            data['exercisename'][count]=item.name
+            count+=1
+        data['remarks']=exe.remarks
         print(data)
-        return HttpResponse("<h1>Done</h1>")
+        return render(request,'Exercises.html',data)
 
