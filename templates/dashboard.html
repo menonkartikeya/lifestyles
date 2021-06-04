@@ -14,7 +14,7 @@
     <div class="row">
       <button type="button" name="button" class="sidebtn"></button>
       <div class=" sidebar " id="mySideBar">
-        <img height="150px" class="assddf" src="{{user.pic}}" alt="" />
+        <img height="150px" class="assddf" src="/media/{{user.pic}}" alt="" />
         <h2>{{user.username}}</h2>
         <hr class="rule" />
         <button class="btn btn-white bu col-12 nm shadow" type="submit">
@@ -48,14 +48,14 @@
         <button class="btn btn-white bu col-12 nm " type="submit">
           <div class="d-flex flex-row ">
             <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
-            <a href="http://"><h5 class="ml-3 mt-3">Food Plans</h5></a>
+            <a href="{% url 'foodplans' date %}"><h5 class="ml-3 mt-3">Food Plans</h5></a>
           </div>
         </button>
         <br />
         <button class="btn btn-white bu col-12 nm " type="submit">
           <div class="d-flex flex-row ">
             <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
-            <a href="http://"><h5 class="ml-3 mt-3">Exercises</h5></a>
+            <a href="{% url 'exercise' %}"><h5 class="ml-3 mt-3">Exercises</h5></a>
           </div>
         </button>
         <!-- <button class="btn btn-white bu col-12 nm " type="submit">
@@ -164,7 +164,7 @@
                         <div class="col-lg-3 p-4 shadow you ml-2">
                             <h3>Target</h3>
                             <hr />
-                            <a class="dasha" href="{% url 'growth' %}" data-toggle="tooltip" title="Click to View">
+                            <a class="dasha" href="{% url 'growth' user.id %}" data-toggle="tooltip" title="Click to View">
                             <div class="d-flex flex-row zoom">
                                 <div class="p-2 col-5">
                                     <h4>{{user.target}}</h4>

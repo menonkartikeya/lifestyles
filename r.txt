@@ -1,0 +1,10 @@
+Django==3.0.5
+django-background-tasks==1.2.5
+django-import-export==2.5.0
+djangorestframework==3.12.4
+djongo==1.3.4
+dnspython==2.1.0
+Pillow==8.2.0
+requests==2.25.1
+typing-extensions==3.10.0.0
+urllib3==1.26.4

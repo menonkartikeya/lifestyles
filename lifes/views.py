@@ -194,6 +194,7 @@ def dashboard(request):
         dinner = []
         for item in m:
             dinner.append(item)
+        d = datetime.date.today()
         parms = {
             'title':title,
             'bmi':bmii,
@@ -211,6 +212,7 @@ def dashboard(request):
             'lunch':lunch,
             'snacks':snacks,
             'dinner':dinner,
+            'date':d,
         }
         return render(request,'dashboard.html',parms)
     #if user is not logged in then it will redirect to login
@@ -1330,24 +1332,102 @@ def exercise(request):
             data['exercisename'][count]=item.name
             count+=1
         data['remarks']=exe.remarks
-        print(data)
         return render(request,'Exercises.html',data)
 
+def foodplans(request,date):
+    title = "Food Plans | KOWI Lifestyles"
+    user = request.user
+    if user.is_authenticated:
+        if user.is_staff != True:
+            currday = datetime.datetime.today().weekday()
+            currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+            curday = currweek[currday]
+            flag = False
+            try:
+                diet = user.diets.get(day=curday)
+            except ObjectDoesNotExist:
+                flag = True
+            pre = diet.preworkout.all()
+            prequant = []
+            for i in pre:
+                try:
+                    quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="preworkout") & Q(day=curday))
+                    prequant.append(quant)
+                except ObjectDoesNotExist:
+                    prequant = None
+            post = diet.postworkout.all()
+            postquant= []
+            for i in post:
+                try:
+                    quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="postworkout") & Q(day=curday))
+                    postquant.append(quant)
+                except ObjectDoesNotExist:
+                    postquant = None
+            lunch = diet.lunch.all()
+            lunchquant = []
+            for i in lunch:
+                try:
+                    quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="lunch") & Q(day=curday))
+                    lunchquant.append(quant)
+                except ObjectDoesNotExist:
+                    lunchquant = None
+            snacks = diet.snacks.all()
+            snackquant = []
+            for i in snacks:
+                try:
+                    quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="snacks") & Q(day=curday))
+                    snackquant.append(quant)
+                except ObjectDoesNotExist:
+                    snackquant = None
+            dinner = diet.dinner.all()
+            dinnerquant = []
+            for i in dinner:
+                try:
+                    quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="dinner") & Q(day=curday))
+                    dinnerquant.append(quant)
+                except ObjectDoesNotExist:
+                    dinnerquant = None
+            foods = food.objects.all()
+            log = []
 
-def fooddetail(request,fooditem_id):
+            parms = {
+                'day':curday,
+                'pre':zip(pre,prequant),
+                'post':zip(post,postquant),
+                'lunch':zip(lunch,lunchquant),
+                'snacks':zip(snacks,snackquant),
+                'dinner':zip(dinner,dinnerquant),
+                'foods':foods,
+                'date':date,
+            }
+            return render(request,'foodplans.html',parms)
+        else:
+            messages.error(request,'This Page isnt for you! Sorry! ')
+            return render(request, '404.html')
+    else:
+        messages.error(request,'Login First!')
+        return redirect('login')
+
+def fooddetail(request,id):
     title = "Food Detail | Lifestyles"
     data={}
-    foodvar = foodplan.objects.get(fooditem_id=fooditem_id)
-    data['recipe'] = foodvar.textrecipe
-    data['calorie'] = foodvar.fooditem.calories
-    data['image'] = foodvar.fooditem.pic
-    data['name'] = foodvar.fooditem.name
-    data['stuff'] = foodvar.fooditem.stuff
-    data['protein'] = foodvar.fooditem.protein
-    data['fat'] = foodvar.fooditem.fat
-    data['carbs'] = foodvar.fooditem.carbs
-    data['fibre'] = foodvar.fooditem.fiber
-    data['unit'] = foodvar.fooditem.unit
-    print(data)
-    print(foodvar)
-    return render(request,'food detail page.html',data)
+    foodvar = food.objects.get(id=id)
+    try:
+        foodp = foodplan.objects.get(fooditem=foodvar)
+        data['recipe'] = foodp.textrecipe
+    except ObjectDoesNotExist:
+        data['recipe'] = "Food Recipe Doesn't Exist!"
+    data['calorie'] = foodvar.calories
+    data['image'] = foodvar.pic
+    data['name'] = foodvar.name
+    data['stuff'] = foodvar.stuff
+    data['unit'] = foodvar.unit
+    data['time'] = foodvar.time_taken
+    data['tag'] = foodvar.tag
+    nut = []
+    nut.append(foodvar.fat)
+    nut.append(foodvar.protein)
+    nut.append(foodvar.carbs)
+    nut.append(foodvar.fiber)
+    data['nut'] = json.dumps(nut)
+    return render(request,'fooddetail.html',data)

@@ -54,7 +54,34 @@ billtypes = (
     ('products','products'),
     ('Other','Other'),
 )
-
+meal = (
+    ('preworkout','preworkout'),
+    ('postworkout','postworkout'),
+    ('lunch','lunch'),
+    ('snacks','snacks'),
+    ('dinner','dinner'),
+)
+cuisine = (
+    ('italian','italian'),
+    ('chinese','chinese'),
+    ('japanese','japanese'),
+    ('indian','indian'),
+    ('french','french'),
+    ('american','american'),
+    ('greek','greek'),
+    ('spanish','spanish'),
+    ('mediterranean','mediterranean'),
+    ('lebanese','lebanese'),
+    ('moroccan','moroccan'),
+    ('turkish','turkish'),
+    ('Thai','Thai'),
+    ('Cajun','Cajun'),
+    ('mexican','mexican'),
+    ('caribbean','caribbean'),
+    ('german','german'),
+    ('russian','russian'),
+    ('hungarian','hungarian'),
+)
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
@@ -70,6 +97,8 @@ class food(models.Model):
     carbs = models.FloatField(default=0)
     fiber = models.FloatField(default=0)
     unit = models.CharField(choices=sizes,max_length=100)
+    tag = models.CharField(max_length=50,choices=cuisine,default="indian")
+    time_taken = models.CharField(max_length=10,default="10")
 
     def __str__(self):
         return self.name
@@ -135,6 +164,7 @@ class dietplan(models.Model):
 
     class Meta:
         verbose_name_plural = "Manage Diet Plans Issued!"
+
 
 class bills(models.Model):
     invoicepdf = models.FileField(null=True,blank=True)
@@ -228,6 +258,17 @@ class MyUser(AbstractUser):
 
     class Meta:
         verbose_name_plural = "User Details!"
+
+
+class quantuser(models.Model):
+    quantity = models.IntegerField(default=1)
+    foodit = models.ForeignKey(food,on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+    day = models.CharField(choices=day,max_length=50)
+    meal = models.CharField(choices=meal,max_length=50)
+
+    class Meta:
+        verbose_name_plural = "Quantity Of Food!"
 
 class contact(models.Model):
     email = models.EmailField()
