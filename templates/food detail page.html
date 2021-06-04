@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'food detail page.css' %}">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="{% static 'food detail page.js' %}"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light shadow">
+        <a class="navbar-brand" href="#"><img class="image1" src="https://static.cure.fit/assets/images/curefit-v-man.svg" alt="" /></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-flex flex-row justify-content-center  " id="navbarNavAltMarkup">
+            <div class="navbar-nav ">
+                <a class="nav-link mr-5" href="#"><img class="image1" src="https://static.cure.fit/assets/images/Livefit.svg" alt="" /></a>
+                <a class="nav-link mr-5" href="#"><img class="image1" src="https://static.cure.fit/assets/images/cult-icon.svg" alt="" /></a>
+                <a class="nav-link mr-5" href="#"><img class="image1" src="https://static.cure.fit/assets/images/mind-icon.svg" alt="" /></a>
+                <a class="nav-link mr-5" href="#"><img class="image1" src="https://static.cure.fit/assets/images/carefit-blk.svg" alt="" /></a>
+                <a class="nav-link mr-5" href="#"><img class="image1" src="https://static.cure.fit/assets/images/mind-icon.svg" alt="" /></a>
+            </div>
+        </div>
+    </nav>
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-white">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Food</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Food Detail</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="col-lg-7">
+                <h1>{{name}}</h1>
+                <br />
+                <div class="d-flex flex-row">
+                    <div class="col-lg-3 ">
+                        <h6 class="time ">Time</h6>
+                        <h4>20 Min</h4>
+                    </div>
+                    <div class="col-lg-3">
+                        <h6 class="time">Calories</h6>
+                        <h4>{{calorie}}</h4>
+                    </div>
+                    <div class="col-lg-3">
+                        <h6 class="time">Serves</h6>
+                        <h4>3</h4>
+                    </div>
+                </div>
+                <br />
+                <h3>Ingredients</h3>
+
+                <div class="col-lg-8 mt-2">
+                    <div class="d-flex flex-row">
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">{{stuff}}</p>
+                        </div>
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">2x Chilles</p>
+                        </div>
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">100g Rice</p>
+                        </div>
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">Potato</p>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row">
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">Lemons</p>
+                        </div>
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">salt</p>
+                        </div>
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <span class="time">mustard seeds</span>
+                        </div>
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">oil</p>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row">
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">Coriander</p>
+                        </div>
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">Turmeric</p>
+                        </div>
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <span class="time">Garlic</span>
+                        </div>
+                        <div class="d-flex flex-row col-lg-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+                            </svg>
+                            <p class="time">Red Chilli</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <img class="foodimage shadow" src="{{image}}" alt="" />
+            </div>
+
+            <div class="col-lg-7 mt-3">
+                <h2>Instructions</h2>
+            </div>
+            <div class="col-lg-5">
+                <h2 class="mt-3">Nutrition</h2>
+
+            </div>
+            <div class="col-lg-7 p-4">
+                <p class="time">{{recipe}}</p>
+            </div>
+            <div class="col-lg-5 p-4">
+                <canvas class="graph margin mt-2" id="myChart1"></canvas>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div>
+        <!-- Footer -->
+        <footer class="page-footer font-small blue pt-4 footer">
+
+            <!-- Footer Links -->
+            <div class="container-fluid text-center text-md-left">
+
+                <!-- Grid row -->
+                <div class="row">
+
+                    <!-- Grid column -->
+                    <div class="col-md-6 mt-md-0 mt-3  p-5">
+
+
+                        <!-- Content -->
+
+                        <img class="image8 mr-2" src="https://static.cure.fit/assets/images/cult-logo-white.svg" alt="" />
+                        <p class="asd11 mt-3">At cult.fit, we make group workouts fun, daily food healthy & tasty, mental fitness easy with yoga & meditation, and medical & lifestyle care hassle-free. #BeBetterEveryDay.</p>
+
+                    </div>
+                    <!-- Grid column -->
+
+                    <hr class="clearfix w-100 d-md-none pb-3">
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 mb-md-0 mb-3 p-5">
+
+                        <!-- Links -->
+                        <h5 class="text-uppercase qwqw">Links</h5>
+
+                        <ul class="list-unstyled">
+                            <li>
+                                <a class="qwqw" href="#!">Live</a>
+                            </li>
+                            <li>
+                                <a class="qwqw" href="#!">Plans</a>
+                            </li>
+                            <li>
+                                <a class="qwqw" href="#!">Store</a>
+                            </li>
+                            <li>
+                                <a class="qwqw" href="#!">Meal</a>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 mb-md-0 mb-3 p-5">
+
+                        <!-- Links -->
+                        <h5 class="text-uppercase qwqw">Links</h5>
+
+                        <ul class="list-unstyled">
+                            <li>
+                                <a class="qwqw" href="#!">Contact Us</a>
+                            </li>
+                            <li>
+                                <a class="qwqw" href="#!">About Us</a>
+                            </li>
+                            <li>
+                                <a class="qwqw" href="#!">Founder</a>
+                            </li>
+                            <li>
+                                <a class="qwqw" href="#!">Career</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <!-- Grid column -->
+
+                </div>
+                <!-- Grid row -->
+
+            </div>
+            <!-- Footer Links -->
+
+            <!-- Copyright -->
+            <div class="footer-copyright text-center py-3 asd11">© 2020 Copyright:
+                <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
+            </div>
+            <!-- Copyright -->
+
+        </footer>
+        <!-- Footer -->
+
+
+    </div>
+
+
+
+
+
+
+
+</body>
+
+</html>

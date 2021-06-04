@@ -1333,3 +1333,21 @@ def exercise(request):
         print(data)
         return render(request,'Exercises.html',data)
 
+
+def fooddetail(request,fooditem_id):
+    title = "Food Detail | Lifestyles"
+    data={}
+    foodvar = foodplan.objects.get(fooditem_id=fooditem_id)
+    data['recipe'] = foodvar.textrecipe
+    data['calorie'] = foodvar.fooditem.calories
+    data['image'] = foodvar.fooditem.pic
+    data['name'] = foodvar.fooditem.name
+    data['stuff'] = foodvar.fooditem.stuff
+    data['protein'] = foodvar.fooditem.protein
+    data['fat'] = foodvar.fooditem.fat
+    data['carbs'] = foodvar.fooditem.carbs
+    data['fibre'] = foodvar.fooditem.fiber
+    data['unit'] = foodvar.fooditem.unit
+    print(data)
+    print(foodvar)
+    return render(request,'food detail page.html',data)
