@@ -11,10 +11,12 @@
 	<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet">
 	<link href="{% static 'FoodPlans.css' %}" rel="stylesheet">
 	<script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
-	<link rel="stylesheet" href="{% static 'CalendarPickerJS\CalendarPicker.style.css' %}" />
-	<script src="{% static 'CalendarPickerJS\CalendarPicker.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'CalendarPickerJS/CalendarPicker.style.css' %}" />
+	<script src="{% static 'CalendarPickerJS/CalendarPicker.js' %}"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">  </script>  
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css" />  
 	<title>{{title}}</title>
 </head>
@@ -187,10 +189,20 @@
 										<div class="row">
 											<div class="col-md-12 ">
 												<div class=" row mt-3 ">
-													{% for meal,qu in pre %}
+													{% for meal in freepre %}
 													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
-														<input type="checkbox" class="check inp-cbx" name="" id="check1" value="" />
-														<label class="labe cbx" for="check1"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="{{forloop.counter}}"  />
+														<label class="labe cbx" for="{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														</label>
+														<p class="chechlab">-> {{meal.fooditem.calories}}cal
+															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
+														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
+													</div>
+													{%endfor%}
+													{% for meal in logpre %}
+													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="#{{forloop.counter}}" checked />
+														<label class="labe cbx" for="#{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
 														</label>
 														<p class="chechlab">-> {{meal.fooditem.calories}}cal
 															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
@@ -202,7 +214,7 @@
 										</div>
 										<div class="row">
 											<div class="col-md-6 text-left">
-												<button type="button" name="button" name="prem" class="btn btn-primary orangeBTN " onclick="geek()">Save</button>
+												<button type="submit" name="prem" class="btn btn-primary orangeBTN ">Save</button>
 											</div>
 											<div class="col-md-6 text-right">
 												<button type="button" name="button" class="btn btn-primary orangeBTN openBtn " onclick="openSearch()">Enter Your Meal</button>
@@ -355,20 +367,25 @@
 					  <div class="overlay-content">
 					    <form action="" method="POST">
 							{%csrf_token%}
-					      <input type="text" name="tags" placeholder="Search.." name="search">
-						  <script>
-							$( function() {
-							  var availableTags = [
-								  {% for food in foods %}
-									  "{{food.name}}",
-								  {% endfor %}
-							  ];
-							  $( "#tags" ).autocomplete({
-								source: availableTags
-							  });
-							} );
-							</script>
-						  <button type="submit" name="prework" class="bgmg"><i class="fa fa-search bgmg"></i></button>
+					     <select name="tags">
+							{% for food in foods %}
+							<option value="{{food.id}}">{{food.name}}</option>
+						{% endfor %}
+						 </select>
+							<!-- <script>
+							  $( function() {
+								var availableTags = [
+									{% for food in foods %}
+										"{{food.name}}",
+									{% endfor %}
+								];
+								$( "#tags" ).autocomplete({
+								  source: availableTags
+								});
+							  } );
+							  </script> -->
+							<input type="text" name="quan" placeholder="No. of Servings did you eat?">
+						  <button type="submit" name="prework" class="bgmg">ADD</button>
 					    </form>
 					  </div>
 					</div>

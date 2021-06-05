@@ -62,7 +62,7 @@ admin.site.register(grocerylist,groadmin)
 class logadmin(admin.ModelAdmin):
     list_per_page = 15
 
-admin.site.register(logger,logadmin)
+admin.site.register(logs,logadmin)
 
 class dietplanadmin(admin.ModelAdmin):
     list_per_page = 15
@@ -75,7 +75,7 @@ class MyUserAdmin(UserAdmin):
     model = MyUser
     list_display = ['username', 'mobno', 'gender','height','weight','target',]
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ('mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','log','pic','fitness')}),
+            (None, {'fields': ('mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','pic','fitness')}),
     ) #this will allow to change these fields in admin module
 
 
@@ -122,3 +122,4 @@ class quantadmin(admin.ModelAdmin):
     list_per_page = 15
 
 admin.site.register(quantuser,quantadmin)
+

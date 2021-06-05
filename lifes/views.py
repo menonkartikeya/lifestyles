@@ -37,7 +37,8 @@ from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 import json
 import math, random
-
+from django.utils.datastructures import MultiValueDictKeyError
+from itertools import chain
 # import pyrebase
 # Create your views here.
 # config={
@@ -1334,11 +1335,20 @@ def exercise(request):
         data['remarks']=exe.remarks
         return render(request,'Exercises.html',data)
 
+def update(pre,log):
+    free = []
+    lor = log.preworkout.all()
+    for i in pre:
+        if i not in lor:
+            free.append(i)
+    return free
+
 def foodplans(request,date):
     title = "Food Plans | KOWI Lifestyles"
     user = request.user
     if user.is_authenticated:
         if user.is_staff != True:
+            foog = food.objects.all()
             currday = datetime.datetime.today().weekday()
             currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
             curday = currweek[currday]
@@ -1354,7 +1364,7 @@ def foodplans(request,date):
                     quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="preworkout") & Q(day=curday))
                     prequant.append(quant)
                 except ObjectDoesNotExist:
-                    prequant = None
+                    prequant.append("")
             post = diet.postworkout.all()
             postquant= []
             for i in post:
@@ -1362,7 +1372,7 @@ def foodplans(request,date):
                     quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="postworkout") & Q(day=curday))
                     postquant.append(quant)
                 except ObjectDoesNotExist:
-                    postquant = None
+                    postquant.append("")
             lunch = diet.lunch.all()
             lunchquant = []
             for i in lunch:
@@ -1370,7 +1380,7 @@ def foodplans(request,date):
                     quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="lunch") & Q(day=curday))
                     lunchquant.append(quant)
                 except ObjectDoesNotExist:
-                    lunchquant = None
+                    lunchquant.append("")
             snacks = diet.snacks.all()
             snackquant = []
             for i in snacks:
@@ -1378,7 +1388,7 @@ def foodplans(request,date):
                     quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="snacks") & Q(day=curday))
                     snackquant.append(quant)
                 except ObjectDoesNotExist:
-                    snackquant = None
+                    snackquant.append("")
             dinner = diet.dinner.all()
             dinnerquant = []
             for i in dinner:
@@ -1386,19 +1396,48 @@ def foodplans(request,date):
                     quant = quantuser.objects.get(Q(user=user) & Q(foodit=i.fooditem) & Q(meal="dinner") & Q(day=curday))
                     dinnerquant.append(quant)
                 except ObjectDoesNotExist:
-                    dinnerquant = None
-            foods = food.objects.all()
-            log = []
-
+                    dinnerquant.append("")
+            try:
+                logg = logs.objects.get(Q(date=datetime.datetime.today()) & Q(us=user))
+            except ObjectDoesNotExist:
+                logg = logs.objects.create(us=user,date=datetime.datetime.today())
+            free = update(pre,logg)
+            log = logg.preworkout.all()
+            if request.method == "POST":
+                if 'prework' in request.POST:
+                    fo = request.POST['tags']
+                    qu = request.POST['quan']
+                    foo = food.objects.get(id=fo)
+                    item = foodplan.objects.get(fooditem=foo)
+                    logg.preworkout.add(item)
+                if 'prem' in request.POST:
+                    l = list(set(chain(free,log)))
+                    for meal in l:
+                        try:
+                            checker = request.POST[str(meal.fooditem.id)]
+                            if checker == "on":
+                                print(meal.fooditem.name)
+                                if meal not in log:
+                                    logg.preworkout.add(meal)
+                                    messages.success(request,"logs Updated")
+                                    logg.save()
+                                    return redirect('foodplans',date)
+                        except MultiValueDictKeyError:
+                            logg.preworkout.remove(meal)
+                            messages.success(request,"This log is Erased!")
+                            logg.save()
+                            return redirect('foodplans',date)
             parms = {
                 'day':curday,
-                'pre':zip(pre,prequant),
+                'freepre':free,
+                #'pre':zip(pre,prequant,lo),
                 'post':zip(post,postquant),
                 'lunch':zip(lunch,lunchquant),
                 'snacks':zip(snacks,snackquant),
                 'dinner':zip(dinner,dinnerquant),
-                'foods':foods,
                 'date':date,
+                'foods':foog,
+                'logpre':log,
             }
             return render(request,'foodplans.html',parms)
         else:
@@ -1431,3 +1470,60 @@ def fooddetail(request,id):
     nut.append(foodvar.fiber)
     data['nut'] = json.dumps(nut)
     return render(request,'fooddetail.html',data)
+
+
+# if request.method == 'POST':
+            #     if 'prework' in request.POST:
+            #         fo = request.POST['tags']
+            #         quan = request.POST['quan']
+            #         foo = food.objects.get(id=fo)
+            #         item = foodplan.objects.get(fooditem=foo)
+            #         log.preworkout.add(item)
+            #         log.save()
+            #         try:
+            #             quat = quantuser.objects.get(Q(user=user) & Q(foodit=foo) & Q(meal="preworkout") & Q(day=curday))
+            #             quat.quantity = quat.quantity+int(quan)
+            #             quat.save()
+            #         except ObjectDoesNotExist:
+            #             quat = quantuser.objects.create(user=user,foodit=foo,meal="preworkout",day=curday,quantity=quan)
+            #     if 'prem' in request.POST:
+            #         for meal in pre:
+            #             try:
+            #                 check = request.POST[str(meal.fooditem.id)]
+            #                 foo = food.objects.get(id=meal.fooditem.id)
+            #                 item = foodplan.objects.get(fooditem=foo)
+            #                 if check == "on":
+            #                     log.preworkout.add(item)
+            #                 else:
+            #                     log.preworkout.remove(item)
+            #                 log.save()
+            #             except MultiValueDictKeyError:
+            #                 continue 
+            #         for meal in log.preworkout.all():
+            #             try:
+            #                 check = request.POST[str(meal.fooditem.id)]
+            #                 foo = food.objects.get(id=meal.fooditem.id)
+            #                 item = foodplan.objects.get(fooditem=foo)
+            #                 print(check)
+            #                 print(item)
+            #                 if check == "on":
+            #                     print("nope")
+            #                     log.preworkout.add(item)
+            #                 else:
+            #                     print("Good")
+            #                     log.preworkout.remove(item)
+            #                 log.save()
+            #             except MultiValueDictKeyError:
+            #                 print("Vooo")
+            #                 continue
+            # qua = []
+            # lo = log.preworkout.all()
+            # print(pre)
+            # print(lo)
+            # for l in lo:
+            #     try:
+            #         quata = quantuser.objects.get(Q(user=user) & Q(foodit=l.fooditem) & Q(meal="preworkout") & Q(day=curday))
+            #         qua.append(quata)
+            #     except ObjectDoesNotExist:
+            #         qua.append("")
+            

@@ -182,8 +182,6 @@ class bills(models.Model):
         verbose_name_plural = "Manage Bills!"
 
 
-
-
 class subplans(models.Model):
     plan = models.CharField(choices=types,max_length=100)
     price = models.IntegerField(default=0)
@@ -204,18 +202,6 @@ class streak(models.Model):
     class Meta:
         verbose_name_plural = "Streaks!"
 
-class logger(models.Model):
-    preworkout = models.ManyToManyField(foodplan,blank=True,related_name="Pre_work")
-    postworkout = models.ManyToManyField(foodplan,blank=True,related_name="Post_work")
-    lunch = models.ManyToManyField(foodplan,blank=True,related_name="lunch")
-    snacks = models.ManyToManyField(foodplan,blank=True,related_name="snack")
-    dinner = models.ManyToManyField(foodplan,blank=True,related_name="dinner")
-    extra = models.ManyToManyField(foodplan,blank=True,related_name="Extra")
-    date = models.DateField(auto_now_add=True)
-
-
-    class Meta:
-        verbose_name_plural = "Log Meals!"
 
 class live(models.Model):
     slottime = models.TimeField()
@@ -248,7 +234,6 @@ class MyUser(AbstractUser):
     bio = models.CharField(max_length=5000,blank=True,null=True)
     location = models.CharField(max_length=100,blank=True,null=True)
     address = models.CharField(max_length=1000,blank=True,null=True)
-    log = models.ManyToManyField(logger,blank=True)
     fitness = models.ManyToManyField(exerciseplan,blank=True)
 
     #USERNAME_FIELD = 'mobno'
@@ -259,7 +244,6 @@ class MyUser(AbstractUser):
     class Meta:
         verbose_name_plural = "User Details!"
 
-
 class quantuser(models.Model):
     quantity = models.IntegerField(default=1)
     foodit = models.ForeignKey(food,on_delete=models.CASCADE)
@@ -269,6 +253,19 @@ class quantuser(models.Model):
 
     class Meta:
         verbose_name_plural = "Quantity Of Food!"
+
+class logs(models.Model):
+    preworkout = models.ManyToManyField(foodplan,blank=True,related_name="Pre_work")
+    postworkout = models.ManyToManyField(foodplan,blank=True,related_name="Post_work")
+    lunch = models.ManyToManyField(foodplan,blank=True,related_name="lunch")
+    snacks = models.ManyToManyField(foodplan,blank=True,related_name="snack")
+    dinner = models.ManyToManyField(foodplan,blank=True,related_name="dinner")
+    date = models.DateField(auto_now_add=True)
+    us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Log Meals!"
+
 
 class contact(models.Model):
     email = models.EmailField()
