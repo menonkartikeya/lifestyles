@@ -1320,20 +1320,36 @@ def lookcustomer(request,id):
 def exercise(request):
     title = "Exercise | Lifestyles"
     user = request.user
-    currday = datetime.datetime.today().weekday()
-    currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-    curday = currweek[currday] 
     if user.is_authenticated:
-        data = {}
-        exe = user.fitness.get(day=curday)
-        data['day']=exe.day
-        data['exercisename']={}
-        count=1
-        for item in exe.exercisename.all():
-            data['exercisename'][count]=item.name
-            count+=1
-        data['remarks']=exe.remarks
-        return render(request,'Exercises.html',data)
+        currday = datetime.datetime.today().weekday()
+        currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+        curday = currweek[currday] 
+        flag = False
+        try:
+            exe = user.fitness.get(day=curday)
+        except ObjectDoesNotExist:
+            flag = True
+        exena = exe.exercisename.all()
+        exenaquant = []
+        sets={}
+        reps={}
+        for i in exena:
+            try:
+                quant = quantyrepssets.objects.get(Q(user=user) & Q(exername=i) & Q(day=curday))
+                sets[quant.exername.name] = quant.quantreps
+                reps[quant.exername.name] = quant.quantsets
+                exenaquant.append(quant)
+            except ObjectDoesNotExist:
+                exenaquant.append("")
+        print(sets)
+        print(reps)
+        print(exenaquant)
+        parms = {
+                'day':curday,
+                'exercise':zip(exena,exenaquant)
+            }
+        print(parms)
+        return render(request,'Exercises.html',parms)
 
 def update(pre,log):
     free = []
@@ -1365,6 +1381,7 @@ def foodplans(request,date):
                     prequant.append(quant)
                 except ObjectDoesNotExist:
                     prequant.append("")
+            print(prequant)
             post = diet.postworkout.all()
             postquant= []
             for i in post:
@@ -1373,6 +1390,7 @@ def foodplans(request,date):
                     postquant.append(quant)
                 except ObjectDoesNotExist:
                     postquant.append("")
+            print(postquant)
             lunch = diet.lunch.all()
             lunchquant = []
             for i in lunch:
@@ -1381,6 +1399,7 @@ def foodplans(request,date):
                     lunchquant.append(quant)
                 except ObjectDoesNotExist:
                     lunchquant.append("")
+            print(lunchquant)
             snacks = diet.snacks.all()
             snackquant = []
             for i in snacks:
@@ -1389,6 +1408,7 @@ def foodplans(request,date):
                     snackquant.append(quant)
                 except ObjectDoesNotExist:
                     snackquant.append("")
+            print(snackquant)
             dinner = diet.dinner.all()
             dinnerquant = []
             for i in dinner:
@@ -1397,6 +1417,7 @@ def foodplans(request,date):
                     dinnerquant.append(quant)
                 except ObjectDoesNotExist:
                     dinnerquant.append("")
+            print(dinnerquant)
             try:
                 logg = logs.objects.get(Q(date=datetime.datetime.today()) & Q(us=user))
             except ObjectDoesNotExist:

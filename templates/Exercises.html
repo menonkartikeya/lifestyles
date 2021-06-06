@@ -179,15 +179,17 @@
 										<div class="row">
 											<div class="col-md-12 ">
 												<div class=" row mt-3 ">
+													{% for item,quantity in exercise %}
 													<div class="col-md-12 col-sm-12 mb-3 you shadow pt-2 zoom2" id="check1div">
 														<input type="checkbox" class="check inp-cbx" name="" id="check1" value="" />
-														<label class="labe cbx" for="check1"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{exercisename.1}}</span>
+														<label class="labe cbx" for="check1"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{item.name}}</span>
 														</label>
 														<p class="chechlab">-> 200cal🔥
-																-> 1 min Jumping Jacks X 2 reps</p>
+																-> {{quantity.quantsets}}sets x {{quantity.quantreps}}reps</p>
 														<a href="#" class=""> <img src="https://www.researchgate.net/profile/Mohammed-Abou-Elmagd/publication/341734848/figure/fig1/AS:896516470362114@1590757591713/Sample-of-Jumping-Jacks-Exercise-4.png" alt="" class="exerimg "></a>
 													</div>
-													<div class="col-md-12 col-sm-12 mb-3 you shadow pt-2 zoom2">
+													{% endfor %}
+													<!--<div class="col-md-12 col-sm-12 mb-3 you shadow pt-2 zoom2">
 														<input type="checkbox" class="check inp-cbx" name="" id="check2" value="" />
 														<label class="labe cbx" for="check2"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{exercisename.2}}</span>
 														</label>
@@ -211,10 +213,11 @@
 														<p class="chechlab">-> 1400cal🔥
 															-> 3 sets X 7 reps</p>
 														<a href="#" class=""><img src="https://i.stack.imgur.com/AY9Xl.png" alt="" class="exerimg "></a>
-													</div>
+													</div>-->
 												</div>
 											</div>
 										</div>
+
 										<div class="row mt-3">
 											<div class="col-md-6 text-left">
 												<button type="button" name="button" class="btn btn-primary orangeBTN " onclick="geek()">Save</button>

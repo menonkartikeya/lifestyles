@@ -254,6 +254,19 @@ class quantuser(models.Model):
     class Meta:
         verbose_name_plural = "Quantity Of Food!"
 
+
+class quantyrepssets(models.Model):
+    quantsets = models.IntegerField(default=1)
+    quantreps = models.IntegerField(default=1)
+    exername = models.ForeignKey(exercise,on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+    day = models.CharField(choices=day,max_length=50)
+
+
+    class Meta:
+        verbose_name_plural = "Quantity of sets and reps!"
+
+
 class logs(models.Model):
     preworkout = models.ManyToManyField(foodplan,blank=True,related_name="Pre_work")
     postworkout = models.ManyToManyField(foodplan,blank=True,related_name="Post_work")
