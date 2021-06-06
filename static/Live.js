@@ -9,6 +9,13 @@ $('.main').on('click', function () {
 });
 
 
+var myDateTime;
+function SetDateTime(){
+    var xyz = document.getElementById("DateTime").text=myDateTime;
+    console.log(xyz);
+}
+
+
 var app = angular.module('dateTimeApp', []);
 
 app.controller('dateTimeCtrl', function ($scope) {
@@ -23,6 +30,8 @@ app.controller('dateTimeCtrl', function ($scope) {
 		// Do something with the returned date here.
 
 		console.log(newdate);
+		checkTime(newdate);
+        myDateTime = newdate;
 	};
 });
 
@@ -330,6 +339,7 @@ app.directive('datePicker', function ($timeout, $window) {
 					} else if (scope.edittime.digits.length == 4) {
 						time = scope.edittime.digits[0] + scope.edittime.digits[1].toString() + ':' + scope.edittime.digits[2] + scope.edittime.digits[3];
 						console.log(time);
+
 					}
 					return time + ' ' + scope.timeframe;
 				};
@@ -344,6 +354,7 @@ app.directive('datePicker', function ($timeout, $window) {
 							scope.time = numbers[event.which] + ':00';
 							scope.updateDate();
 							scope.setTimeBar();
+
 						}
 					} else if (event.which == 65) {
 						scope.timeframe = 'am';
@@ -355,6 +366,8 @@ app.directive('datePicker', function ($timeout, $window) {
 						scope.edittime.digits.pop();
 						scope.time_input = formatTime();
 						console.log(scope.edittime.digits);
+
+
 					}
 					scope.edittime.formatted = scope.time_input;
 					// scope.edittime.input = formatted;
@@ -374,7 +387,7 @@ app.directive('datePicker', function ($timeout, $window) {
                         timeline_width = timeline[0].offsetWidth;
                     }
                     timeline_container = $('.timeline-container');
-                    sectionlength = timeline_width / 24 / 6;
+                    sectionlength = timeline_width / 24;
                 };
 
                 angular.element($window).on('resize', function () {
@@ -408,7 +421,7 @@ app.directive('datePicker', function ($timeout, $window) {
                     var percenttime = (scope.currentoffset + 1) / timeline_width;
                     var hour = Math.floor(percenttime * 12);
                     var percentminutes = (percenttime * 12) - hour;
-					var minutes = Math.round((percentminutes * 60) / 5) * 5;
+					var minutes = Math.round((percentminutes * 60) / 30) * 30;
                     if (hour === 0) {
                         hour = 12;
                     }
@@ -544,3 +557,22 @@ app.directive('datePicker', function ($timeout, $window) {
         }
     };
 });
+
+var bookedTimeSlots=["10:30:00", "08:30:00", "19:15:00"];
+
+function checkTime(newdate){
+	var t = newdate.toLocaleTimeString('it-IT');
+	// console.log(t);
+	if(bookedTimeSlots.indexOf(t) !== -1)
+	{
+	        // console.log("Yes, the value exists!")
+					$('.unavailable-container').show();
+					$('#book-now').prop('disabled', true);
+	}
+	else
+	{
+	        // console.log("No, the value is absent.")
+					$('.unavailable-container').hide();
+					$('#book-now').prop('disabled', false);
+	}
+}

@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.authtoken.models import Token
+import datetime
 # Create your models here.
 
 targets = (
@@ -245,7 +246,7 @@ class MyUser(AbstractUser):
         verbose_name_plural = "User Details!"
 
 class quantuser(models.Model):
-    quantity = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=0)
     foodit = models.ForeignKey(food,on_delete=models.CASCADE)
     user = models.ForeignKey(MyUser,on_delete=models.CASCADE)
     day = models.CharField(choices=day,max_length=50)
@@ -253,7 +254,6 @@ class quantuser(models.Model):
 
     class Meta:
         verbose_name_plural = "Quantity Of Food!"
-
 
 class quantyrepssets(models.Model):
     quantsets = models.IntegerField(default=1)
@@ -266,18 +266,25 @@ class quantyrepssets(models.Model):
     class Meta:
         verbose_name_plural = "Quantity of sets and reps!"
 
-
 class logs(models.Model):
     preworkout = models.ManyToManyField(foodplan,blank=True,related_name="Pre_work")
     postworkout = models.ManyToManyField(foodplan,blank=True,related_name="Post_work")
     lunch = models.ManyToManyField(foodplan,blank=True,related_name="lunch")
     snacks = models.ManyToManyField(foodplan,blank=True,related_name="snack")
     dinner = models.ManyToManyField(foodplan,blank=True,related_name="dinner")
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=datetime.date.today)
     us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Log Meals!"
+
+class exlogs(models.Model):
+    exercisename = models.ManyToManyField(exercise,related_name="Exercises")
+    date = models.DateField(default=datetime.date.today)
+    us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Log Exercises!"
 
 
 class contact(models.Model):

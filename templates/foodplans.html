@@ -11,9 +11,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet">
 	<link href="{% static 'FoodPlans.css' %}" rel="stylesheet">
 	<script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
-	<link rel="stylesheet" href="{% static 'CalendarPickerJS/CalendarPicker.style.css' %}" />
-	<script src="{% static 'CalendarPickerJS/CalendarPicker.js' %}"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">  </script>  
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>  
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -114,58 +113,41 @@
 						<div class="row backO">
 							<div class="col-md-12">
 								<ul class="nav nav-pills nav-justified" id="myTab" role="tablist" style="border-bottom:none;">
+									{% for week,dt,un in week_list %}
+									{% if forloop.counter == 1 %}
 									<li class="nav-item dayCount text-center">
-										<a class="nav-link active shadow" id="monTab" data-toggle="tab" href="#mon" role="tab" aria-controls="mon" aria-selected="true">
-											<h3>7</h3>
-											<h4 class="fontsize">MON</h4>
+										<a class="nav-link active shadow" href="{% url 'foodplans' un %}">
+											<h3>{{dt}}</h3>
+											<h4 class="fontsize">{{week}}</h4>
 										</a>
 									</li>
+									{%else%}
 									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow" id="tueTab" data-toggle="tab" href="#tue" role="tab" aria-controls="tue" aria-selected="false">
-											<h3>8</h3>
-											<h4 class="fontsize">TUE</h4>
+										<a class="nav-link shadow" href="{% url 'foodplans' un %}">
+											<h3>{{dt}}</h3>
+											<h4 class="fontsize">{{week}}</h4>
 										</a>
 									</li>
-									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow " id="wedTab" data-toggle="tab" href="#wed" role="tab" aria-controls="wed" aria-selected="false">
-											<h3>9</h3>
-											<h4 class="fontsize">WED</h4>
-										</a>
-									</li>
-									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow" id="thuTab" data-toggle="tab" href="#thu" role="tab" aria-controls="thu" aria-selected="false">
-											<!-- <a class="dasha" href="#" data-toggle="tooltip" title="You have an appointment..."> -->
-											<!-- <div class=" appoint zoom"> -->
-											<h3>10</h3>
-											<!-- </div> -->
-											<!-- </a> -->
-											<h4 class="fontsize">THU</h4>
-										</a>
-									</li>
-									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow" id="friTab" data-toggle="tab" href="#fri" role="tab" aria-controls="fri" aria-selected="false">
-											<h3>11</h3>
-											<h4 class="fontsize">FRI</h4>
-										</a>
-									</li>
-									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow" id="satTab" data-toggle="tab" href="#sat" role="tab" aria-controls="sat" aria-selected="false">
-											<h3>12</h3>
-											<h4 class="fontsize">SAT</h4>
-										</a>
-									</li>
-									<li class="nav-item dayCount text-center lastC">
-										<a class="nav-link shadow" id="sunTab" data-toggle="tab" href="#sun" role="tab" aria-controls="sun" aria-selected="false">
-											<h3>13</h3>
-											<h4 class="fontsize">SUN</h4>
-										</a>
-									</li>
+									{%endif%}
+									{%endfor%}
 									<div id="myOverlay2" class="overlay">
 										<span class="closebtn" onclick="closeCal()" title="Close Overlay">x</span>
 									  <div class="overlay-content2">
-											<form action="action_page.php">
-										<div id="myCalendarWrapper" class=""></div>
-									</form>
+										  <form action="" method="post">
+											  {%csrf_token%}
+											<div class="mo-body">
+														<input type="text" name="incoming">
+														<button type="submit" name="cal" class="bgmg">Let's Go</button>
+											</div>
+										</form>
+										<script>
+											$('.mo-body input').datepicker({
+												format: 'dd-mm-yyyy'
+											  }).on('hide', function(event) {
+												event.preventDefault();
+												event.stopPropagation();
+											  });
+										</script>
 								</div>
 									</div>
 									<div class="form-group my-auto">
@@ -189,7 +171,7 @@
 										<div class="row">
 											<div class="col-md-12 ">
 												<div class=" row mt-3 ">
-													{% for meal in freepre %}
+													{% for meal,qu in freepre %}
 													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
 														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="{{forloop.counter}}"  />
 														<label class="labe cbx" for="{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
@@ -199,7 +181,7 @@
 														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
 													</div>
 													{%endfor%}
-													{% for meal in logpre %}
+													{% for meal,qu in logpre %}
 													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
 														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="#{{forloop.counter}}" checked />
 														<label class="labe cbx" for="#{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
@@ -234,10 +216,20 @@
 												<div class=" row mt-3 ">
 													{% for meal,qu in post %}
 													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
-														<input type="checkbox" class="check inp-cbx" name="" id="check1" value="" />
-														<label class="labe cbx" for="check1"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="&{{forloop.counter}}"  />
+														<label class="labe cbx" for="&{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
 														</label>
-														<p class="chechlab">-> {{meal.fooditem.calories}} cal
+														<p class="chechlab">-> {{meal.fooditem.calories}}cal
+															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
+														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
+													</div>
+													{%endfor%}
+													{% for meal,qu in logpost %}
+													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="#!{{forloop.counter}}" checked />
+														<label class="labe cbx" for="#!{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														</label>
+														<p class="chechlab">-> {{meal.fooditem.calories}}cal
 															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
 														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
 													</div>
@@ -247,7 +239,7 @@
 										</div>
 										<div class="row">
 											<div class="col-md-6 text-left">
-												<button type="button" name="button" name="posm" class="btn btn-primary orangeBTN " onclick="">Save</button>
+												<button type="submit" name="posm" class="btn btn-primary orangeBTN ">Save</button>
 											</div>
 											<div class="col-md-6 text-right">
 												<button type="button" name="button" class="btn btn-primary orangeBTN openBtn " onclick="openSearch3()">Enter Your Meal</button>
@@ -267,10 +259,20 @@
 												<div class=" row mt-3 ">
 													{% for meal,qu in lunch %}
 													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
-														<input type="checkbox" class="check inp-cbx" name="" id="check1" value="" />
-														<label class="labe cbx" for="check1"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="!{{forloop.counter}}"  />
+														<label class="labe cbx" for="!{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
 														</label>
-														<p class="chechlab">-> {{meal.fooditem.calories}} cal
+														<p class="chechlab">-> {{meal.fooditem.calories}}cal
+															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
+														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
+													</div>
+													{%endfor%}
+													{% for meal,qu in loglunch %}
+													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="@#{{forloop.counter}}" checked />
+														<label class="labe cbx" for="@#{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														</label>
+														<p class="chechlab">-> {{meal.fooditem.calories}}cal
 															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
 														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
 													</div>
@@ -280,10 +282,10 @@
 										</div>
 										<div class="row">
 											<div class="col-md-6 text-left">
-												<button type="button" name="button" class="btn btn-primary orangeBTN " onclick="">Save</button>
+												<button type="submit" name="lunchm" class="btn btn-primary orangeBTN " >Save</button>
 											</div>
 											<div class="col-md-6 text-right">
-												<button type="button" name="button" class="btn btn-primary orangeBTN openBtn " onclick="openSearch()">Enter Your Meal</button>
+												<button type="button" name="button" class="btn btn-primary orangeBTN openBtn " onclick="openSearch4()">Enter Your Meal</button>
 											</div>
 										</div>
 									</form>
@@ -293,16 +295,27 @@
 											<h3>Snacks</h3>
 										</div>
 									</div>
-									<form class="" action="index.html" method="post">
+									<form class="" action="" method="post">
+										{%csrf_token%}
 										<div class="row">
 											<div class="col-md-12">
 												<div class=" row mt-3 ">
 													{% for meal,qu in snacks %}
 													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
-														<input type="checkbox" class="check inp-cbx" name="" id="check1" value="" />
-														<label class="labe cbx" for="check1"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="##{{forloop.counter}}"  />
+														<label class="labe cbx" for="##{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
 														</label>
-														<p class="chechlab">-> {{meal.fooditem.calories}} cal
+														<p class="chechlab">-> {{meal.fooditem.calories}}cal
+															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
+														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
+													</div>
+													{%endfor%}
+													{% for meal,qu in logsnacks %}
+													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="#${{forloop.counter}}" checked />
+														<label class="labe cbx" for="#${{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														</label>
+														<p class="chechlab">-> {{meal.fooditem.calories}}cal
 															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
 														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
 													</div>
@@ -312,10 +325,10 @@
 										</div>
 										<div class="row">
 											<div class="col-md-6 text-left">
-												<button type="button" name="button" class="btn btn-primary orangeBTN " onclick="">Save</button>
+												<button type="submit" name="snackm" class="btn btn-primary orangeBTN " >Save</button>
 											</div>
 											<div class="col-md-6 text-right">
-												<button type="button" name="button" class="btn btn-primary orangeBTN openBtn " onclick="openSearch()">Enter Your Meal</button>
+												<button type="button" name="button" class="btn btn-primary orangeBTN openBtn " onclick="openSearch5()">Enter Your Meal</button>
 											</div>
 										</div>
 									</form>
@@ -325,16 +338,27 @@
 											<h3>Dinner</h3>
 										</div>
 									</div>
-									<form class="" action="index.html" method="post">
+									<form class="" action="" method="post">
+										{%csrf_token%}
 										<div class="row">
 											<div class="col-md-12">
 												<div class=" row mt-3 ">
-													{% for meal,qu in dinner %}
+													{% for meal,qu in freedinner %}
 													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
-														<input type="checkbox" class="check inp-cbx" name="" id="check1" value="" />
-														<label class="labe cbx" for="check1"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="${{forloop.counter}}"  />
+														<label class="labe cbx" for="${{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
 														</label>
-														<p class="chechlab">-> {{meal.fooditem.calories}} cal
+														<p class="chechlab">-> {{meal.fooditem.calories}}cal
+															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
+														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
+													</div>
+													{%endfor%}
+													{% for meal,qu in logsdinner %}
+													<div class="col-md-5 col-sm-6 mb-4 you shadow " style="margin:8px">
+														<input type="checkbox" class="check inp-cbx" name="{{meal.fooditem.id}}" id="#${{forloop.counter}}" checked />
+														<label class="labe cbx" for="#${{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{meal.fooditem}}</span>
+														</label>
+														<p class="chechlab">-> {{meal.fooditem.calories}}cal
 															<br>-> {{qu.quantity}} {{meal.fooditem.unit}}</p>
 														<a href="{% url 'fooddetail' meal.fooditem.id %}" class=""> <img src="{{meal.fooditem.pic}}" alt="" class="foodimg"></a>
 													</div>
@@ -344,22 +368,16 @@
 										</div>
 										<div class="row">
 											<div class="col-md-6 text-left">
-												<button type="button" name="button" class="btn btn-primary orangeBTN " onclick="">Save</button>
+												<button type="submit" name="dinnerm" class="btn btn-primary orangeBTN ">Save</button>
 											</div>
 											<div class="col-md-6 text-right">
-												<button type="button" name="button" class="btn btn-primary orangeBTN openBtn " onclick="openSearch()">Enter Your Meal</button>
+												<button type="button" name="button" class="btn btn-primary orangeBTN openBtn " onclick="openSearch6()">Enter Your Meal</button>
 											</div>
 										</div>
 									</form>
 								</div>
 							</div>
 
-						<div class="tab-pane fade show active" id="tue" role="tabpanel" aria-labelledby="tueTab"></div>
-						<div class="tab-pane fade show active" id="wed" role="tabpanel" aria-labelledby="wedTab"></div>
-						<div class="tab-pane fade show active" id="thu" role="tabpanel" aria-labelledby="thuTab"></div>
-						<div class="tab-pane fade show active" id="fri" role="tabpanel" aria-labelledby="friTab"></div>
-						<div class="tab-pane fade show active" id="sat" role="tabpanel" aria-labelledby="satTab"></div>
-						<div class="tab-pane fade show active" id="sun" role="tabpanel" aria-labelledby="sunTab"></div>
 						</div>
 					</div>
 					<div id="myOverlay" class="overlay">
@@ -389,25 +407,19 @@
 					    </form>
 					  </div>
 					</div>
+					<!-- for postworkout -->
 					<div id="myOverlay3" class="overlay">
 						<span class="closebtn" onclick="closeSearch3()" title="Close Overlay">x</span>
 						<div class="overlay-content">
 						  <form action="" method="POST">
 							  {%csrf_token%}
-							<input type="text" name="tags" placeholder="Search.." name="search">
-							<script>
-							  $( function() {
-								var availableTags = [
-									{% for food in foods %}
-										"{{food.name}}",
-									{% endfor %}
-								];
-								$( "#tags" ).autocomplete({
-								  source: availableTags
-								});
-							  } );
-							  </script>
-							<button type="submit" name="postwork" class="bgmg"><i class="fa fa-search bgmg"></i></button>
+							  <select name="tags">
+								{% for food in foods %}
+								<option value="{{food.id}}">{{food.name}}</option>
+							{% endfor %}
+							 </select>
+								<input type="text" name="quan" placeholder="No. of Servings did you eat?">
+							  <button type="submit" name="postwork" class="bgmg">ADD</button>
 						  </form>
 						</div>
 					  </div>
@@ -416,20 +428,13 @@
 						<div class="overlay-content">
 						  <form action="" method="POST">
 							  {%csrf_token%}
-							<input type="text" name="tags" placeholder="Search.." name="search">
-							<script>
-							  $( function() {
-								var availableTags = [
-									{% for food in foods %}
-										"{{food.name}}",
-									{% endfor %}
-								];
-								$( "#tags" ).autocomplete({
-								  source: availableTags
-								});
-							  } );
-							  </script>
-							<button type="submit" name="lunch" class="bgmg"><i class="fa fa-search bgmg"></i></button>
+							  <select name="tags">
+								{% for food in foods %}
+								<option value="{{food.id}}">{{food.name}}</option>
+							{% endfor %}
+							 </select>
+								<input type="text" name="quan" placeholder="No. of Servings did you eat?">
+							  <button type="submit" name="lunchwork" class="bgmg">ADD</button>
 						  </form>
 						</div>
 					  </div>
@@ -438,20 +443,13 @@
 						<div class="overlay-content">
 						  <form action="" method="POST">
 							  {%csrf_token%}
-							<input type="text" name="tags" placeholder="Search.." name="search">
-							<script>
-							  $( function() {
-								var availableTags = [
-									{% for food in foods %}
-										"{{food.name}}",
-									{% endfor %}
-								];
-								$( "#tags" ).autocomplete({
-								  source: availableTags
-								});
-							  } );
-							  </script>
-							<button type="submit" name="snacks" class="bgmg"><i class="fa fa-search bgmg"></i></button>
+							  <select name="tags">
+								{% for food in foods %}
+								<option value="{{food.id}}">{{food.name}}</option>
+							{% endfor %}
+							 </select>
+								<input type="text" name="quan" placeholder="No. of Servings did you eat?">
+							  <button type="submit" name="snackwork" class="bgmg">ADD</button>
 						  </form>
 						</div>
 					  </div>
@@ -460,20 +458,13 @@
 						<div class="overlay-content">
 						  <form action="" method="POST">
 							  {%csrf_token%}
-							<input type="text" name="tags" placeholder="Search.." name="search">
-							<script>
-							  $( function() {
-								var availableTags = [
-									{% for food in foods %}
-										"{{food.name}}",
-									{% endfor %}
-								];
-								$( "#tags" ).autocomplete({
-								  source: availableTags
-								});
-							  } );
-							  </script>
-							<button type="submit" name="dinner" class="bgmg"><i class="fa fa-search bgmg"></i></button>
+							  <select name="tags">
+								{% for food in foods %}
+								<option value="{{food.id}}">{{food.name}}</option>
+							{% endfor %}
+							 </select>
+								<input type="text" name="quan" placeholder="No. of Servings did you eat?">
+							  <button type="submit" name="dinnerwork" class="bgmg">ADD</button>
 						  </form>
 						</div>
 					  </div>
@@ -492,31 +483,31 @@
 								<h5 class="text-left">Pre Workout Meal</h5>
 								<a class="dasha" href="#" data-toggle="tooltip" title="Of Goal Reached!!!">
 									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
+										<div class="progress-bar" role="progressbar" aria-valuenow="{{varlog}}" aria-valuemin="0" aria-valuemax="100">{{varlog}}%</div>
 									</div>
 								</a>
 								<h5 class="text-left">Post Workout Meal</h5>
 								<a class="dasha" href="#" data-toggle="tooltip" title="Of Goal Reached!!!">
 									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">60%</div>
+										<div class="progress-bar" role="progressbar" aria-valuenow="{{varpostlog}}" aria-valuemin="0" aria-valuemax="100">{{varpostlog}}%</div>
 									</div>
 								</a>
 								<h5 class="text-left">Lunch</h5>
 								<a class="dasha" href="#" data-toggle="tooltip" title="Of Goal Reached!!!">
 									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">35%</div>
+										<div class="progress-bar" role="progressbar" aria-valuenow="{{varlunchlog}}" aria-valuemin="0" aria-valuemax="100">{{varlunchlog}}%</div>
 									</div>
 								</a>
 								<h5 class="text-left">Snacks</h5>
 								<a class="dasha" href="#" data-toggle="tooltip" title="Of Goal Reached!!!">
 									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">10%</div>
+										<div class="progress-bar" role="progressbar" aria-valuenow="{{varsnackslog}}" aria-valuemin="0" aria-valuemax="100">{{varsnackslog}}%</div>
 									</div>
 								</a>
 								<h5 class="text-left">Dinner</h5>
 								<a class="dasha" href="#" data-toggle="tooltip" title="Of Goal Reached!!!">
 									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="7" aria-valuemin="0" aria-valuemax="100">7%</div>
+										<div class="progress-bar" role="progressbar" aria-valuenow="{{vardinnerlog}}" aria-valuemin="0" aria-valuemax="100">{{vardinnerlog}}%</div>
 									</div>
 								</a>
 
@@ -541,6 +532,61 @@
 	<script src="http://code.jquery.com/jquery-git.js"></script>
 	<script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
 	<script type="text/javascript" src="{% static 'FoodPlans.js' %}"></script>
+	<script>	
+		$('.progress-bar').each(function() {
+			var bar = $(this);
+			var value = $(this).find('.count');
+
+			bar.prop('Counter', 0).animate({
+					Counter: parseFloat(bar.attr('aria-valuenow'))
+				},
+				{
+					duration: 3000,
+					easing: 'swing',
+					step: function(now) {
+						var number = parseFloat(Math.round(now * 100) / 100).toFixed(2);
+						bar.css({ 'width': number + '%' });
+						value.text(number + '%');
+					}
+				});
+		});
+	</script>
+	<script>
+		var inta = {{intake | safe}};
+		let data = {
+			labels: [
+					'Calories',
+					'Protein',
+					'Fat',
+					'Carbs',
+					'Fiber',
+			],
+		
+			datasets: [{
+				label: 'INTAKE CHART',
+				data: inta,
+				backgroundColor: [
+					'#d00000' ,
+					'#e85d04',
+					'#f48c06',
+					'#faa307',
+					'#ffba08',
+				],
+				hoverOffset: 4
+			}]
+		};
+		const config = {
+			type: 'doughnut',
+			data: data,
+			options: {
+				responsive: false
+			}
+		};
+		var myChart = new Chart(
+			document.getElementById('myChart123'),
+			config
+		);
+	</script>
 </body>
 
 </html>

@@ -11,8 +11,6 @@
 	<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet">
 	<link href="{% static 'Exercises.css' %}" rel="stylesheet">
 	<script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
-	<link rel="stylesheet" href="{% static 'CalendarPickerJS/CalendarPicker.style.css' %}" />
-<script src="{% static 'CalendarPickerJS/CalendarPicker.js' %}"></script>
 	<title>{{title}}</title>
 </head>
 
@@ -24,7 +22,7 @@
 				<lord-icon src="https://cdn.lordicon.com/wgwcqouc.json" trigger="morph-two-way" colors="primary:#121331,secondary:#08a88a" stroke="100" style="width:25px;height:25px"></lord-icon>
 			</button>
 			<div class=" sidebar " id="mySideBar">
-				<img height="150px" class="assddf" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
+				<img height="150px" class="assddf" src="{{user.pic}}" alt="" />
 				<h2>{{user.username}}</h2>
 				<hr class="rule" />
 				<button class="btn btn-white bu col-12 nm " type="submit">
@@ -58,14 +56,14 @@
 				<button class="btn btn-white bu col-12 nm" type="submit">
 					<div class="d-flex flex-row ">
 						<img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
-						<h5 class="ml-3 mt-3">FoodPlans</h5>
+						<a href="{% url 'foodplans' date %}"><h5 class="ml-3 mt-3">FoodPlans</h5></a>
 					</div>
 				</button>
 				<br />
 				<button class="btn btn-white bu col-12 nm shadow" type="submit">
 					<div class="d-flex flex-row ">
 						<img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
-						<a href="{% url 'exercise' %}"><h5 class="ml-3 mt-3">Exercises</h5></a>
+						<a href="{% url 'exercise' date %}"><h5 class="ml-3 mt-3">Exercises</h5></a>
 					</div>
 				</button>
 				<hr class="rule" />
@@ -79,78 +77,55 @@
 							<div class="bv">
 								<nav aria-label="breadcrumb">
 									<ol class="breadcrumb">
-										<li class="breadcrumb-item"><a href="#">Home</a>
+										<li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a>
 										</li>
 										<li class="breadcrumb-item active" aria-current="page">Exercises</li>
 									</ol>
 								</nav>
 							</div>
 							<div class="mar">
-								<img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" />
-								<img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" />
-							</div>
+								<a href="{% url 'index' %}"><img class="imj1 mr-2" src="https://static.vecteezy.com/system/resources/previews/000/440/812/original/home-vector-icon.jpg" alt="" /></a>
+                <a href="{% url 'logoutme' %}"><img class="imj" src="https://cdn0.iconfinder.com/data/icons/interface-icons-rounded/110/Logout-512.png" alt="" /></a>
+            </div>
 						</div>
 					</div>
 				</div>
-					<div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
-						<div class="col-12 text-center">
-							<!-- <div class="alert alert-dismissible fade show" role="alert">{% for message in messages %}
-								<div class="container-fluid p-0">
-									<div class="alert {{ message.tags }} alert-dismissible" role="alert">
-										<button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>{{ message }}</div>
-								</div>{% endfor %}</div> --></div>
-					</div>
+				<div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
+					<div class="col-12 text-center"  >
+						{% for message in messages %}
+						<div class="container-fluid p-0" id="debugDiv">
+						  <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							  <span aria-hidden="true">&times;</span>
+							</button>
+							{{ message }}
+						  </div>
+						</div>
+						{% endfor %}
+				</div>
+				  </div>
 					<div class="row">
 					<div class="col-md-9 mb-5 Kyou">
 						<div class="row backO ">
 							<div class="col-md-12">
 								<ul class="nav nav-pills nav-justified" id="myTab" role="tablist" style="border-bottom:none;">
+									{% for week,dt,un in week_list %}
+									{% if forloop.counter == 1 %}
 									<li class="nav-item dayCount text-center">
-										<a class="nav-link active shadow" id="monTab" data-toggle="tab" href="#mon" role="tab" aria-controls="mon" aria-selected="true">
-											<h3>7</h3>
-											<h4 class="fontsize">MON</h4>
+										<a class="nav-link active shadow" href="{% url 'foodplans' un %}">
+											<h3>{{dt}}</h3>
+											<h4 class="fontsize">{{week}}</h4>
 										</a>
 									</li>
+									{%else%}
 									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow" id="tueTab" data-toggle="tab" href="#tue" role="tab" aria-controls="tue" aria-selected="false">
-											<h3>8</h3>
-											<h4 class="fontsize">TUE</h4>
+										<a class="nav-link shadow" href="{% url 'foodplans' un %}">
+											<h3>{{dt}}</h3>
+											<h4 class="fontsize">{{week}}</h4>
 										</a>
 									</li>
-									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow " id="wedTab" data-toggle="tab" href="#wed" role="tab" aria-controls="wed" aria-selected="false">
-											<h3>9</h3>
-											<h4 class="fontsize">WED</h4>
-										</a>
-									</li>
-									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow" id="thuTab" data-toggle="tab" href="#thu" role="tab" aria-controls="thu" aria-selected="false">
-											<!-- <a class="dasha" href="#" data-toggle="tooltip" title="You have an appointment..."> -->
-											<!-- <div class=" appoint zoom"> -->
-											<h3>10</h3>
-											<!-- </div> -->
-											<!-- </a> -->
-											<h4 class="fontsize">THU</h4>
-										</a>
-									</li>
-									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow" id="friTab" data-toggle="tab" href="#fri" role="tab" aria-controls="fri" aria-selected="false">
-											<h3>11</h3>
-											<h4 class="fontsize">FRI</h4>
-										</a>
-									</li>
-									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow" id="satTab" data-toggle="tab" href="#sat" role="tab" aria-controls="sat" aria-selected="false">
-											<h3>12</h3>
-											<h4 class="fontsize">SAT</h4>
-										</a>
-									</li>
-									<li class="nav-item dayCount text-center lastC">
-										<a class="nav-link shadow" id="sunTab" data-toggle="tab" href="#sun" role="tab" aria-controls="sun" aria-selected="false">
-											<h3>13</h3>
-											<h4 class="fontsize">SUN</h4>
-										</a>
-									</li>
+									{%endif%}
+									{%endfor%}
 									<div id="myOverlay2" class="overlay">
 										<span class="closebtn" onclick="closeCal()" title="Close Overlay">x</span>
 									  <div class="overlay-content2">

@@ -22,101 +22,50 @@
 				<lord-icon src="https://cdn.lordicon.com/wgwcqouc.json" trigger="morph-two-way" colors="primary:#121331,secondary:#08a88a" stroke="100" style="width:25px;height:25px"></lord-icon>
 			</button>
 			<div class=" sidebar " id="mySideBar">
-				<img height="150px" class="assddf" src="/media/{{user.pic}}" alt="" />
+				<img height="150px" class="assddf" src="{{user.pic}}" alt="" />
 				<h2>{{user.username}}</h2>
 				<hr class="rule" />
-                {% if flag == True %}
 				<button class="btn btn-white bu col-12 nm shadow" type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
-                        <a href="{% url 'edashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
-                    </div>
-                </button>
-                <br />
-                <button class="btn btn-white bu col-12 nm " type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
-                        <a href="{% url 'eprofile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
-                    </div>
-                </button>
-                <br />
-                <button class="btn btn-white bu col-12 nm " type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
-                        <h5 class="ml-3 mt-3">Pay Me</h5>
-                    </div>
-                </button>
-                <br />
-                <button class="btn btn-white bu col-12 nm " type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
-                        <h5 class="ml-3 mt-3">Live</h5>
-                    </div>
-                </button>
-                <br />
-                <button class="btn btn-white bu col-12 nm" type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
-                        <h5 class="ml-3 mt-3">FoodPlans</h5>
-                    </div>
-                </button>
-                <br />
-                <button class="btn btn-white bu col-12 nm " type="submit">
-                    <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
-                        <h5 class="ml-3 mt-3">Exercises</h5>
-                    </div>
-                </button>
-                {%else%}
-                <button type="button" name="button" class="sidebtn">
-                    <lord-icon src="https://cdn.lordicon.com/wgwcqouc.json" trigger="morph-two-way" colors="primary:#121331,secondary:#08a88a" stroke="100" style="width:25px;height:25px"></lord-icon>
-                  </button>
-                  <div class=" sidebar " id="mySideBar">
-                    <img height="150px" class="assddf" src="{{user.pic}}" alt="" />
-                    <h2>{{user.username}}</h2>
-                    <hr class="rule" />
-                    <button class="btn btn-white bu col-12 nm shadow" type="submit">
-                      <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
-                        <a href="{% url 'dashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
-                      </div>
-                    </button>
-                    <br />
-                    <button class="btn btn-white bu col-12 nm " type="submit">
-                      <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
-                        <a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
-                      </div>
-                    </button>
-                    <br />
-                    <button class="btn btn-white bu col-12 nm " type="submit">
-                      <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
-                        <a href="{% url 'invoices' user.id %}"><h5 class="ml-3 mt-3">Billings</h5></a>
-                      </div>
-                    </button>
-                    <br />
-                    <button class="btn btn-white bu col-12 nm " type="submit">
-                      <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
-                        <a href="{% url 'book' %}"><h5 class="ml-3 mt-3">Live</h5></a>
-                      </div>
-                    </button>
-                    <br />
-                    <button class="btn btn-white bu col-12 nm " type="submit">
-                      <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
-                        <a href="http://"><h5 class="ml-3 mt-3">Food Plans</h5></a>
-                      </div>
-                    </button>
-                    <br />
-                    <button class="btn btn-white bu col-12 nm " type="submit">
-                      <div class="d-flex flex-row ">
-                        <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
-                        <a href="http://"><h5 class="ml-3 mt-3">Exercises</h5></a>
-                      </div>
-                    </button>
-                {%endif%}
+					<div class="d-flex flex-row ">
+					  <img class="lll" src="https://i.ibb.co/bRbrSq9/Whats-App-Image-2021-05-16-at-20-37-24.jpg" alt="" />
+					  <a href="{% url 'dashboard' %}"><h5 class="ml-3 mt-3">Dashboard</h5></a>
+					</div>
+				  </button>
+				  <br />
+				  <button class="btn btn-white bu col-12 nm " type="submit">
+					<div class="d-flex flex-row ">
+					  <img class="lll" src="https://i.ibb.co/PDpM8j6/Whats-App-Image-2021-05-16-at-20-37-25.jpg" alt="" />
+					  <a href="{% url 'profile' user.id %}"><h5 class="ml-3 mt-3">Profile</h5></a>
+					</div>
+				  </button>
+				  <br />
+				  <button class="btn btn-white bu col-12 nm " type="submit">
+					<div class="d-flex flex-row ">
+					  <img class="lll" src="https://i.ibb.co/S084SVR/Whats-App-Image-2021-05-16-at-20-37-22.jpg" alt="" />
+					  <a href="{% url 'invoices' user.id %}"><h5 class="ml-3 mt-3">Billings</h5></a>
+					</div>
+				  </button>
+				  <br />
+				  <button class="btn btn-white bu col-12 nm " type="submit">
+					<div class="d-flex flex-row ">
+					  <img class="lll" src="https://i.ibb.co/LZkCfgy/Whats-App-Image-2021-05-16-at-20-37-23.jpg" alt="" />
+					  <a href="{% url 'book' %}"><h5 class="ml-3 mt-3">Live</h5></a>
+					</div>
+				  </button>
+				  <br />
+				  <button class="btn btn-white bu col-12 nm " type="submit">
+					<div class="d-flex flex-row ">
+					  <img class="lll" src="https://i.ibb.co/ZXgcjhf/Whats-App-Image-2021-05-16-at-20-37-23-1.jpg" alt="" />
+					  <a href="{% url 'foodplans' date %}"><h5 class="ml-3 mt-3">Food Plans</h5></a>
+					</div>
+				  </button>
+				  <br />
+				  <button class="btn btn-white bu col-12 nm " type="submit">
+					<div class="d-flex flex-row ">
+					  <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
+					  <a href="{% url 'exercise' %}"><h5 class="ml-3 mt-3">Exercises</h5></a>
+					</div>
+				  </button>
 				<hr class="rule" />
 				<p><small>All Copyrights Reserved by KOWI LIFESTYLES</small>
 				</p>
@@ -142,19 +91,19 @@
 					</div>
 				</div>
 				<div class="row justify-centent-center ml-3 mr-3" style="width:90%;">
-                    <div class="col-12 text-center"  >
-                        {% for message in messages %}
-                        <div class="container-fluid p-0" id="debugDiv">
-                          <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                            {{ message }}
-                          </div>
-                        </div>
-                        {% endfor %}
-                </div>
-                  </div>
+					<div class="col-12 text-center"  >
+						{% for message in messages %}
+						<div class="container-fluid p-0" id="debugDiv">
+						  <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							  <span aria-hidden="true">&times;</span>
+							</button>
+							{{ message }}
+						  </div>
+						</div>
+						{% endfor %}
+				</div>
+				  </div>
 				<div class="row ">
 					<div class="col-md-12 mb-5 p-4 Kyou shadow">
 						<div class="row">
@@ -165,40 +114,40 @@
 								<button type="button" name="button" class="btn btn-primary orangeBTN float-right">Your Meetings</button>
 							</div> -->
 						</div>
-                        <form action="" method="post">
-                            {%csrf_token%}
-                        {% if flag == True %}
+						<form action="" method="post">
+							{%csrf_token%}
+							{% if flag == True %}
 						<div class="row justify-content-center">
 							<div class="col-md-6 text-center pt-4	">
 								<div class="form-group">
 									<label for="AppointmentWithWhom">Book Appointment With:</label>
 									<select class="form-control" name="userid" id="AppointmentWithWhom">
-                                        {%for al in allot %}
-                                        <option value="{{al.id}}">{{al.username}}</option>
-                                        {%endfor%}
+										{%for al in allot %}
+                               			 <option value="{{al.id}}">{{al.username}}</option>
+                                		{%endfor%}
 									</select>
 								</div>
 							</div>
 						</div>
-                        {%else%}
-                        <div class="row justify-content-center">
+						{%else%}
+						<div class="row justify-content-center">
 							<div class="col-md-6 text-center pt-4	">
 								<div class="form-group">
 									<label for="AppointmentWithWhom">Book Appointment With:</label>
 									<select class="form-control" name="bookfor" id="AppointmentWithWhom">
-                                        {% if user.sub.plan == "Semi-Premium Plan" or user.sub.plan == "Premium Plan" %}
-                                        <option value="Dietician">Dietician</option>
-                                        <option value="Nutritionist">Nutritionist</option>
-                                        <option value="Fitness Trainer">Fitness Trainer</option>
-                                        {%elif user.sub.plan == "Basic Plan" %}
-                                        <option value="Nutritionist">Nutritionist</option>
-                                        <option value="Fitness Trainer">Fitness Trainer</option>
-                                        {%endif%}
+										{% if user.sub.plan == "Semi-Premium Plan" or user.sub.plan == "Premium Plan" %}
+                                  <option value="Dietician">Dietician</option>
+                                  <option value="Nutritionist">Nutritionist</option>
+                                  <option value="Fitness Trainer">Fitness Trainer</option>
+                                  {%elif user.sub.plan == "Basic Plan" %}
+                                  <option value="Nutritionist">Nutritionist</option>
+                                  <option value="Fitness Trainer">Fitness Trainer</option>
+                                  {%endif%}
 									</select>
 								</div>
 							</div>
 						</div>
-                        {%endif%}
+						{%endif%}
 						<hr class="my-4"/>
 						<div class="row form-group">
 							<div class="col-md-12">
@@ -208,7 +157,7 @@
 									<div class="datepicker" ng-class="{'am': timeframe == 'am','pm': timeframe == 'pm','compact': compact}">
 										<div class="datepicker-header">
 											<div class="datepicker-title" ng-if="datepicker_title">{{ datepickerTitle }}</div>
-											<div class="datepicker-subheader">{{ customMessage }} {{ selectedDay }} {{ monthNames[localdate.getMonth()] }} {{ localdate.getDate() }}, {{ localdate.getFullYear() }}</div>
+											<!--  -->
 										</div>
 										<div class="datepicker-calendar">
 											<div class="calendar-header">
@@ -253,7 +202,7 @@
 															</div>
 															<div class="time" ng-class="{'time-active': edittime.active}">
 																<input type="text" class="time-input" ng-model="edittime.input" ng-keydown="changeInputTime($event)" ng-focus="edittime.active = true; edittime.digits = [];" ng-blur="edittime.active = false" />
-																<div class="formatted-time">{{ edittime.formatted }}</div>
+																<div class="formatted-time" id="time-selected">{{ edittime.formatted }}</div>
 															</div>
 															<div class="increment-time" ng-click="adjustTime('increase')">
 																<svg width="24" height="24">
@@ -261,26 +210,33 @@
 																</svg>
 															</div>
 														</div>
+
 														<div class="am-pm-container">
 															<div class="am-pm-button" ng-click="changetime('am');">am</div>
 															<div class="am-pm-button" ng-click="changetime('pm');">pm</div>
 														</div>
+														<div class="unavailable-container">
+															<p>Already Booked!
+																<br>Please Choose Another Time</p>
+														</div>
 													</div>
+
 												</div>
 											</div>
 										</div>
+
 									</div>
 								</div>
 							</div>
-
 						</div>
 					</div>
 					<hr class="my-4"/>
 					<div class="row justify-content-center pb-3">
 						<div class="col-md-12 text-center">
-							<button type="button" name="button" class="btn btn-primary orangeBTN">Book Now</button>
+								<input type="text" id="DateTime" name="DateTime">
+							<button type="button" id="book-now" name="button" onclick="SetDateTime()" class="btn btn-primary orangeBTN">Book Now</button>
 						</div>
-
+					</form>
 
 					</div>
 						</div>

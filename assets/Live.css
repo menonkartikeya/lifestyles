@@ -152,6 +152,11 @@
 	background-color: orange;
 	opacity: 0.8;
 }
+.orangeBTN:disabled {
+  background: grey;
+	color:whitesmoke;
+	cursor: not-allowed;
+}
 /* BreadCrumbs */
 
 ol.breadcrumb {
@@ -624,6 +629,18 @@ a:hover {
   float: right;
   height: 36px;
   line-height: 36px;
+  display: block;
+  position: relative;
+  margin-top: 30px;
+}
+.unavailable-container {
+	background: tomato;
+	color:white;
+	text-align: center;
+  width: 100%;
+  float: left;
+  height: 36px;
+  line-height: 18px;
   display: block;
   position: relative;
   margin-top: 30px;

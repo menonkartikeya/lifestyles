@@ -18,57 +18,6 @@ $('.main').on('click', function () {
 
 
 
-let data = {
-    labels: [
-        'Calories',
-				'Protein',
-				'Fat',
-				'Carbs',
-				'Energy',
-    ],
-
-    datasets: [{
-        label: 'My First Dataset',
-        data: [300, 50, 100, 16, 20],
-        backgroundColor: [
-            '#d00000' ,
-            '#e85d04',
-            '#f48c06',
-						'#faa307',
-            '#ffba08',
-        ],
-        hoverOffset: 4
-    }]
-};
-const config = {
-    type: 'doughnut',
-    data: data,
-    options: {
-        responsive: false
-    }
-};
-var myChart = new Chart(
-    document.getElementById('myChart123'),
-    config
-);
-
-$('.progress-bar').each(function() {
-    var bar = $(this);
-    var value = $(this).find('.count');
-
-    bar.prop('Counter', 0).animate({
-            Counter: parseFloat(bar.attr('aria-valuenow'))
-        },
-        {
-            duration: 3000,
-            easing: 'swing',
-            step: function(now) {
-                var number = parseFloat(Math.round(now * 100) / 100).toFixed(2);
-                bar.css({ 'width': number + '%' });
-                value.text(number + '%');
-            }
-        });
-});
 
 
 

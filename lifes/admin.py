@@ -123,16 +123,14 @@ class quantadmin(admin.ModelAdmin):
 
 admin.site.register(quantuser,quantadmin)
 
-
 class quantyrepssetsadmin(admin.ModelAdmin):
     list_per_page = 15
 
 admin.site.register(quantyrepssets,quantyrepssetsadmin)
 
 
-
 class exerciseplanadmin(admin.ModelAdmin):
     list_per_page = 15
 
-admin.site.register(exerciseplan)
+admin.site.register(exerciseplan,exerciseplanadmin)
 
