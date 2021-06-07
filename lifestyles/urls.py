@@ -60,7 +60,7 @@ urlpatterns = [
     path('api/otploginverify/',otp_loginverify,name="otploginverify"),
     path('api/profile/',profile_view,name="profile_view"),
     path('api/dietall/',dietallapi,name="dietallapi"),
-    path('exercise/<date>/',exercise,name="exercise"),
+    path('exercise/<date>/',exercised,name="exercise"),
     url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 ]

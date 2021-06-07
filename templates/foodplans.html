@@ -69,7 +69,7 @@
                   <button class="btn btn-white bu col-12 nm " type="submit">
                     <div class="d-flex flex-row ">
                       <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
-                      <a href="{% url 'exercise' %}"><h5 class="ml-3 mt-3">Exercises</h5></a>
+                      <a href="{% url 'exercise' date %}"><h5 class="ml-3 mt-3">Exercises</h5></a>
                     </div>
                   </button>
 				<hr class="rule" />
@@ -525,6 +525,7 @@
 	<div style="margin-bottom: 3cm;">
 		<!--Just for extra space-->
 	</div>
+	<script>setTimeout(function() {$("#debugDiv").hide();}, 4000);</script>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>

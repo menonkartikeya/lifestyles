@@ -11,6 +11,10 @@
 	<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet">
 	<link href="{% static 'Exercises.css' %}" rel="stylesheet">
 	<script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
+	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css" />  
 	<title>{{title}}</title>
 </head>
 
@@ -22,7 +26,7 @@
 				<lord-icon src="https://cdn.lordicon.com/wgwcqouc.json" trigger="morph-two-way" colors="primary:#121331,secondary:#08a88a" stroke="100" style="width:25px;height:25px"></lord-icon>
 			</button>
 			<div class=" sidebar " id="mySideBar">
-				<img height="150px" class="assddf" src="{{user.pic}}" alt="" />
+				<img height="150px" class="assddf" src="/media/{{user.pic}}" alt="" />
 				<h2>{{user.username}}</h2>
 				<hr class="rule" />
 				<button class="btn btn-white bu col-12 nm " type="submit">
@@ -112,14 +116,14 @@
 									{% for week,dt,un in week_list %}
 									{% if forloop.counter == 1 %}
 									<li class="nav-item dayCount text-center">
-										<a class="nav-link active shadow" href="{% url 'foodplans' un %}">
+										<a class="nav-link active shadow" href="{% url 'exercise' un %}">
 											<h3>{{dt}}</h3>
 											<h4 class="fontsize">{{week}}</h4>
 										</a>
 									</li>
 									{%else%}
 									<li class="nav-item dayCount text-center">
-										<a class="nav-link shadow" href="{% url 'foodplans' un %}">
+										<a class="nav-link shadow" href="{% url 'exercise' un %}">
 											<h3>{{dt}}</h3>
 											<h4 class="fontsize">{{week}}</h4>
 										</a>
@@ -129,9 +133,21 @@
 									<div id="myOverlay2" class="overlay">
 										<span class="closebtn" onclick="closeCal()" title="Close Overlay">x</span>
 									  <div class="overlay-content2">
-											<form action="action_page.php">
-										<div id="myCalendarWrapper" class=""></div>
-									</form>
+										<form action="" method="post">
+											{%csrf_token%}
+										  <div class="mo-body">
+													  <input type="text" name="incoming">
+													  <button type="submit" name="cal" class="bgmg">Let's Go</button>
+										  </div>
+									  </form>
+									  <script>
+										  $('.mo-body input').datepicker({
+											  format: 'dd-mm-yyyy'
+											}).on('hide', function(event) {
+											  event.preventDefault();
+											  event.stopPropagation();
+											});
+									  </script>
 								</div>
 									</div>
 									<div class="form-group my-auto">
@@ -150,52 +166,38 @@
 											<h3>Workout Plan</h3>
 										</div>
 									</div>
-									<form class="" action="index.html" method="post">
+									<form class="" method="post">
+										{%csrf_token%}
 										<div class="row">
 											<div class="col-md-12 ">
 												<div class=" row mt-3 ">
-													{% for item,quantity in exercise %}
+													{% for item,quantity in free %}
 													<div class="col-md-12 col-sm-12 mb-3 you shadow pt-2 zoom2" id="check1div">
-														<input type="checkbox" class="check inp-cbx" name="" id="check1" value="" />
-														<label class="labe cbx" for="check1"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{item.name}}</span>
+														<input type="checkbox" class="check inp-cbx" name="{{item.id}}" id="{{forloop.counter}}" />
+														<label class="labe cbx" for="{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{item.name}}</span>
 														</label>
-														<p class="chechlab">-> 200cal🔥
-																-> {{quantity.quantsets}}sets x {{quantity.quantreps}}reps</p>
-														<a href="#" class=""> <img src="https://www.researchgate.net/profile/Mohammed-Abou-Elmagd/publication/341734848/figure/fig1/AS:896516470362114@1590757591713/Sample-of-Jumping-Jacks-Exercise-4.png" alt="" class="exerimg "></a>
+														<p class="chechlab">-> 🔥
+																{{quantity.quantsets}} sets x {{quantity.quantreps}} reps</p>
+														<a href="#" class=""> <img src="{{item.image_path}}" alt="" class="exerimg "></a>
 													</div>
 													{% endfor %}
-													<!--<div class="col-md-12 col-sm-12 mb-3 you shadow pt-2 zoom2">
-														<input type="checkbox" class="check inp-cbx" name="" id="check2" value="" />
-														<label class="labe cbx" for="check2"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{exercisename.2}}</span>
+													{% for item,quantity in exlog %}
+													<div class="col-md-12 col-sm-12 mb-3 you shadow pt-2 zoom2" id="check1div">
+														<input type="checkbox" class="check inp-cbx" name="{{item.id}}" id="#{{forloop.counter}}" checked/>
+														<label class="labe cbx" for="#{{forloop.counter}}"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{item.name}}</span>
 														</label>
-														<p class="chechlab">-> 400cal🔥
-															-> 2 sets X 15 reps</p>
-														<a href="#" class=""><img src="https://image.flaticon.com/icons/png/512/1845/1845841.png" alt="" class="exerimg "></a>
+														<p class="chechlab">-> 🔥
+																{{quantity.quantsets}} sets x {{quantity.quantreps}} reps</p>
+														<a href="#" class=""> <img src="{{item.image_path}}" alt="" class="exerimg "></a>
 													</div>
-													<div class="col-md-12 col-sm-12 mb-3 you shadow pt-2 zoom2">
-														<input type="checkbox" class="check inp-cbx" name="" id="check3" value="" />
-														<label class="labe cbx" for="check3"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>{{exercisename.3}}</span>
-														</label>
-														<p class="chechlab">-> 1200cal🔥
-																-> 5Kg
-																-> 4 sets X 20 reps</p>
-														<a href="#" class=""> <img src="https://www.thetrendspotter.net/wp-content/uploads/2020/05/Dumbbell-standing-inner-bicep-curls.jpg" alt="" class="exerimg "></a>
-													</div>
-													<div class="col-md-12 col-sm-12 mb-3 you shadow pt-2 zoom2">
-														<input type="checkbox" class="check inp-cbx" name="" id="check4" value="" />
-														<label class="labe cbx" for="check4"> <span><svg width="12px" height="9px" viewbox="0 0 12 9"><polyline points="1 5 4 8 11 1"></polyline></svg></span>  <span>Pull Ups</span>
-														</label>
-														<p class="chechlab">-> 1400cal🔥
-															-> 3 sets X 7 reps</p>
-														<a href="#" class=""><img src="https://i.stack.imgur.com/AY9Xl.png" alt="" class="exerimg "></a>
-													</div>-->
+													{% endfor %}
 												</div>
 											</div>
 										</div>
 
 										<div class="row mt-3">
 											<div class="col-md-6 text-left">
-												<button type="button" name="button" class="btn btn-primary orangeBTN " onclick="geek()">Save</button>
+												<button type="submit" name="exsave" class="btn btn-primary orangeBTN ">Save</button>
 											</div>
 											<div class="col-md-6 text-right">
 												<button type="button" name="button" class="btn btn-primary orangeBTN openBtn " onclick="openSearch()">Add Your Work-out</button>
@@ -205,22 +207,34 @@
 
 								</div>
 							</div>
-
-						<div class="tab-pane fade show active" id="tue" role="tabpanel" aria-labelledby="tueTab"></div>
-						<div class="tab-pane fade show active" id="wed" role="tabpanel" aria-labelledby="wedTab"></div>
-						<div class="tab-pane fade show active" id="thu" role="tabpanel" aria-labelledby="thuTab"></div>
-						<div class="tab-pane fade show active" id="fri" role="tabpanel" aria-labelledby="friTab"></div>
-						<div class="tab-pane fade show active" id="sat" role="tabpanel" aria-labelledby="satTab"></div>
-						<div class="tab-pane fade show active" id="sun" role="tabpanel" aria-labelledby="sunTab"></div>
 						</div>
 					</div>
 
 					<div id="myOverlay" class="overlay">
 					  <span class="closebtn" onclick="closeSearch()" title="Close Overlay">x</span>
 					  <div class="overlay-content">
-					    <form action="action_page.php">
-					      <input type="text" placeholder="Search.." name="search">
-					      <button type="submit" class="bgmg"><i class="fa fa-search bgmg"></i></button>
+					    <form action="" method="POST">
+							{%csrf_token%}
+					     <select name="tags">
+							{% for exercise in exercises %}
+							<option value="{{exercise.id}}">{{exercise.name}}</option>
+						{% endfor %}
+						 </select>
+							<!-- <script>
+							  $( function() {
+								var availableTags = [
+									{% for food in foods %}
+										"{{food.name}}",
+									{% endfor %}
+								];
+								$( "#tags" ).autocomplete({
+								  source: availableTags
+								});
+							  } );
+							  </script> -->
+							<input type="text" name="quan" placeholder="No. of Sets You Did?">
+							<input type="text" name="quans" placeholder="And No. Of Reps?">
+						  <button type="submit" name="work" class="bgmg">ADD</button>
 					    </form>
 					  </div>
 					</div>
@@ -242,7 +256,7 @@
 								<h4 class="pt-2 mb-3">TARGET</h4>
 								<a class="dasha" href="#" data-toggle="tooltip" title="Of Goal Reached!!!">
 									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">40%</div>
+										<div class="progress-bar" role="progressbar" aria-valuenow="{{count}}" aria-valuemin="0" aria-valuemax="100">{{count}}%</div>
 									</div>
 								</a>
 
@@ -261,6 +275,7 @@
 	<div style="margin-bottom: 3cm;">
 		<!--Just for extra space-->
 	</div>
+	<script>setTimeout(function() {$("#debugDiv").hide();}, 4000);</script>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>

@@ -1320,11 +1320,14 @@ def lookcustomer(request,id):
     else:
         messages.error(request,"Login First")
         return redirect('elogin')
-def exercise(request,date):
+
+
+def exercised(request,date):
     title = "Exercise | Lifestyles"
     user = request.user
     if user.is_authenticated:
         if user.is_staff != True:
+            count = 0
             df = datetime.datetime.strptime(date,'%Y-%m-%d')
             number_of_days = 7
             date_list = []
@@ -1348,30 +1351,116 @@ def exercise(request,date):
             currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
             curday = currweek[currday]
             shortday = shortweek[currday]
-            flag = False
+            flag = False      
             try:
                 exe = user.fitness.get(day=curday)
             except ObjectDoesNotExist:
                 flag = True
-            exena = exe.exercisename.all()
-            exenaquant = []
-            sets={}
-            reps={}
-            for i in exena:
+            if flag == False:
+                exena = exe.exercisename.all()
+                exenaquant = []
+                for i in exena:
+                    try:
+                        quant = quantyrepssets.objects.get(Q(user=user) & Q(exername=i) & Q(day=curday))
+                        exenaquant.append(quant)
+                    except ObjectDoesNotExist:
+                        exenaquant.append("")
                 try:
-                    quant = quantyrepssets.objects.get(Q(user=user) & Q(exername=i) & Q(day=curday))
-                    sets[quant.exername.name] = quant.quantreps
-                    reps[quant.exername.name] = quant.quantsets
-                    exenaquant.append(quant)
+                    log = exlogs.objects.get(Q(date=df) & Q(us=user))
                 except ObjectDoesNotExist:
-                    exenaquant.append("")
-            parms = {
+                    log = exlogs.objects.create(us=user,date=df)
+                free = []
+                exlog = log.exercisename.all()
+                for i in exena:
+                    if i not in exlog:
+                        free.append(i)
+                logquant = []
+                for i in exlog:
+                    if i in exena:
+                        count+=1
+                    try:
+                        quant = quantyrepssets.objects.get(Q(user=user) & Q(exername=i) & Q(day=curday))
+                        logquant.append(quant)
+                    except ObjectDoesNotExist:
+                        logquant.append("")
+                if count != 0:
+                    if exena.count() != count:
+                        count = int(100/(count+1))
+                    else:
+                        count = int(100)
+                if request.method == "POST":
+                    if 'cal' in request.POST:
+                        inc = request.POST['incoming']
+                        year = inc[-4:]
+                        month = inc[0:2]
+                        da = inc[3:5]
+                        ur = year+"-"+month+"-"+da
+                        return redirect('exercise',ur)
+                    if 'work' in request.POST:
+                        fo = request.POST['tags']
+                        qu = request.POST['quan']
+                        qua = request.POST['quans']
+                        item = exercise.objects.get(id=fo)
+                        if item not in exlog:
+                            log.exercisename.add(item)
+                            try:
+                                quant = quantyrepssets.objects.get(Q(user=user) & Q(exername=item) & Q(day=curday))
+                            except ObjectDoesNotExist:
+                                quant = quantyrepssets.objects.create(user=user,exername=item,day=curday)
+                            quant.quantsets += int(qu)
+                            quant.quantreps += int(qua)
+                            quant.save()
+                            messages.success(request,"Exercise Log Updated")
+                            return redirect('exercise',date)
+                        else:
+                            quant = quantyrepssets.objects.get(Q(user=user) & Q(exername=item) & Q(day=curday))
+                            quant.quantsets += int(qu)
+                            quant.quantreps += int(qua)
+                            quant.save()
+                            messages.success(request,"Quantity Updated")
+                            return redirect('exercise',date)
+                    if 'exsave' in request.POST:
+                        l = list(set(chain(free,exlog)))
+                        for meal in l:
+                            try:
+                                checker = request.POST[str(meal.id)]
+                                if checker == "on":
+                                    if meal not in exlog:
+                                        log.exercisename.add(meal)
+                                        messages.success(request,"Exercise Logs Updated")
+                                        log.save()
+                            except MultiValueDictKeyError:
+                                if meal not in exena:
+                                    quant = quantyrepssets.objects.get(Q(user=user) & Q(exername=meal) & Q(day=curday))
+                                    quant.delete()
+                                log.exercisename.remove(meal)
+                                messages.success(request,"Exercise Logs Erased!")
+                                log.save()
+                        return redirect('exercise',date)
+                parms = {
+                        'day':curday,
+                        'exercises':exercise.objects.all(),
+                        'exercise':zip(exena,exenaquant),
+                        'date':datetime.date.today(),
+                        'free':zip(free,exenaquant),
+                        'exlog':zip(exlog,logquant),
+                        'count':count,
+                        'week_list':zip(week_list,date_list,unsliced),
+                    }
+            else:
+                if request.method == "POST":
+                    if 'cal' in request.POST:
+                        inc = request.POST['incoming']
+                        year = inc[-4:]
+                        month = inc[0:2]
+                        da = inc[3:5]
+                        ur = year+"-"+month+"-"+da
+                        return redirect('foodplans',ur) 
+                parms = {
                     'day':curday,
-                    'exercise':zip(exena,exenaquant),
-                    'date':datetime.datetime.today(),
+                    'date':datetime.date.today(),
                     'week_list':zip(week_list,date_list,unsliced),
                 }
-            print(parms)
             return render(request,'Exercises.html',parms)
         else:
             return render(request,'404.html')
@@ -1517,14 +1606,14 @@ def foodplans(request,date):
                                     logg.preworkout.add(meal)
                                     messages.success(request,"logs Updated")
                                     logg.save()
-                                    return redirect('foodplans',date)
                         except MultiValueDictKeyError:
-                            quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="preworkout") & Q(day=curday))
-                            quant.delete()
+                            if meal not in pre:
+                                quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="preworkout") & Q(day=curday))
+                                quant.delete()
                             logg.preworkout.remove(meal)
                             messages.success(request,"This log is Erased!")
                             logg.save()
-                            return redirect('foodplans',date)
+                    return redirect('foodplans',date)
                 if 'postwork' in request.POST:
                     fo = request.POST['tags']
                     qu = request.POST['quan']
@@ -1556,14 +1645,14 @@ def foodplans(request,date):
                                     logg.postworkout.add(meal)
                                     messages.success(request,"logs Updated")
                                     logg.save()
-                                    return redirect('foodplans',date)
                         except MultiValueDictKeyError:
-                            quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="postworkout") & Q(day=curday))
-                            quant.delete()
+                            if meal not in post:
+                                quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="postworkout") & Q(day=curday))
+                                quant.delete()
                             logg.postworkout.remove(meal)
                             messages.success(request,"This log is Erased!")
                             logg.save()
-                            return redirect('foodplans',date)
+                    return redirect('foodplans',date)
                 if 'lunchwork' in request.POST:
                     fo = request.POST['tags']
                     qu = request.POST['quan']
@@ -1595,14 +1684,14 @@ def foodplans(request,date):
                                     logg.lunch.add(meal)
                                     messages.success(request,"logs Updated")
                                     logg.save()
-                                    return redirect('foodplans',date)
                         except MultiValueDictKeyError:
-                            quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="lunch") & Q(day=curday))
-                            quant.delete()
+                            if meal not in lunch:
+                                quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="lunch") & Q(day=curday))
+                                quant.delete()
                             logg.lunch.remove(meal)
                             messages.success(request,"This log is Erased!")
                             logg.save()
-                            return redirect('foodplans',date)
+                    return redirect('foodplans',date)
                 if 'snackwork' in request.POST:
                     fo = request.POST['tags']
                     qu = request.POST['quan']
@@ -1634,14 +1723,14 @@ def foodplans(request,date):
                                     logg.snacks.add(meal)
                                     messages.success(request,"logs Updated")
                                     logg.save()
-                                    return redirect('foodplans',date)
                         except MultiValueDictKeyError:
-                            quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="snacks") & Q(day=curday))
-                            quant.delete()
+                            if meal not in snacks:
+                                quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="snacks") & Q(day=curday))
+                                quant.delete()
                             logg.snacks.remove(meal)
                             messages.success(request,"This log is Erased!")
                             logg.save()
-                            return redirect('foodplans',date)
+                    return redirect('foodplans',date)
                 if 'dinnerwork' in request.POST:
                     fo = request.POST['tags']
                     qu = request.POST['quan']
@@ -1673,14 +1762,14 @@ def foodplans(request,date):
                                     logg.dinner.add(meal)
                                     messages.success(request,"logs Updated")
                                     logg.save()
-                                    return redirect('foodplans',date)
                         except MultiValueDictKeyError:
-                            quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="dinner") & Q(day=curday))
-                            quant.delete()
+                            if meal not in dinner:
+                                quant = quantuser.objects.get(Q(user=user) & Q(foodit=meal.fooditem) & Q(meal="dinner") & Q(day=curday))
+                                quant.delete()
                             logg.dinner.remove(meal)
                             messages.success(request,"This log is Erased!")
                             logg.save()
-                            return redirect('foodplans',date)
+                    return redirect('foodplans',date)
                 if 'cal' in request.POST:
                     inc = request.POST['incoming']
                     year = inc[-4:]
@@ -1772,6 +1861,32 @@ def foodplans(request,date):
             intake.append(fat)
             intake.append(car)
             intake.append(fib)
+
+            if precount !=0:
+                if pre.count() != precount:
+                    precount = int(100/(precount+1))
+                else:
+                    precount = int(100)
+            if postcount != 0:
+                if post.count() != postcount:
+                    postcount = int(100/(postcount+1))
+                else:
+                    postcount = int(100)
+            if lunchcount !=0:
+                if lunch.count() != lunchcount:
+                    lunchcount = int(100/(lunchcount+1))
+                else:
+                    lunchcount = int(100)
+            if snackscount != 0:
+                if snacks.count() != snackscount:
+                    snackscount = int(100/(snackscount+1))
+                else:
+                    snackscount = int(100)
+            if dinnercount != 0:
+                if dinner.count() != dinnercount:
+                    dinnercount = int(100/(dinnercount+1))
+                else:
+                    dinnercount = int(100)
             parms = {
                 'week_list':zip(week_list,date_list,unsliced),
                 'freepre':zip(free,prequant),
@@ -1785,11 +1900,11 @@ def foodplans(request,date):
                 'logsdinner':zip(logsdinner,logdinnerquant),
                 'date':date,
                 'foods':foog,
-                'varlog':int(precount*20),
-                'varpostlog':int(postcount*20),
-                'varlunchlog':int(lunchcount*20),
-                'varsnackslog':int(snackscount*20),
-                'vardinnerlog':int(dinnercount*20),
+                'varlog':precount,
+                'varpostlog':postcount,
+                'varlunchlog':lunchcount,
+                'varsnackslog':snackscount,
+                'vardinnerlog':dinnercount,
                 'intake':json.dumps(intake),
                 'logpre':zip(log,logprequant),
             }
