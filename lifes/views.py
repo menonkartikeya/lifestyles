@@ -1,11 +1,11 @@
 from __future__ import division
 from typing_extensions import ParamSpecArgs
 from django.shortcuts import render,redirect
-from django.http import Http404
+from django.http import Http404, request
 from .models import *
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import auth
+from django.contrib.auth.models import User, auth
 from django.contrib.auth import login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
@@ -40,6 +40,9 @@ import json
 import math, random
 from django.utils.datastructures import MultiValueDictKeyError
 from itertools import chain
+from twilio.rest import Client
+from lifestyles.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
+from django.http import HttpResponse
 
 # import pyrebase
 # Create your views here.
@@ -666,6 +669,9 @@ def book(request):
 
     return render(request,'book.html',parms)
 
+
+
+
 #bmi calculator -- 
 def bmic(request):
     headtitle = "BMI | Lifestyles"
@@ -723,6 +729,26 @@ def bmic(request):
         'bmidate':json.dumps(bmidate,indent=4, sort_keys=True, default=str),
     }
     return render(request,'bmi.html',parms)
+
+    
+def bodyfat(request,id):
+    user=request.user
+    ag=user.age
+    w=user.weight
+    h=user.height
+    print(w)
+    print(h)
+    print(ag)
+    bmi = bmicalc(w,h)
+    print(bmi[1])
+    gen=user.gender
+    if gen == "Female":
+        bf = (1.20*bmi[1])+(0.23*ag)-5.4
+    elif gen == "Male":
+        bf = (1.20*bmi[1])+(0.23*ag)-16.2
+    print(bf)
+    print(gen)
+    return HttpResponse("<h1>HELLO</h1>")
 
 #subs plan -- will be added in future only rendering subs page right now
 def subs(request):
@@ -1026,13 +1052,29 @@ def unalo(request,emptype):
     return render(request,'unalo.html',parms)
 
 #bmr calculate
-def bmrmain(weight,height,age,gender):
+def bmrmain(weight,height,age,gender,status):
     heightincm=height*100
     if gender == 'male' or gender == 'Male':
         bmr=66.47+(13.75*weight)+(5.003*heightincm)-(6.755*age)
+        if status == 'sedentary(little or no exercise':
+            ans = bmr * 1.1
+        elif status == 'lightly active (light exercise/sports 1-3 days/week)':
+            ans = bmr * 1.275
+        elif status == 'moderately active (moderate exercise/sports 3-5 days/week)':
+            ans = bmr * 1.35
+        elif status == 'very active (hard exercise/sports 6-7 days a week)':
+            ans = bmr * 1.525
     elif gender == 'female' or gender == 'Female':
         bmr=655.1+(9.563*weight)+(1.85*heightincm)-(4.676*age)
-    return bmr
+        if status == 'sedentary (little or no exercise)':
+            ans = bmr * 1.1
+        elif status == 'lightly active (light exercise/sports 1-3 days/week)':
+            ans = bmr * 1.275
+        elif status == 'moderately active (moderate exercise/sports 3-5 days/week)':
+            ans = bmr * 1.35
+        elif status == 'very active (hard exercise/sports 6-7 days a week)':
+            ans = bmr * 1.525
+    return ans
 
 #bmr calculater!
 def bmrcal(request):
@@ -1056,12 +1098,14 @@ def bmrcal(request):
                 height = float(request.POST.get("height-metric"))
                 age = int(request.POST.get("age-metric"))
                 gender = str(request.POST.get("gender-metric"))
+                status = str(request.POST.get("status-metric"))
             elif weight_imperial:
                 weight = float(request.POST.get("weight-imperial"))/2.205
                 height = (float(request.POST.get("feet"))*30.48 + float(request.POST.get("inches"))*2.54)/100
                 age = int(request.POST.get("age-imperial"))
-                gender = str(request.POST.get("gender-imperial"))        
-            cont = bmrmain(weight,height,age,gender)
+                gender = str(request.POST.get("gender-imperial")) 
+                status = str(request.POST.get("status-imperial"))       
+            cont = bmrmain(weight,height,age,gender,status)
             bmrr = cont
             user = request.user
             bmr.objects.create(us=user,bmr=round(bmrr),date=datetime.date.today())
@@ -1069,6 +1113,7 @@ def bmrcal(request):
             user.height = height
             user.age = age
             user.gender = gender
+            user.status = status
             user.save()
             return redirect('bmrcal')
     parms = {
@@ -1940,3 +1985,27 @@ def fooddetail(request,id):
     data['nut'] = json.dumps(nut)
     return render(request,'fooddetail.html',data)
 
+order_details = {
+    'date': '4th May',
+    'slot': '8pm',
+}
+
+
+
+def send_notification(request):
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
+    
+
+    message = client.messages.create(
+            from_='whatsapp:+14155238886',
+            body='Your appointment is coming up on {} at {}.'.format(
+                order_details['date'], order_details['slot']),
+            to='whatsapp:{}'.format(917887257977)
+        )
+
+    print(7887257977)
+    print(message.sid)
+    print('Great! Expect a message...')
+
+    return HttpResponse("<h1>well done</h1>")

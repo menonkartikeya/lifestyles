@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import urllib
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -191,3 +192,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     )
 }
+
+
+TWILIO_ACCOUNT_SID = 'AC2decb28b6dce4e8aa5b34e64ad58d021'
+TWILIO_AUTH_TOKEN = 'dbe775e0796566286d246175ac80c211'
