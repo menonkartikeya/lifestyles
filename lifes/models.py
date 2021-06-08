@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 import datetime
+import uuid
 # Create your models here.
 
 targets = (
@@ -148,6 +149,7 @@ class exercise(models.Model):
 
 class exerciseplan(models.Model):
     day = models.CharField(choices=day,max_length=50,default='Monday')
+    workoutday = models.CharField(max_length=100,default="Rest Day")
     exercisename = models.ManyToManyField(exercise,related_name="Exercise")
     remarks = models.CharField(max_length=1000,blank=True,null=True)
 
@@ -198,7 +200,7 @@ class streak(models.Model):
     days = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.days
+        return str(self.days)
     
     class Meta:
         verbose_name_plural = "Streaks!"
@@ -215,6 +217,13 @@ class live(models.Model):
 
     class Meta:
         verbose_name_plural = "Check Live Meetings!"
+
+class step(models.Model):
+    date = models.DateField()
+    step_count = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = "User Steps"
 
 class MyUser(AbstractUser):
     pic = models.ImageField(default='defaultpic.jpg')
@@ -236,8 +245,12 @@ class MyUser(AbstractUser):
     location = models.CharField(max_length=100,blank=True,null=True)
     address = models.CharField(max_length=1000,blank=True,null=True)
     fitness = models.ManyToManyField(exerciseplan,blank=True)
+    steps = models.ManyToManyField(step,blank=True)
+    fordiet = models.UUIDField(default = uuid.uuid4)
+    forfit = models.UUIDField(default = uuid.uuid4)
+    fornut = models.UUIDField(default = uuid.uuid4)
 
-    #USERNAME_FIELD = 'mobno'
+    #USERNAME_FIELD = 'email'
 
     def __str__(self):
         return self.username
@@ -352,6 +365,7 @@ class grocerylist(models.Model):
 class bmi(models.Model):
     us = models.ForeignKey(MyUser,on_delete=models.CASCADE)
     bmi = models.FloatField(default=0.0)
+    bodyfat = models.FloatField(default=0.0)
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):

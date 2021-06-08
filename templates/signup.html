@@ -1,43 +1,116 @@
-{% extends 'base.html' %}
-  {% block body %}
-  {% load static %}
-    <form action="" method="post">
-        {%csrf_token%}
-        <h2>Enter Your Username</h2>
-        <input type="text" name="username" value="Username">
-        <h2>Enter Passsword</h2>
-        <input type="password" name="password1" value="Password">
-        <h2>Confirm Password</h2>
-        <input type="password" name="password2" value="Password1">
-        <h2>Enter Email</h2>
-        <input type="email" name="email" value="Email">
-        <h2>Select Gender</h2>
-        <select name="gender" id="">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Prefer not to say">Prefer Not to Say</option>
-        </select>
-        <h2>Enter Height</h2>
-        <input type="text" name="height" value="Height">
-        <h2>Enter Weight</h2>
-        <input type="text" name="weight" value="Weight">
-        <h2>Enter Mobile Number</h2>
-        <input type="number" name="mobno" value="Mobile Number">
-        <h2>Enter AGE</h2>
-        <input type="number" name="age" value="Age">
-        <h2>Select Subscription</h2>
-        <select name="subscription" id="">
-            <option value="Free Plan">Free Plan</option>
-            <option value="Basic Plan">Basic Plan @9.99Rs</option>
-            <option value="Premium Plan">Premium Plan @99.9Rs</option>
-        </select>
-        <h2>Select Your Target</h2>
-        <select name="target" id="">
-            <option value="Gain Weight">Gain Weight</option>
-            <option value="Stay Fit">Stay Fit</option>
-            <option value="Loose Weight">Loose Weight</option>
-        </select>
-        <h2>Hit Submit</h2>
-        <input type="submit" value="submit">
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'account.css' %}">
+    <title>{{title}}</title>
+</head>
+
+<body>
+
+
+    <div class="main d-flex flex-column justify-content-center ">
+        <div class="submain col-lg-5 shadow p-4 you " id="name">
+            <div class="d-flex flex-row">
+                <div class="col-lg-6">
+                    <img class="image1" src="https://i.ibb.co/48FcW4S/KOWI-Artboard-1.png" alt="" />
+                </div>
+                <div class="col-lg-6 p-4">
+                    <div>
+                        <h3 class="title">Register with Kowi</h3>
+                    </div>
+                    <hr />
+                    <br />
+                    <form action="" method="POST" accept-charset="utf-8">
+                        {%csrf_token%}
+                        <input type="text" class="form-control in1 shadow p-4" name="" id="fname" value="" placeholder="First name" />
+                        <p class="error ml-3 d-none" id="p1">*Required</p>
+                        <input type="text" class="form-control in1 shadow p-4 mt-4" name="" id="lname" value="" placeholder="Last name" />
+                        <p class="error ml-3 d-none" id="p11">*Required</p>
+                    
+                    <div class="bv2 mt-4">
+                        <button class="btn btn-danger" type="submit" id="next1">Next</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="submain col-lg-5 shadow p-4 you d-none  " id="email">
+            <div class="d-flex flex-row">
+                <div class="col-lg-6">
+                    <img class="image1" src="https://i.ibb.co/tqL51tc/email-img.png" alt="" />
+                </div>
+                <div class="col-lg-6 p-4">
+                    <div>
+                        <h3 class="title">Register with Kowi</h3>
+                    </div>
+                    <hr />
+                    <br />
+                        <input type="text" class="form-control in1 shadow p-4" name="" id="mail" value="" placeholder="E-mail" />
+                        <p class="error ml-3 d-none" id="p21">*Required</p>
+                        <input type="text" class="form-control in1 shadow p-4 mt-4" name="" id="phone" value="" placeholder="Phone Number" />
+                        <p class="error ml-3 d-none" id="p22">*Required</p>
+                    <div class="bv2 mt-4">
+                        <button class="btn btn-danger" type="submit" id="back1">Back</button>
+                        <button class="btn btn-danger" type="submit" id="next2">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="submain col-lg-5 shadow p-4 you d-none  " id="password">
+            <div class="d-flex flex-row">
+                <div class="col-lg-6">
+                    <img class="image1" src="https://i.ibb.co/vsd6F4f/password-img.png" alt="" />
+                </div>
+                <div class="col-lg-6 p-4">
+                    <div>
+                        <h3 class="title">Register with Kowi</h3>
+                    </div>
+                    <hr />
+                    <br />
+                        <input type="text" class="form-control in1 shadow p-4" name="" id="pass" value="" placeholder="Password" />
+                        <p class="error ml-3 d-none" id="p31">*Required</p>
+                        <input type="text" class="form-control in1 shadow p-4 mt-4" name="" id="con" value="" placeholder="Confirm Password" />
+                        <p class="error ml-3 d-none" id="p33">*Required</p>
+                    <div class="bv2 mt-4">
+                        <button class="btn btn-danger" type="submit" id="back2">Back</button>
+                        <button class="btn btn-danger" type="submit" id="next3">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="submain col-lg-5 shadow p-4 you d-none  " id="Height">
+            <div class="d-flex flex-row">
+                <div class="col-lg-6">
+                    <img class="image1" src="https://i.ibb.co/2WZ24dK/img1.png" alt="" />
+                </div>
+                <div class="col-lg-6 p-4">
+                    <div>
+                        <h3 class="title">Register with Kowi</h3>
+                    </div>
+                    <hr />
+                    <br />
+                        <input type="text" class="form-control in1 shadow p-4" name="height" id="he" value="" placeholder="Your Height" />
+                        <p class="error ml-3 d-none" id="p41">*Required</p>
+                        <input type="text" class="form-control in1 shadow p-4 mt-4" name="weight" id="we" value="" placeholder="Your Weight" />
+                        <p class="error ml-3 d-none" id="p44">*Required</p>
+                    <div class="bv2 mt-4">
+                        <button class="btn btn-danger" type="button" id="back3">Back</button>
+                        <button class="btn btn-danger" type="submit" id="submit">Submit</button>
+                        <p class="error ml-3 d-none" id="pert">*you have missed something</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
-    {% endblock body %}
+    </div>
+    <script src="{% static 'account.js' %}"></script>
+</body>
+
+</html>

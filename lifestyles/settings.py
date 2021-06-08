@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'lifes',
-    'background_task',
     'rest_framework',
     'rest_framework.authtoken',
     'import_export',
@@ -192,7 +191,6 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     )
 }
-
 
 TWILIO_ACCOUNT_SID = 'AC2decb28b6dce4e8aa5b34e64ad58d021'
 TWILIO_AUTH_TOKEN = 'dbe775e0796566286d246175ac80c211'

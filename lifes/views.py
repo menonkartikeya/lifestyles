@@ -5,7 +5,7 @@ from django.http import Http404, request
 from .models import *
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import auth
 from django.contrib.auth import login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
@@ -25,7 +25,6 @@ from django.db.models.query import EmptyQuerySet
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils import timezone
-from background_task import background
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework import status
@@ -44,22 +43,8 @@ from twilio.rest import Client
 from lifestyles.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 from django.http import HttpResponse
 
-# import pyrebase
-# Create your views here.
-# config={
-#     "apiKey": "AIzaSyBJ33tV82IcUyz5qG3DcX53cmtNU_VZYm8",
-#     "authDomain": "lifestyle-kowi.firebaseapp.com",
-#     "databaseURL": "https://lifestyle-kowi-default-rtdb.asia-southeast1.firebasedatabase.app",
-#     "projectId": "lifestyle-kowi",
-#     "storageBucket": "lifestyle-kowi.appspot.com",
-#     "messagingSenderId": "937975020079",
-#     "appId": "1:937975020079:web:e34c860b0f6ab87a4464da"
-# }
-# firebase=pyrebase.initialize_app(config)
-# authe = firebase.auth()
-# database=firebase.database()
 
-#Home Page - currently renders which type of user is there and shows links according to that.
+
 def index(request): 
     headtitle = "Life Styles | Home"
     user = request.user
@@ -81,6 +66,7 @@ def index(request):
         except ObjectDoesNotExist:
             #if employee object does not exist
             usertype = None
+
     parms = {
         'title':headtitle,
         'usertype':usertype,
@@ -124,8 +110,6 @@ def dashboard(request):
         #get all bmi object of that particular user and then get the latest bmi of that user
         bmii = bmi.objects.filter(us=user).order_by('-id')[0]
         bmrr = bmr.objects.filter(us=user).order_by('-id')[0]
-
-            
         if user.allotdieti:
             #get user dietician if he is alloted one.
             finddieti = employeecontrol.objects.get(Q(employeetype="Dietician") & Q(alloted=user))
@@ -179,7 +163,10 @@ def dashboard(request):
         currday = datetime.datetime.today().weekday()
         currweek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
         curday = currweek[currday]
-        dietplans = user.diets.get(day=curday)
+        try:
+            dietplans = user.diets.get(day=curday)
+        except ObjectDoesNotExist:
+            dietplans = None
         i = dietplans.preworkout.all()
         premeal = []
         for item in i:
@@ -201,8 +188,146 @@ def dashboard(request):
         for item in m:
             dinner.append(item)
         d = datetime.date.today()
+        try:
+            logg = logs.objects.get(Q(date=d) & Q(us=user))
+        except ObjectDoesNotExist:
+            logg = logs.objects.create(us=user,date=d)
+        #lunch
+        freelunch = []
+        loglunch = logg.lunch.all()
+        for i in lunch:
+            if i not in loglunch:
+                freelunch.append(i)
+        #premeal
+        freepre = []
+        logpre = logg.preworkout.all()
+        for i in premeal:
+            if i not in logpre:
+                freepre.append(i)
+        #postmeal
+        freepost = []
+        logpost = logg.postworkout.all()
+        for i in postmeal:
+            if i not in logpost:
+                freepost.append(i)
+        #snacks
+        freesnacks = []
+        logsnacks = logg.snacks.all()
+        for i in snacks:
+            if i not in logsnacks:
+                freesnacks.append(i)
+        #dinner
+        freedinner = []
+        logdinner = logg.dinner.all()
+        for i in dinner:
+            if i not in logdinner:
+                freedinner.append(i)
+        #exercise
+        try:
+            exe = user.fitness.get(day=curday)
+            exena = exe.exercisename.all()
+            freeex = []
+            try:
+                exlog = exlogs.objects.get(Q(date=d) & Q(us=user))
+            except exlogs.DoesNotExist:
+                exlog = exlogs.objects.create(us=user,date=d)
+            logex = exlog.exercisename.all()
+            for i in exena:
+                if i not in logex:
+                    freeex.append(i)
+        except ObjectDoesNotExist:
+            exe = None
+            freeex = []
+            logex = []
+        if request.method == "POST":
+            if 'yess' in request.POST:
+                tag = request.POST['tag']
+                if tag == 'Lunch':
+                    l = list(set(chain(freelunch,loglunch)))
+                    for i in l:
+                        try:
+                            check = request.POST["l"+str(i.fooditem)]
+                            if check == "on":
+                                if i not in loglunch:
+                                    logg.lunch.add(i)
+                                    logg.save()
+                                    messages.success(request,"Added to logs")
+                        except MultiValueDictKeyError:
+                            logg.lunch.remove(i)
+                            logg.save()
+                    return redirect("dashboard")
+                if tag == "Pre workout meal":
+                    l = list(set(chain(freepre,logpre)))
+                    for i in l:
+                        try:
+                            check = request.POST["pr" + str(i.fooditem)]
+                            if check == "on":
+                                if i not in logpre:
+                                    logg.preworkout.add(i)
+                                    logg.save()
+                                    messages.success(request,"Added to logs")
+                        except MultiValueDictKeyError:
+                            logg.preworkout.remove(i)
+                            logg.save()
+                    return redirect("dashboard")
+                if tag == "Post workout meal":
+                    l = list(set(chain(freepost,logpost)))
+                    for i in l:
+                        try:
+                            check = request.POST["po" + str(i.fooditem)]
+                            if check == "on":
+                                if i not in logpost:
+                                    logg.postworkout.add(i)
+                                    logg.save()
+                                    messages.success(request,"Added to logs")
+                        except MultiValueDictKeyError:
+                            logg.postworkout.remove(i)
+                            logg.save()
+                    return redirect("dashboard")
+                if tag == "Snacks":
+                    l = list(set(chain(freesnacks,logsnacks)))
+                    for i in l:
+                        try:
+                            check = request.POST["s" + str(i.fooditem)]
+                            if check == "on":
+                                if i not in logsnacks:
+                                    logg.snacks.add(i)
+                                    logg.save()
+                                    messages.success(request,"Added to logs")
+                        except MultiValueDictKeyError:
+                            logg.snacks.remove(i)
+                            logg.save()
+                    return redirect("dashboard")
+                if tag == "Dinner":
+                    l = list(set(chain(freedinner,logdinner)))
+                    for i in l:
+                        try:
+                            check = request.POST["d" + str(i.fooditem)]
+                            if check == "on":
+                                if i not in logdinner:
+                                    logg.dinner.add(i)
+                                    logg.save()
+                                    messages.success(request,"Added to logs")
+                        except MultiValueDictKeyError:
+                            logg.dinner.remove(i)
+                            logg.save()
+                    return redirect("dashboard")
+            if 'exyes' in request.POST:
+                l = list(set(chain(freeex,logex)))
+                for i in l:
+                    try:
+                        check = request.POST[str(i.id)]
+                        if check == "on":
+                            if i not in logex:
+                                exlog.exercisename.add(i)
+                                exlog.save()
+                                messages.success(request,"Added to Exercise logs")
+                    except MultiValueDictKeyError:
+                        exlog.exercisename.remove(i)
+                        exlog.save()
+                return redirect("dashboard")
         parms = {
-            'title':title,
+            'title':"DASHBOARD | KOWI Lifestyles",
             'bmi':bmii,
             'bmr':bmrr,
             'grolist':grolist,
@@ -213,12 +338,19 @@ def dashboard(request):
             'findtrain':findtrain,
             'curday':curday,
             'dietplans':dietplans,
-            'premeal':premeal,
-            'postmeal':postmeal,
-            'lunch':lunch,
-            'snacks':snacks,
-            'dinner':dinner,
+            'premeal':freepre,
+            'logpre':logpre,
+            'postmeal':freepost,
+            'logpost':logpost,
+            'lunch':freelunch,
+            'loglunch':loglunch,
+            'snacks':freesnacks,
+            'logsnacks':logsnacks,
+            'dinner':freedinner,
+            'logdinner':logdinner,
             'date':d,
+            'exer':freeex,
+            'logex':logex,
         }
         return render(request,'dashboard.html',parms)
     #if user is not logged in then it will redirect to login
@@ -534,13 +666,13 @@ def eprofile(request,id):
     }
     return render(request,'eprofile.html', parms)
 
-@background(schedule=2629746)
-def unsubscribe_user(user_id,bill_id):
-    user = MyUser.objects.get(id=user_id)
-    bill = MyUser.bill.get(id=bill_id)
-    bill.expiry = True
-    user.email_user("Plan Expired","Your Subscription Plan Expired, Please Change Your Plan!")
-    bill.save()
+# @background(schedule=2629746)
+# def unsubscribe_user(user_id,bill_id):
+#     user = MyUser.objects.get(id=user_id)
+#     bill = MyUser.bill.get(id=bill_id)
+#     bill.expiry = True
+#     user.email_user("Plan Expired","Your Subscription Plan Expired, Please Change Your Plan!")
+#     bill.save()
     
 
 #invoices function right now it just renders a html page!
@@ -669,9 +801,6 @@ def book(request):
 
     return render(request,'book.html',parms)
 
-
-
-
 #bmi calculator -- 
 def bmic(request):
     headtitle = "BMI | Lifestyles"
@@ -683,6 +812,7 @@ def bmic(request):
         bmiobjlist = bmi.objects.filter(us=user)
         bmilist = []
         bmidate = []
+        bf = bmii.bodyfat
         for i in bmiobjlist:
             bmilist.append(i.bmi)
             bmidate.append(i.date)
@@ -716,39 +846,26 @@ def bmic(request):
             cont = bmicalc(weight,height)
             bmii = cont[1]
             state = cont[0]
-            bmi.objects.create(us=user,bmi=round(bmii),date=datetime.date.today())
             user.weight = weight
             user.height = height
+            if user.gender == "Female":
+                bf = (1.20*bmii)+(0.23*user.age)-5.4
+            elif user.gender == "Male":
+                bf = (1.20*bmii)+(0.23*user.age)-16.2
+            bmi.objects.create(us=user,bmi=round(bmii),bodyfat=bf,date=datetime.date.today())
             user.save()
             return redirect('bmic')
     parms = {
         'title':headtitle,
         'bmi':bmii,
+        'bf':bf,
         'state':state,
         'bmilist':json.dumps(bmilist),
         'bmidate':json.dumps(bmidate,indent=4, sort_keys=True, default=str),
     }
     return render(request,'bmi.html',parms)
 
-    
-def bodyfat(request,id):
-    user=request.user
-    ag=user.age
-    w=user.weight
-    h=user.height
-    print(w)
-    print(h)
-    print(ag)
-    bmi = bmicalc(w,h)
-    print(bmi[1])
-    gen=user.gender
-    if gen == "Female":
-        bf = (1.20*bmi[1])+(0.23*ag)-5.4
-    elif gen == "Male":
-        bf = (1.20*bmi[1])+(0.23*ag)-16.2
-    print(bf)
-    print(gen)
-    return HttpResponse("<h1>HELLO</h1>")
+
 
 #subs plan -- will be added in future only rendering subs page right now
 def subs(request):
@@ -1092,7 +1209,7 @@ def bmrcal(request):
         if request.method=="POST":
             weight_metric = request.POST.get("weight-metric")
             weight_imperial = request.POST.get("weight-imperial")
-
+            
             if weight_metric:
                 weight = float(request.POST.get("weight-metric"))
                 height = float(request.POST.get("height-metric"))
@@ -1483,6 +1600,7 @@ def exercised(request,date):
                                 log.save()
                         return redirect('exercise',date)
                 parms = {
+                        'title':title,
                         'day':curday,
                         'exercises':exercise.objects.all(),
                         'exercise':zip(exena,exenaquant),
@@ -1502,6 +1620,7 @@ def exercised(request,date):
                         ur = year+"-"+month+"-"+da
                         return redirect('foodplans',ur) 
                 parms = {
+                    'title':title,
                     'day':curday,
                     'date':datetime.date.today(),
                     'week_list':zip(week_list,date_list,unsliced),
@@ -1944,6 +2063,7 @@ def foodplans(request,date):
                 'freedinner':zip(freedinner,dinnerquant),
                 'logsdinner':zip(logsdinner,logdinnerquant),
                 'date':date,
+                'title':title,
                 'foods':foog,
                 'varlog':precount,
                 'varpostlog':postcount,
@@ -1985,6 +2105,64 @@ def fooddetail(request,id):
     data['nut'] = json.dumps(nut)
     return render(request,'fooddetail.html',data)
 
+def setgrocery(request):
+    title = "Set Grocery | Kowi"
+    user = request.user
+    if user.is_authenticated and user.is_staff == True:
+        try:
+            emp = employeecontrol.objects.get(id=user)
+        except ObjectDoesNotExist:
+            messages.error(request,"You Do Not Have a Employee Profile, Yet")
+            return redirect("elogin")
+        if emp.employeetype == "employee":
+            customers = MyUser.objects.filter(Q(is_staff=False) & Q(sub.plan != "Free Plan"))
+            foods = food.objects.all()
+
+@api_view(['GET',])
+@permission_classes((IsAuthenticated, ))
+def exercise_view(request):
+    if request.method == 'GET':
+        user = request.user
+        serializer = ExerciseSerializer(user,many=False)
+        data = {
+
+        }
+        data['response'] = "Successfull"
+        exe = user.fitness.all()
+        for exena in exe:
+            data[exena.day] = {}
+            data[exena.day]["workout_day"] = exena.workoutday
+            data[exena.day]["exercise"]  = {}
+            count=1
+            for ex in exena.exercisename.all():
+                data[exena.day]["exercise"][count] = {}
+                data[exena.day]["exercise"][count]["name"] =  ex.name
+                data[exena.day]["exercise"][count]["description"] =  ex.description
+                data[exena.day]["exercise"][count]["muscle_group"] =  ex.muscle_group
+                data[exena.day]["exercise"][count]["muscle_worked"] =  ex.muscle_worked
+                data[exena.day]["exercise"][count]["video_path"] =  ex.video_path
+                data[exena.day]["exercise"][count]["image_path"] =  ex.image_path
+                try:
+                    quant = quantyrepssets.objects.get(Q(user=user) & Q(day=exena.day) & Q(exername=ex))
+                except ObjectDoesNotExist:
+                    quant = None
+                if quant != None:
+                    data[exena.day]["exercise"][count]["sets_quantity"] = quant.quantsets
+                    data[exena.day]["exercise"][count]["reps_quantity"] = quant.quantreps
+                else:
+                    data[exena.day]["exercise"][count]["sets_quantity"] = "None"
+                    data[exena.day]["exercise"][count]["reps_quantity"] = "None"
+                count2=1
+                data[exena.day]["exercise"][count]["equipments"] = {}
+                for e in ex.equipments.all():
+                    data[exena.day]["exercise"][count]["equipments"][count2] = {}
+                    data[exena.day]["exercise"][count]["equipments"][count2]["name"] = e.name
+                    data[exena.day]["exercise"][count]["equipments"][count2]["image_path"] = e.image_path
+                    count2+=1
+                count+=1
+            data[exena.day]["remarks"] = exena.remarks
+        return Response(data)
+
 order_details = {
     'date': '4th May',
     'slot': '8pm',
@@ -2009,3 +2187,102 @@ def send_notification(request):
     print('Great! Expect a message...')
 
     return HttpResponse("<h1>well done</h1>")
+
+@api_view(['GET',])
+@permission_classes((IsAuthenticated, ))
+def streak_view(request):
+    if request.method == 'GET':
+        user = request.user
+        serializer = StreakSerializer(user,many=False)
+        data = {}
+        data['response'] = "Successful"
+        data['points'] = user.streaks.points
+        data['no_of_days'] = user.streaks.days
+        return Response(data)
+
+
+@api_view(['POST',])
+@permission_classes((IsAuthenticated, ))
+def steps_view(request):
+    if request.method == "POST":
+        serializer = StepsSerializer(data=request.data,many=False)
+        data = {}
+        if serializer.is_valid():
+            user = request.user
+            user = serializer.update(user,serializer.validated_data)
+            data['response'] = "Succesfully Updated!"            
+        else:
+            data = serializer.errors
+        
+        return Response(data)
+
+@api_view(['GET',])
+@permission_classes((IsAuthenticated, ))
+def live_view(request):
+    # if request.method == "POST":
+    #     serializer = liveSerializer(data=request.data,many=False)
+    #     data = {}
+    #     if serializer.is_valid():
+    #         user = request.user
+    #         user = serializer.update(user,serializer.validated_data)
+    #         data['response'] = "Succesfully Updated!"            
+    #     else:
+    #         data = serializer.errors
+        
+    #     return Response(data)
+    if request.method == 'GET':
+        user = request.user
+        serializer = liveSerializer(user,many=False)
+        liveobjs = user.lives.all()
+        data = {}
+        data["response"] = "Successful"
+        count = 1
+        for obj in liveobjs:
+            data[count] = {}
+            data[count]["time"] = obj.slottime
+            data[count]["date"] = obj.date
+            empobjs = MyUser.objects.filter(lives=obj.id)
+            for ob in empobjs:
+                if user.id != ob.id:
+                    emp = employeecontrol.objects.get(id=ob)
+                    data[count]["emp_name"] = ob.username
+                    data[count]["emp_image"] = "/media/"+str(ob.pic)
+                    if emp.employeetype == "Nutritionist":
+                        data[count]["emp_type"] = emp.employeetype
+                        data[count]["roomid"] = user.fornut
+                    elif emp.employeetype == "Dietician":
+                        data[count]["emp_type"] = emp.employeetype
+                        data[count]["roomid"] = user.fordiet
+                    elif emp.employeetype == "Fitness Trainer":
+                        data[count]["emp_type"] = emp.employeetype
+                        data[count]["roomid"] = user.forfit
+                    else:
+                        continue
+                else:
+                    continue
+            count+=1
+                    
+        return Response(data)
+
+# def streak_check_daily():
+#     d = datetime.date.today()
+#     users = MyUser.objects.filter(is_staff=False)
+#     for user in users:
+#         try:
+#             logg = logs.objects.get(Q(date=d) & Q(us=user))
+#             exlog = exlogs.objects.get(Q(date=d) & Q(us=user))
+#             if (logg.preworkout.count() !=0 or logg.postworkout.count() !=0 or logg.lunch.count() != 0 or logg.snacks.count() != 0 or logg.dinner.count() != 0) and (exlog.exercisename.count() != 0):
+#                 user.streaks.days+=1
+#                 if user.sub.plan == "Free Plan":
+#                     user.streaks.points+=10
+#                 elif user.sub.plan == "Basic Plan":
+#                     user.streaks.points+=20
+#                 elif user.sub.plan == "Semi Premium Plan":
+#                     user.streaks.points+=50
+#                 elif user.sub.plan == "Premium Plan":
+#                     user.streaks.points+=100
+#             else:
+#                 continue
+#         except ObjectDoesNotExist:
+#             continue
+

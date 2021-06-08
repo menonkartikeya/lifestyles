@@ -27,26 +27,6 @@ class otpSerializer(serializers.ModelSerializer):
 class loginSerializer(serializers.Serializer):
     mobno = serializers.IntegerField()
 
-# class RegistrationSerializer(serializers.ModelSerializer):
-#     password2 = serializers.CharField(style={'input_type':'password'},write_only=True)
-    
-#     class Meta:
-#         model = MyUser
-#         fields = ['password', 'mobno', 'password2','username']
-#         extra_kwargs = {'password': {'write_only': True}}
-    
-#     def save(self):
-#         user = MyUser(mobno=self.validated_data['mobno'],username=self.validated_data['username'])
-#         password = self.validated_data['password']
-#         password2 = self.validated_data['password2']
-
-#         if password != password2:
-#             raise serializers.ValidationError({'password':'Passwords must match.'})
-#         user.set_password(password)
-#         user.save()
-#         return user
-        
-
 class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -75,3 +55,49 @@ class DietSerializer(serializers.ModelSerializer):
         model = MyUser
         fields = ['diets']
 
+class ExerciseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MyUser
+        fields = ['fitness']
+
+
+class StreakSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MyUser
+        fields = ['streaks']
+
+class StepsSerializer(serializers.ModelSerializer):
+    step_count = serializers.IntegerField()
+
+    class Meta:
+        model = MyUser
+        fields = ['steps','step_count']
+    
+    def update(self, instance, validated_data):
+        st = validated_data['step_count']
+        d = datetime.date.today()
+        obj = instance.steps.filter(date=d)
+        if not obj:
+            ob = step.objects.create(date=d,step_count=st)
+            instance.steps.add(ob)
+        else:
+            for o in obj:
+                o.step_count = st
+                o.save()
+        instance.save()
+        return instance
+
+class liveSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MyUser
+        fields = ['lives']
+
+
+
+# Steps - Only POST
+# Streak - GET (number , points)
+# Live Api - GET (live fields, employee name, employee image, roomid,)
+# exercise plan update - (day name)

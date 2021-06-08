@@ -32,6 +32,35 @@ app.controller('dateTimeCtrl', function ($scope) {
 		console.log(newdate);
 		checkTime(newdate);
         myDateTime = newdate;
+
+        
+        daysLongNames = {
+            "Sun" :"Sunday",
+            "Mon" :"Monday",
+            "Tue" :"Tuesday",
+            "Wed" :"Wednesday",
+            "Thu" :"Thursday",
+            "Fri" :"Friday",
+            "Sat" :"Saturday",
+        };
+        monthLongNames = {
+            "Jan":"January",
+            "Feb":"February",
+            "Mar":"March", 
+            "Apr":"April",
+            "May":"May",
+            "Jun":"June",
+            "Jul":"July",
+            "Aug":"August",
+            "Sep":"September",
+            "Oct":"October", 
+            "Nov":"November", 
+            "Dec":"December",
+        };
+
+        var aa = newdate.toString();
+        var arro = aa.split(/ |,/);
+        document.getElementById("pppeep").innerHTML="You have selected "+ daysLongNames[arro[0]]+" "+monthLongNames[arro[1]] +" "+ arro[2]+", "+arro[3];
 	};
 });
 
@@ -125,6 +154,7 @@ app.directive('datePicker', function ($timeout, $window) {
                     date.setDate(date.getDate() + 1);
                 }
                 scope.month = days;
+
             }
 
             function initializeDate() {
@@ -134,6 +164,7 @@ app.directive('datePicker', function ($timeout, $window) {
                 };
                 getDaysInMonth();
                 getSelected();
+                document.getElementById("pp").innerHTML=  scope.monthNames[scope.currentViewDate.getMonth()];
             }
 
             // Takes selected time and date and combines them into a date object
@@ -215,6 +246,7 @@ app.directive('datePicker', function ($timeout, $window) {
                 }
                 getDaysInMonth();
                 getSelected();
+                document.getElementById("pp").innerHTML=  scope.monthNames[scope.currentViewDate.getMonth()];
             };
 
             scope.moveBack = function () {
@@ -224,6 +256,7 @@ app.directive('datePicker', function ($timeout, $window) {
                 }
                 getDaysInMonth();
                 getSelected();
+                document.getElementById("pp").innerHTML=  scope.monthNames[scope.currentViewDate.getMonth()];
             };
 
             scope.calcOffset = function (day, index) {

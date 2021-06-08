@@ -7,10 +7,10 @@ class MyUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = MyUser
-        fields = ('username', 'mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','pic','fitness')
+        fields = ('username', 'mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','pic','fitness','streaks','steps','fordiet','fornut','forfit')
 
 class MyUserChangeForm(UserChangeForm):
 
     class Meta(UserChangeForm):
         model = MyUser
-        fields = ('username', 'mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','pic','fitness')
+        fields = ('username', 'mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','pic','fitness','streaks','steps','fordiet','fornut','forfit')

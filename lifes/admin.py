@@ -65,9 +65,10 @@ class logadmin(admin.ModelAdmin):
 admin.site.register(logs,logadmin)
 
 class dietplanadmin(admin.ModelAdmin):
+    list_display = ('day',)
     list_per_page = 15
 
-admin.site.register(dietplan)
+admin.site.register(dietplan,dietplanadmin)
 
 class MyUserAdmin(UserAdmin):
     add_form = MyUserCreationForm
@@ -75,7 +76,7 @@ class MyUserAdmin(UserAdmin):
     model = MyUser
     list_display = ['username', 'mobno', 'gender','height','weight','target',]
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ('mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','pic','fitness')}),
+            (None, {'fields': ('mobno', 'gender','height','weight','target','diets','bill','lives','age','allotnutri','allotdieti','allottrain','sub','bio','location','address','pic','fitness','streaks','steps','fordiet','fornut','forfit')}),
     ) #this will allow to change these fields in admin module
 
 
@@ -130,7 +131,22 @@ admin.site.register(quantyrepssets,quantyrepssetsadmin)
 
 
 class exerciseplanadmin(admin.ModelAdmin):
+    list_display = ['day',]
     list_per_page = 15
 
 admin.site.register(exerciseplan,exerciseplanadmin)
 
+class exlogadmin(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(exlogs,exlogadmin)
+
+class stepadmim(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(step,stepadmim)
+
+class streakadmin(admin.ModelAdmin):
+    list_per_page = 15
+
+admin.site.register(streak,streakadmin)

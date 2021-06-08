@@ -5,7 +5,7 @@
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link href="{% static 'dashboard.css' %}" rel="stylesheet">
-
+    <title>{{title}}</title>
 </head>
 
 <body>
@@ -55,7 +55,7 @@
         <button class="btn btn-white bu col-12 nm " type="submit">
           <div class="d-flex flex-row ">
             <img class="lll" src="https://i1.wp.com/iosappszone.com/wp-content/uploads/2020/08/Fitness-ios-300x300.jpg" alt="" />
-            <a href="{% url 'exercise' %}"><h5 class="ml-3 mt-3">Exercises</h5></a>
+            <a href="{% url 'exercise' date %}"><h5 class="ml-3 mt-3">Exercises</h5></a>
           </div>
         </button>
         <!-- <button class="btn btn-white bu col-12 nm " type="submit">
@@ -187,14 +187,16 @@
                             </div>
                             <hr />
                             <div class="col-lg-12">
+                                <form action="" method="post">
+                                    {%csrf_token%}
                                 <div class="d-flex flex-row">
-                                    <h4 id="head" class="col-lg-7">Post workout meal</h4>
+                                    <h4 id="head" class="col-lg-7">Lunch</h4>
                                     <div class="bdafnf col-lg-5">
-                                        <select class="custom-select  ">
+                                        <select class="custom-select" name="tag">
                                             <option value="Lunch" id="breakfast" selected>Lunch</option>
                                             <option id="snack" value="Snacks">Snacks</option>
-                                            <option id="postmeal" value="Post workout meal">Post workout meal</option>
-                                            <option id="premeal" value="Pre workout meal">Pre workout meal</option>
+                                            <option id="postmeal" value="Post workout meal">Post Workout Meal</option>
+                                            <option id="premeal" value="Pre workout meal">Pre Workout Meal</option>
                                             <option id="Dinner" value="Dinner">Dinner</option>
                                         </select>
                                     </div>
@@ -202,52 +204,83 @@
                                 <ol class="mt-3 " id="pre" style="display:none;">
                                     {%for p in premeal%}
                                     <li>
-                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
-                                        <label class="labe " for="check112">{{p.fooditem}}</label>
+                                        <input type="checkbox" class="check" name="pr{{p.fooditem}}" id="${{forloop.counter}}" />
+                                        <label class="labe " for="${{forloop.counter}}">{{p.fooditem}}</label>
+                                    </li>
+                                    {%endfor%}
+                                    {%for p in logpre %}
+                                    <li>
+                                        <input type="checkbox" class="check" name="pr{{p.fooditem}}" id="#{{forloop.counter}}" checked/>
+                                        <label class="labe " for="#{{forloop.counter}}">{{p.fooditem}}</label>
                                     </li>
                                     {%endfor%}
                                 </ol>
                                 <ol class="mt-3 " id="post" style="display:none;">
-                                    {%for p in postmeal%}
+                                    {%for p in postmeal %}
                                     <li>
-                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
-                                        <label class="labe " for="check112">{{p.fooditem}}</label>
+                                        <input type="checkbox" class="check" name="po{{p.fooditem}}" id="#${{forloop.counter}}" />
+                                        <label class="labe " for="#${{forloop.counter}}">{{p.fooditem}}</label>
+                                    </li>
+                                    {%endfor%}
+                                    {%for p in logpost %}
+                                    <li>
+                                        <input type="checkbox" class="check" name="po{{p.fooditem}}" id="#$${{forloop.counter}}" checked />
+                                        <label class="labe " for="#$${{forloop.counter}}">{{p.fooditem}}</label>
                                     </li>
                                     {%endfor%}
                                 </ol>
                                 <ol class="mt-3 " id="lunch" style="display:block;">
                                     {%for p in lunch%}
                                     <li>
-                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
-                                        <label class="labe " for="check112">{{p.fooditem}}</label>
+                                        <input type="checkbox" class="check" name="l{{p.fooditem}}" id="{{forloop.counter}}" />
+                                        <label class="labe " for="{{forloop.counter}}">{{p.fooditem}}</label>
+                                    </li>
+                                    {%endfor%}
+                                    {%for p in loglunch%}
+                                    <li>
+                                        <input type="checkbox" class="check" name="l{{p.fooditem}}" id="##{{forloop.counter}}" checked />
+                                        <label class="labe " for="##{{forloop.counter}}">{{p.fooditem}}</label>
                                     </li>
                                     {%endfor%}
                                 </ol>
                                 <ol class="mt-3 " id="snacks" style="display:none;">
                                     {%for p in snacks%}
                                     <li>
-                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
-                                        <label class="labe " for="check112">{{p.fooditem}}</label>
+                                        <input type="checkbox" class="check" name="s{{p.fooditem}}" id="###{{forloop.counter}}" />
+                                        <label class="labe " for="###{{forloop.counter}}">{{p.fooditem}}</label>
+                                    </li>
+                                    {%endfor%}
+                                    {%for p in logsnacks%}
+                                    <li>
+                                        <input type="checkbox" class="check" name="s{{p.fooditem}}" id="####{{forloop.counter}}" checked/>
+                                        <label class="labe " for="####{{forloop.counter}}">{{p.fooditem}}</label>
                                     </li>
                                     {%endfor%}
                                 </ol>
                                 <ol class="mt-3 " id="dinner" style="display:none;">
                                     {%for p in dinner%}
                                     <li>
-                                        <input type="checkbox" class="check" name="{{p.fooditem}}" id="check112" value="" />
-                                        <label class="labe " for="check112">{{p.fooditem}}</label>
+                                        <input type="checkbox" class="check" name="d{{p.fooditem}}" id="$$$${{forloop.counter}}" />
+                                        <label class="labe " for="$$$${{forloop.counter}}">{{p.fooditem}}</label>
+                                    </li>
+                                    {%endfor%}
+                                    {%for p in logdinner%}
+                                    <li>
+                                        <input type="checkbox" class="check" name="d{{p.fooditem}}" id="$$$$${{forloop.counter}}" checked/>
+                                        <label class="labe " for="$$$$${{forloop.counter}}">{{p.fooditem}}</label>
                                     </li>
                                     {%endfor%}
                                 </ol>
                                 <div class="bv">
-                                    <button class="btn btn-primary orangeBTN" type="submit">Edit</button>
-                                    <button class="btn btn-primary orangeBTN" type="submit">Submit</button>
+                                    <a href="{% url 'foodplans' date %}"><button class="btn btn-primary orangeBTN" type="submit">Edit</button></a>
+                                    <button class="btn btn-primary orangeBTN" name="yess" type="submit">Submit</button>
                                 </div>
+                                </form>
                             </div>
                         </div>
                         <div class="col-lg-6 shadow you ml-3 p-4">
                             <div class="d-flex flex-row">
-                                <h3>Live Appointements</h3>
+                                <h3>Live Appointments</h3>
                                 <img class="foodi" src="https://cdn3.iconfinder.com/data/icons/elections-filled-line/614/4590_-_Seminar-512.png" alt="" />
                             </div>
                             <hr />
@@ -271,43 +304,32 @@
                     <br />
                     <div class="d-flex flex-row">
                         <div class="col-lg-6 you shadow p-4">
+                            <form action="" method="post">
+                                {%csrf_token%}
                             <div class="d-flex flex-row">
                                 <h3>Exercise Plan</h3>
                                 <img class="foodi" src="https://cdn2.iconfinder.com/data/icons/health-21/64/checklist-exercise-list-gym-routine-training-512.png" alt="" />
                             </div>
                             <hr />
                             <ol class="mt-3 ">
+                                {% for p in exer %}
                                 <li>
-                                    <input type="checkbox" class="check" name="" id="check1121" value="" />
-                                    <label class="labe " for="check1121">2x squats</label>
-
+                                    <input type="checkbox" class="check" name="{{p.id}}" id="{{forloop.counter}}" />
+                                    <label class="labe " for="{{forloop.counter}}">{{p.name}}</label>
                                 </li>
-
+                                {%endfor%}
+                                {% for p in logex %}
                                 <li>
-                                    <input type="checkbox" class="check mt-2" name="" id="check111" value="" />
-                                    <label class="labe " for="check111">10 min jogging</label>
+                                    <input type="checkbox" class="check" name="{{p.id}}" id="#{{forloop.counter}}" checked/>
+                                    <label class="labe " for="#{{forloop.counter}}">{{p.name}}</label>
                                 </li>
-                                <li>
-                                    <input type="checkbox" class="check mt-2" name="" id="check121" value="" />
-                                    <label class="labe " for="check121">3x pushups</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" class="check mt-2" name="" id="check131" value="" />
-                                    <label class="labe " for="check131">3x Ankle holds</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" class="check mt-2" name="" id="check141" value="" />
-                                    <label class="labe " for="check141">3x Dumbells</label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" class="check mt-2" name="" id="check1411" value="" />
-                                    <label class="labe " for="check1411">3x Pullups</label>
-                                </li>
+                                {%endfor%}
                             </ol>
 
                             <div class="bv">
-                                <button class="btn btn-primary orangeBTN" type="submit">Submit</button>
+                                <button class="btn btn-primary orangeBTN" name="exyes" type="submit">Submit</button>
                             </div>
+                            </form>
                         </div>
                         <div class="d-flex flex-column col-lg-6 ml-3">
                             <div class="you col-lg-12 shadow p-4">
@@ -325,7 +347,7 @@
                                     {%else%}
                                     <div>
                                         <h2>{{user.streaks.days}}x Days</h2>
-                                        <p>Your Streak Lasted</p>
+                                        <p>Your Streak🔥</p>
                                     </div>
                                     {%endif%}
                                     <div class="bv1">
